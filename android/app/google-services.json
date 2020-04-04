@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "663704993997",
+    "firebase_url": "https://envision-sports.firebaseio.com",
+    "project_id": "envision-sports",
+    "storage_bucket": "envision-sports.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:663704993997:android:1222736240c95c7924a984",
+        "android_client_info": {
+          "package_name": "com.agent515.sports_private_pool"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "663704993997-kl4d6povvs2bendphi90fmql7mcghf99.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBf8ZK9Az4XD7Pc52pr7Q-i-ZQwbA3wZ0k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "663704993997-kl4d6povvs2bendphi90fmql7mcghf99.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
