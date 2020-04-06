@@ -103,7 +103,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   if (user != null) {
                     print("success");
-                    Navigator.pushNamed(context, HomePage.id);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                        return HomePage(user.user);
+                    }));
                   }
                 }
                 catch(e) {

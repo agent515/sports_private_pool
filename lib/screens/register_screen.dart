@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sports_private_pool/components/input_box.dart';
 import 'package:sports_private_pool/components/rounded_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sports_private_pool/screens/home_page.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -75,6 +76,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(bottom: 10.0),
+            height: 50.0,
+            child: Image.asset('images/logo.png'),
+          ),
           Row(
             children: <Widget>[
               Expanded(
@@ -123,7 +129,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
             onpressed: () {
               //register button is pressed
               _register();
+              if(_success) {
+                try{
+                  dynamic user = _auth.signInWithEmailAndPassword(email: emailTextController.text, password: passwordTextController.text);
 
+                  if(user != null) {
+                    Navigator.pushNamed(context, HomePage.id);
+                  }
+                }
+                catch(e) {
+                  print(e);
+                }
+              }
             },
           ),
           Container(

@@ -20,7 +20,7 @@ class Envision extends StatelessWidget {
         WelcomeScreen.id : (context) => WelcomeScreen(),
         LoginScreen.id : (context) => LoginScreen(),
         RegisterScreen.id : (context) => RegisterScreen(),
-        HomePage.id : (context) => HomePage(),
+//        HomePage.id : (context) => HomePage(),
       },
 
     );
