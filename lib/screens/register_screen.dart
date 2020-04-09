@@ -3,8 +3,11 @@ import 'package:sports_private_pool/components/input_box.dart';
 import 'package:sports_private_pool/components/rounded_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sports_private_pool/screens/home_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
+final Firestore _firestore = Firestore.instance;
 
 class RegisterScreen extends StatefulWidget {
   static const id = 'register_screen';
@@ -41,6 +44,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
           final user = await _auth.createUserWithEmailAndPassword(email: email, password: password);
 
           if( user != null) {
+
+            await _firestore.collection('users').document(username).setData({
+              'username' : username,
+              'email' : email,
+              'firstName' : firstName,
+              'lastName' : lastName,
+              'contestsCreated' : [],
+              'contestsJoined' : [],
+            });
+
             setState(() {
               _success = true;
             }

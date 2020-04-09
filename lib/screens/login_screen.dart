@@ -5,6 +5,8 @@ import 'package:sports_private_pool/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sports_private_pool/screens/home_page.dart';
 
+import 'package:sports_private_pool/services/sportData.dart';
+
 final _auth = FirebaseAuth.instance;
 
 class LoginScreen extends StatefulWidget {
@@ -17,9 +19,11 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   String email;
   String password;
+  List<Widget> upcomingMatchesList;
 
   final TextEditingController emailTextController = TextEditingController();
   final TextEditingController passwordTextController = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -103,8 +107,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   if (user != null) {
                     print("success");
+                    var sportData = SportData();
+                    dynamic returnResult = await sportData.getNextMatches('/matches', context);
+                    upcomingMatchesList = returnResult;
                     Navigator.push(context, MaterialPageRoute(builder: (context) {
-                        return HomePage(user.user);
+                        return HomePage(user.user, upcomingMatchesList);
                     }));
                   }
                 }

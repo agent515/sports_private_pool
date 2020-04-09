@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sports_private_pool/screens/login_screen.dart';
 
 FirebaseAuth _auth = FirebaseAuth.instance;
 
 class SimpleAppBar extends StatelessWidget {
-  const SimpleAppBar({
-    Key key,
-  }) : super(key: key);
+  SimpleAppBar({this.appBarTitle});
+  final String appBarTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class SimpleAppBar extends StatelessWidget {
               ),
             ),
             Text(
-              'D A S H B O A R D',
+              appBarTitle,
               style: TextStyle(
                 color: Colors.black54,
                 letterSpacing: 1.5,
@@ -42,7 +42,7 @@ class SimpleAppBar extends StatelessWidget {
                 onTap: () {
                   print('signing out..');
                   _auth.signOut();
-                  Navigator.pop(context);
+                  Navigator.popUntil(context, ModalRoute.withName(LoginScreen.id));
                   print('signedOut');
                 },
                 child: Icon(
