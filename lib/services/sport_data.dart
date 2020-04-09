@@ -16,6 +16,22 @@ class SportData {
     return squadData;
   }
 
+  Future<dynamic> getMatchData(matchId) async {
+    NetworkHelper networkHelper = NetworkHelper('$baseUrl/matches/?apikey=$apiKey');
+    dynamic data = await networkHelper.getData();
+    data = data['matches'];
+
+    dynamic matchData;
+
+    for( var match in data){
+      if(match['unique_id'] == matchId){
+        matchData = match;
+        break;
+      }
+    }
+    return matchData;
+  }
+
   Future<List<Widget>> getNextMatches(route, context) async {
 //    http.Response response = await http.get(baseUrl + route + '?apikey=' + apiKey);
 //    dynamic data =  jsonDecode(response.body)['matches'];

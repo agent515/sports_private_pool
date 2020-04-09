@@ -3,6 +3,7 @@ import 'package:sports_private_pool/screens/home_page.dart';
 import 'package:sports_private_pool/screens/register_screen.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/login_screen.dart';
+import 'screens/join_contest_screen.dart';
 
 void main() => runApp(Envision());
 
@@ -21,6 +22,7 @@ class Envision extends StatelessWidget {
         LoginScreen.id : (context) => LoginScreen(),
         RegisterScreen.id : (context) => RegisterScreen(),
 //        HomePage.id : (context) => HomePage(),
+//        JoinContestScreen.id : (context) => JoinContestScreen(),
       },
 
     );

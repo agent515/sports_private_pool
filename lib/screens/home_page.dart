@@ -1,38 +1,27 @@
 import 'package:flutter/material.dart';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sports_private_pool/components/simple_app_bar.dart';
-
-
-const apiKey = 'itfCIjkbOnb4vW31al0l79I7p992';
-const baseUrl = 'https://cricapi.com/api';
-
-FirebaseAuth _auth = FirebaseAuth.instance;
+import 'package:sports_private_pool/screens/join_contest_screen.dart';
 
 class HomePage extends StatefulWidget {
   static const id = 'home_page';
 
-  HomePage(this.loggedInUser, this.upcomingMatchesList);
+  HomePage(this.loggedInUserData, this.upcomingMatchesList);
 
-  FirebaseUser loggedInUser;
+  final loggedInUserData;
   List<Widget> upcomingMatchesList;
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-
 class _HomePageState extends State<HomePage> {
   List<Widget> upcomingMatchesList;
-  FirebaseUser loggedInUser;
-
-
+  dynamic loggedInUserData;
 
   @override
-  void initState()
-  {
+  void initState() {
     super.initState();
-    loggedInUser = widget.loggedInUser;
+    loggedInUserData = widget.loggedInUserData;
     upcomingMatchesList = widget.upcomingMatchesList;
   }
 
@@ -43,35 +32,37 @@ class _HomePageState extends State<HomePage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          SimpleAppBar(appBarTitle: 'D A S H B O A R D',),
-//          Container(
-//            margin: EdgeInsets.only(bottom: 10.0),
-//            child: RaisedButton(
-//              elevation: 5.0,
-//              child: Text(
-//                  'Get next matches',
-//              ),
-//              onPressed: () async {
-//                //Get next match fixtures from the API
-//                dynamic returnResult = await getNextMatches('/matches');
-//                setState((){
-//                  upcomingMatchesList = returnResult;
-//                });
-//
-//              },
-//            ),
-//          ),
+          SimpleAppBar(
+            appBarTitle: 'D A S H B O A R D',
+          ),
+          Container(
+            margin: EdgeInsets.only(bottom: 10.0),
+            child: RaisedButton(
+              elevation: 5.0,
+              child: Text(
+                'Join Contest',
+              ),
+              onPressed: () {
+                //join contest with join code
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => JoinContestScreen(
+                      loggedInUserData: loggedInUserData,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
           Expanded(
             child: ListView(
-              padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-              scrollDirection: Axis.vertical,
-              children: upcomingMatchesList
-            ),
+                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                scrollDirection: Axis.vertical,
+                children: upcomingMatchesList),
           ),
         ],
       ),
     );
   }
 }
-
-

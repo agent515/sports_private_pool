@@ -136,7 +136,7 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
           _firestore
               .collection('contests/joinCodes/joinCodesCollection')
               .document(joinCode),
-          {'contestId': joinCode, 'createdAt': FieldValue.serverTimestamp()});
+          {'contestId': contestId, 'createdAt': FieldValue.serverTimestamp()});
       contestsCreated.add(contestId);
       await tx.update(
           _firestore.collection('users').document(loggedInUserData['username']),

@@ -4,10 +4,11 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:sports_private_pool/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sports_private_pool/screens/home_page.dart';
-
-import 'package:sports_private_pool/services/sportData.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sports_private_pool/services/sport_data.dart';
 
 final _auth = FirebaseAuth.instance;
+final _firestore = Firestore.instance;
 
 class LoginScreen extends StatefulWidget {
   static const id = "login_screen";
@@ -20,6 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
   String email;
   String password;
   List<Widget> upcomingMatchesList;
+
 
   final TextEditingController emailTextController = TextEditingController();
   final TextEditingController passwordTextController = TextEditingController();
@@ -107,12 +109,24 @@ class _LoginScreenState extends State<LoginScreen> {
 
                   if (user != null) {
                     print("success");
+
+                    var loggedInUserData;
+                    var snapshots = await _firestore.collection('users').getDocuments();
+
+                    for (var user in snapshots.documents) {
+                      if (user.data.containsValue(email)) {
+                        loggedInUserData = user.data;
+                        break;
+                      }
+                    }
+
                     var sportData = SportData();
                     dynamic returnResult = await sportData.getNextMatches('/matches', context);
                     upcomingMatchesList = returnResult;
                     Navigator.push(context, MaterialPageRoute(builder: (context) {
-                        return HomePage(user.user, upcomingMatchesList);
+                        return HomePage(loggedInUserData, upcomingMatchesList);
                     }));
+                    passwordTextController.clear();
                   }
                 }
                 catch(e) {
