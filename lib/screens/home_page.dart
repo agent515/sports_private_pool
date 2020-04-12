@@ -1,27 +1,39 @@
 import 'package:flutter/material.dart';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sports_private_pool/components/simple_app_bar.dart';
-import 'package:sports_private_pool/screens/join_contest_screen.dart';
+import 'package:sports_private_pool/components/bottom_bar.dart';
+
+
+const apiKey = 'itfCIjkbOnb4vW31al0l79I7p992';
+const baseUrl = 'https://cricapi.com/api';
+
+FirebaseAuth _auth = FirebaseAuth.instance;
 
 class HomePage extends StatefulWidget {
   static const id = 'home_page';
 
-  HomePage(this.loggedInUserData, this.upcomingMatchesList);
+  HomePage(this.loggedInUser, this.upcomingMatchesList);
 
-  final loggedInUserData;
+  FirebaseUser loggedInUser;
   List<Widget> upcomingMatchesList;
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
+
 class _HomePageState extends State<HomePage> {
   List<Widget> upcomingMatchesList;
-  dynamic loggedInUserData;
+  FirebaseUser loggedInUser;
+
+
 
   @override
-  void initState() {
+  void initState()
+  {
     super.initState();
-    loggedInUserData = widget.loggedInUserData;
+    loggedInUser = widget.loggedInUser;
     upcomingMatchesList = widget.upcomingMatchesList;
   }
 
@@ -32,37 +44,36 @@ class _HomePageState extends State<HomePage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          SimpleAppBar(
-            appBarTitle: 'D A S H B O A R D',
-          ),
-          Container(
-            margin: EdgeInsets.only(bottom: 10.0),
-            child: RaisedButton(
-              elevation: 5.0,
-              child: Text(
-                'Join Contest',
-              ),
-              onPressed: () {
-                //join contest with join code
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => JoinContestScreen(
-                      loggedInUserData: loggedInUserData,
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+          SimpleAppBar(appBarTitle: 'D A S H B O A R D',),
+//          Container(
+//            margin: EdgeInsets.only(bottom: 10.0),
+//            child: RaisedButton(
+//              elevation: 5.0,
+//              child: Text(
+//                  'Get next matches',
+//              ),
+//              onPressed: () async {
+//                //Get next match fixtures from the API
+//                dynamic returnResult = await getNextMatches('/matches');
+//                setState((){
+//                  upcomingMatchesList = returnResult;
+//                });
+//
+//              },
+//            ),
+//          ),
           Expanded(
             child: ListView(
-                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                scrollDirection: Axis.vertical,
-                children: upcomingMatchesList),
+              padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+              scrollDirection: Axis.vertical,
+              children: upcomingMatchesList
+            ),
           ),
-        ],
+          BottomBar(),
+        ],   
       ),
     );
   }
 }
+
+
