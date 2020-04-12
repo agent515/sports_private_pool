@@ -16,3 +16,9 @@ const kTextInputFieldDecoration = InputDecoration(
       borderRadius: BorderRadius.all(Radius.circular(40.0)),
     )
 );
+
+const kBottomBarTitleColor = TextStyle(
+              color: Colors.black,
+            );
+
+const kBottomBarIconColor = Colors.black;
