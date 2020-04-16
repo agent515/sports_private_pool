@@ -110,6 +110,7 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
         'type': type,
         'contestId': type + countStr,
         'matchId': matchId,
+        'match' : '${matchData['team-1']} Vs ${matchData['team-2']}',
         'joinCode': joinCode,
         'prizeMoney': double.parse(prizeMoneyTextController.text),
         'entryFee': double.parse(entryFeeTextController.text),

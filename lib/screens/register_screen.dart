@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sports_private_pool/components/input_box.dart';
 import 'package:sports_private_pool/components/rounded_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sports_private_pool/screens/home_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sports_private_pool/services/sport_data.dart';
 
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -27,6 +29,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool _success;
   String _userEmail;
+  String message = '';
 
   void _register() async {
     String firstName = firstNameTextController.text;
@@ -42,7 +45,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         print('$email $password');
         try{
           final user = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-
+          print(user.toString());
           if( user != null) {
 
             await _firestore.collection('users').document(username).setData({
@@ -52,23 +55,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
               'lastName' : lastName,
               'contestsCreated' : [],
               'contestsJoined' : [],
+              'purse' : 100,
             });
 
             setState(() {
               _success = true;
+              message = 'Successfully registered';
             }
             );
           }
           else {
             setState(() {
               _success = false;
+              message = 'Registration failed';
             });
           }
+        }
+        on PlatformException catch(e) {
+          print(e);
+          setState(() {
+            _success = false;
+            message = 'Email is already in use';
+          });
+          print("Email is already in use");
         }
         catch(e) {
           print(e);
           setState(() {
             _success = false;
+            message = 'Registration failed';
           });
         }
       }
@@ -139,17 +154,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
           RoundedButton(
             color: Colors.black54,
             text: 'Register',
-            onpressed: () {
+            onpressed: () async{
               //register button is pressed
-              _register();
+              await _register();
               if(_success) {
                 try{
                   dynamic user = _auth.signInWithEmailAndPassword(email: emailTextController.text, password: passwordTextController.text);
 
-                  if(user != null) {
-                    Navigator.pushNamed(context, HomePage.id);
-                  }
+                var loggedInUserData;
+                var snapshots = await _firestore.collection('users').getDocuments();
+
+                for (var user in snapshots.documents) {
+                if (user.data.containsValue(emailTextController.text)) {
+                loggedInUserData = user.data;
+                break;
                 }
+                }
+
+                var sportData = SportData();
+                dynamic returnResult = await sportData.getNextMatches('/matches', context);
+                var upcomingMatchesList = returnResult;
+
+                print(upcomingMatchesList);
+                print(loggedInUserData);
+
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return HomePage(loggedInUserData, upcomingMatchesList);
+                }));
+                  }
                 catch(e) {
                   print(e);
                 }
@@ -158,11 +190,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           Container(
             alignment: Alignment.center,
-            child: Text(_success == null
-                ? ''
-                : (_success
-                ? 'Successfully registered '
-                : 'Registration failed')),
+            child: Text(message),
           )
         ],
       ),

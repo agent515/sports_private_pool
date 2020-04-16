@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sports_private_pool/components/simple_app_bar.dart';
 import 'package:sports_private_pool/screens/join_contest_screen.dart';
+import 'package:sports_private_pool/screens/user_specific_screens/user_profile_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+Firestore _firestore = Firestore.instance;
 
 class HomePage extends StatefulWidget {
   static const id = 'home_page';
@@ -35,25 +39,54 @@ class _HomePageState extends State<HomePage> {
           SimpleAppBar(
             appBarTitle: 'D A S H B O A R D',
           ),
-          Container(
-            margin: EdgeInsets.only(bottom: 10.0),
-            child: RaisedButton(
-              elevation: 5.0,
-              child: Text(
-                'Join Contest',
-              ),
-              onPressed: () {
-                //join contest with join code
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => JoinContestScreen(
-                      loggedInUserData: loggedInUserData,
-                    ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.only(bottom: 10.0),
+                child: RaisedButton(
+                  elevation: 5.0,
+                  child: Text(
+                    'Join Contest',
                   ),
-                );
-              },
-            ),
+                  onPressed: () {
+                    //join contest with join code
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => JoinContestScreen(
+                          loggedInUserData: loggedInUserData,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(bottom: 10.0),
+                child: RaisedButton(
+                  elevation: 5.0,
+                  child: Text(
+                    'Profile',
+                  ),
+                  onPressed: () async {
+                    //join contest with join code
+
+                    var userSnapshot = await _firestore.collection('users').document(loggedInUserData['username']).get();
+                    loggedInUserData = userSnapshot.data;
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UserProfileScreen(
+                          loggedInUserData: loggedInUserData,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
           Expanded(
             child: ListView(

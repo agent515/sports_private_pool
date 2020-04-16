@@ -7,14 +7,27 @@ import 'package:sports_private_pool/services/sport_data.dart';
 
 final _firestore = Firestore.instance;
 
-class JoinContestScreen extends StatelessWidget {
+class JoinContestScreen extends StatefulWidget {
   static const id = 'join_contest_screen';
 
   JoinContestScreen({this.loggedInUserData});
 
   final loggedInUserData;
 
+  @override
+  _JoinContestScreenState createState() => _JoinContestScreenState();
+}
+
+class _JoinContestScreenState extends State<JoinContestScreen> {
   final TextEditingController codeTextController = TextEditingController();
+  dynamic loggedInUserData;
+  String message = '';
+
+  @override
+  void initState() {
+    super.initState();
+    loggedInUserData = widget.loggedInUserData;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +71,7 @@ class JoinContestScreen extends StatelessWidget {
                         var joinCode = codeTextController.text;
                         if (joinCode.length == 11) {
                           var type = joinCode.substring(0, 3);
+
                           if (type == 'CMC') {
                             try {
                               var docSnap = await _firestore
@@ -69,34 +83,58 @@ class JoinContestScreen extends StatelessWidget {
                               print(docSnap.data);
                               print(contestId);
 
-                              var contestSnap = await _firestore
-                                  .collection(
-                                      'contests/cricketMatchContest/cricketMatchContestCollection')
-                                  .document(contestId)
-                                  .get();
-                              var contest = contestSnap.data;
+                              var userSnapshot = await _firestore.collection('users').document(loggedInUserData['username']).get();
+                              loggedInUserData = userSnapshot.data;
 
-                              SportData sportData = SportData();
-                              var matchData = await sportData
-                                  .getMatchData(contest['matchId']);
+                              print('${loggedInUserData['contestsJoined'].contains(contestId)}');
+                              if(loggedInUserData['contestsJoined'].contains(contestId)){
+                                setState(() {
+                                  message = "You've already entered the contest";
+                                });
+                              }
+                              else{
+                                var contestSnap = await _firestore
+                                    .collection(
+                                    'contests/cricketMatchContest/cricketMatchContestCollection')
+                                    .document(contestId)
+                                    .get();
+                                var contest = contestSnap.data;
 
-                              var squadData =
-                                  await sportData.getSquads(contest['matchId']);
+                                SportData sportData = SportData();
+                                var matchData = await sportData
+                                    .getMatchData(contest['matchId']);
 
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => JoinCMCInputScreen(
-                                            loggedInUserData: loggedInUserData,
+                                var squadData =
+                                await sportData.getSquads(contest['matchId']);
+
+                                if(matchData == null){
+                                  setState(() {
+                                    message = 'The contest has already ended';
+                                  });
+                                }
+                                else{
+                                  message = "";
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => JoinCMCInputScreen(
+                                            loggedInUserData: widget.loggedInUserData,
                                             contest: contest,
                                             matchData: matchData,
                                             squadData: squadData,
                                           )));
+                                }
+                              }
+
+
                             } catch (e) {
                               print(e);
                             }
                           }
                         } else {
+                          setState(() {
+                            message = "The code is of invalid length";
+                          });
                           print("The code is of invalid length");
                         }
                       },
@@ -109,6 +147,11 @@ class JoinContestScreen extends StatelessWidget {
                               fontWeight: FontWeight.w300)),
                     ),
                   ),
+                  Container(
+                    child: Text(
+                      message,
+                    ),
+                  )
                 ],
               ))
         ],
