@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sports_private_pool/components/custom_tool_tip.dart';
 import 'package:sports_private_pool/components/simple_app_bar.dart';
 import 'package:sports_private_pool/constants.dart';
 import 'package:sports_private_pool/services/sport_data.dart';
@@ -25,7 +26,7 @@ class _MyCreatedContestDetailsScreenState
   dynamic mostRuns;
   dynamic mostWickets;
 
-  Widget predictionWidget;
+  Widget predictionWidget = Icon(Icons.arrow_drop_down);
 
   @override
   void initState() {
@@ -86,7 +87,12 @@ class _MyCreatedContestDetailsScreenState
       child: Column(children: <Widget>[
         ListTile(
           leading: Text('Join Code :', style: kUserProfileInfoTextStyle,),
-          title: Text(contest['joinCode']),
+          title: GestureDetector(
+            child: CustomToolTip(text: contest['joinCode'],),
+            onTap: () {
+
+            },
+          ),
         ),
         ListTile(
           leading: Text('Prize :', style: kUserProfileInfoTextStyle,),
@@ -160,6 +166,7 @@ class _MyCreatedContestDetailsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Column(children: <Widget>[
         SimpleAppBar(
           appBarTitle: 'C O N T E S T   D E T A I L S',

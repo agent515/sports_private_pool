@@ -4,6 +4,7 @@ import 'package:sports_private_pool/components/simple_app_bar.dart';
 import 'package:sports_private_pool/components/contest_input_field.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sports_private_pool/components/custom_tool_tip.dart';
 
 import 'package:random_string/random_string.dart';
 
@@ -171,6 +172,7 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Column(children: <Widget>[
         SimpleAppBar(appBarTitle: 'C O N T E S T'),
         Flex(
@@ -250,13 +252,19 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
                     )
                   : SizedBox(height: 0,),
               SizedBox(height: 5.0,),
-              Text(
-                _success == null
-                    ? ''
-                    : (_success
-                        ? 'Contest created.. Here is the the code to join the contest: $joinCode'
-                        : 'Registration failed'),
-                textAlign: TextAlign.center,
+              Container(
+                child:
+              _success == null ? Text('')
+                      : (_success
+                      ? Column(children: <Widget>[Text('Contest created.. Here is the the code to join the contest: '),
+                        GestureDetector(
+                          child: CustomToolTip(text: joinCode),
+                          onTap: () {
+
+                          },
+                        )
+                    ])
+                      : Text('Registration failed')),
               ),
             ],
           ),
@@ -265,3 +273,4 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
     );
   }
 }
+

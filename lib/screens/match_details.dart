@@ -115,6 +115,7 @@ class _MatchDetailsState extends State<MatchDetails> {
   Widget build(BuildContext context) {
     print(dateObject);
     return Scaffold(
+        backgroundColor: Colors.white,
         body: Column(
       children: <Widget>[
         SimpleAppBar(
