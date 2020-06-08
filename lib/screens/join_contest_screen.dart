@@ -4,6 +4,8 @@ import 'package:sports_private_pool/components/simple_app_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sports_private_pool/screens/join_contest_input_screen.dart';
 import 'package:sports_private_pool/services/sport_data.dart';
+import 'package:sports_private_pool/screens/user_specific_screens/user_profile_screen.dart';
+import 'package:sports_private_pool/screens/home_page.dart';
 
 final _firestore = Firestore.instance;
 
@@ -22,11 +24,65 @@ class _JoinContestScreenState extends State<JoinContestScreen> {
   final TextEditingController codeTextController = TextEditingController();
   dynamic loggedInUserData;
   String message = '';
+  int index = 1;
 
   @override
   void initState() {
     super.initState();
     loggedInUserData = widget.loggedInUserData;
+  }
+
+  void renderScreen(index) async {
+    if (index == 0) {
+      var sportData = SportData();
+      dynamic returnResult = await sportData.getNextMatches('/matches', context);
+      List<Widget> upcomingMatchesList = returnResult;
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return HomePage(loggedInUserData, upcomingMatchesList);
+      }));
+    } else if (index == 2) {
+      var userSnapshot = await _firestore
+          .collection('users')
+          .document(loggedInUserData['username'])
+          .get();
+      loggedInUserData = userSnapshot.data;
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => UserProfileScreen(
+            loggedInUserData: loggedInUserData,
+          ),
+        ),
+      );
+    }
+  }
+
+  Widget _bottomNavigationBar() {
+    return BottomNavigationBar(
+      currentIndex: index,
+      selectedItemColor: Colors.white,
+      unselectedItemColor: Colors.grey,
+      backgroundColor: Colors.black87,
+      onTap: (int x) {
+        setState(() {
+          index = x;
+        });
+        renderScreen(index);
+      },
+      items: <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          title: Text('Home'),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.add),
+          title: Text('Join'),
+        ),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.person_pin), title: Text('Profile'))
+      ],
+    );
   }
 
   @override
@@ -127,7 +183,6 @@ class _JoinContestScreenState extends State<JoinContestScreen> {
                                 }
                               }
 
-
                             } catch (e) {
                               print(e);
                             }
@@ -157,6 +212,7 @@ class _JoinContestScreenState extends State<JoinContestScreen> {
               ))
         ],
       ),
+      bottomNavigationBar: _bottomNavigationBar(),
     );
   }
 }

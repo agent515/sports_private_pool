@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sports_private_pool/components/simple_app_bar.dart';
 import 'package:sports_private_pool/constants.dart';
 import 'package:sports_private_pool/screens/user_specific_screens/my_created_contests_screen.dart';
+import 'package:sports_private_pool/screens/join_contest_screen.dart';
+
+import 'package:sports_private_pool/services/sport_data.dart';
+import 'package:sports_private_pool/screens/home_page.dart';
 
 Firestore _firestore = Firestore.instance;
 
@@ -19,6 +22,7 @@ class UserProfileScreen extends StatefulWidget {
 class _UserProfileScreenState extends State<UserProfileScreen> {
 
   dynamic loggedInUserData;
+  int index = 2;
 
   @override
   void initState() {
@@ -43,6 +47,53 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     }
     
     return contests_list;
+  }
+
+  void renderScreen(index) async {
+    if (index == 0) {
+      var sportData = SportData();
+      dynamic returnResult = await sportData.getNextMatches('/matches', context);
+      List<Widget> upcomingMatchesList = returnResult;
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return HomePage(loggedInUserData, upcomingMatchesList);
+      }));
+    } else if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => JoinContestScreen(
+            loggedInUserData: loggedInUserData,
+          ),
+        ),
+      );
+    }
+  }
+
+  Widget _bottomNavigationBar() {
+    return BottomNavigationBar(
+      currentIndex: index,
+      selectedItemColor: Colors.white,
+      unselectedItemColor: Colors.grey,
+      backgroundColor: Colors.black87,
+      onTap: (int x) {
+        setState(() {
+          index = x;
+        });
+        renderScreen(index);
+      },
+      items: <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          title: Text('Home'),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.add),
+          title: Text('Join'),
+        ),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.person_pin), title: Text('Profile'))
+      ],
+    );
   }
   
   
@@ -130,6 +181,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           )
         ],
       ),
+      bottomNavigationBar: _bottomNavigationBar(),
     );
   }
 }

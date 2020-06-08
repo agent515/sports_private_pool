@@ -125,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     dynamic returnResult = await sportData.getNextMatches('/matches', context);
                     upcomingMatchesList = returnResult;
                     Navigator.push(context, MaterialPageRoute(builder: (context) {
-                        return HomePage(loggedInUserData, upcomingMatchesList);
+                      return HomePage(loggedInUserData, upcomingMatchesList);
                     }));
                     passwordTextController.clear();
                   }

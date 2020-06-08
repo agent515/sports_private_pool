@@ -1,8 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sports_private_pool/components/rounded_button.dart';
 import 'package:sports_private_pool/components/simple_app_bar.dart';
 import 'package:sports_private_pool/screens/cricket_match_contest_screen.dart';
 import 'package:sports_private_pool/services/networking.dart';
+import 'package:sports_private_pool/screens/join_contest_screen.dart';
+import 'package:sports_private_pool/screens/user_specific_screens/user_profile_screen.dart';
+import 'package:sports_private_pool/services/sport_data.dart';
+import 'package:sports_private_pool/screens/home_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:sports_private_pool/models/user_data.dart';
+
+FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+Firestore _firestore = Firestore.instance;
 
 NetworkHelper networkHelper;
 
@@ -22,9 +35,12 @@ class _MatchDetailsState extends State<MatchDetails> {
   dynamic dateObject;
   String date;
   dynamic squads;
+  dynamic loggedInUserData;
+  int index = 1;
 
   @override
   void initState() {
+
     super.initState();
     matchData = widget.matchData;
     matchId = matchData['unique_id'];
@@ -111,6 +127,70 @@ class _MatchDetailsState extends State<MatchDetails> {
     );
   }
 
+  void renderScreen(index) async {
+    if (index == 0) {
+      loggedInUserData = Provider.of<UserData>(context).user;
+      print(loggedInUserData);
+      var sportData = SportData();
+      dynamic returnResult = await sportData.getNextMatches('/matches', context);
+      List<Widget> upcomingMatchesList = returnResult;
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        return HomePage(loggedInUserData, upcomingMatchesList);
+      }));
+    } else if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => JoinContestScreen(
+            loggedInUserData: loggedInUserData,
+          ),
+        ),
+      );
+    } else if (index == 2) {
+      var userSnapshot = await _firestore
+          .collection('users')
+          .document(loggedInUserData['username'])
+          .get();
+      loggedInUserData = userSnapshot.data;
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => UserProfileScreen(
+            loggedInUserData: loggedInUserData,
+          ),
+        ),
+      );
+    }
+  }
+
+  Widget _bottomNavigationBar() {
+    return BottomNavigationBar(
+      currentIndex: index,
+      selectedItemColor: Colors.white,
+      unselectedItemColor: Colors.grey,
+      backgroundColor: Colors.black87,
+      onTap: (int x) {
+        setState(() {
+          index = x;
+        });
+        renderScreen(index);
+      },
+      items: <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          title: Text('Home'),
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.add),
+          title: Text('Join'),
+        ),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.person_pin), title: Text('Profile'))
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     print(dateObject);
@@ -184,6 +264,8 @@ class _MatchDetailsState extends State<MatchDetails> {
               ],
             ))
       ],
-    ));
+        ),
+      bottomNavigationBar: _bottomNavigationBar(),
+    );
   }
 }
