@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:sports_private_pool/services/networking.dart';
 import 'package:sports_private_pool/screens/match_details.dart';
+import 'package:sports_private_pool/api.dart';
 
-const apiKey = 'itfCIjkbOnb4vW31al0l79I7p992';
 const baseUrl = 'https://cricapi.com/api';
 
-//https://cricapi.com/api/fantasySquad?apikey=itfCIjkbOnb4vW31al0l79I7p992&unique_id=1034809
+//https://cricapi.com/api/fantasySquad?apikey=$apiKey&unique_id=1034809
+const String apiKey = CricapiKey;
 
 class SportData {
 
+  // Get Squad Information of two teams in a Match with ID: matchId
   Future<dynamic> getSquads(matchId) async {
     NetworkHelper networkHelper = NetworkHelper('$baseUrl/fantasySquad?apikey=$apiKey&unique_id=$matchId');
 
@@ -16,6 +18,7 @@ class SportData {
     return squadData;
   }
 
+  // Get all the necessary data related to a Match.
   Future<dynamic> getMatchData(matchId) async {
     NetworkHelper networkHelper = NetworkHelper('$baseUrl/matches/?apikey=$apiKey');
     dynamic data = await networkHelper.getData();
@@ -32,21 +35,30 @@ class SportData {
     return matchData;
   }
 
+  // Get Final Score of a match.
   Future<dynamic> getScore(matchId) async {
     NetworkHelper networkHelper = NetworkHelper('$baseUrl/cricketScore?apikey=$apiKey&unique_id=$matchId');
     dynamic data = await networkHelper.getData();
     return data;
   }
 
+  // Get Player Information and his/her stats.
   Future<dynamic> getPlayerInfo(pid) async {
     NetworkHelper networkHelper = NetworkHelper('$baseUrl/playerStats?apikey=$apiKey&pid=$pid');
     dynamic data = await networkHelper.getData();
     return data;
   }
 
+
+  Future<dynamic> getUpcomingMatchesData(route) async {
+    NetworkHelper networkHelper = NetworkHelper(baseUrl + route + '?apikey=' + apiKey);
+    dynamic data = await networkHelper.getData();
+    data = data['matches'];
+    return data;
+  }
+
+  //
   Future<List<Widget>> getNextMatches(route, context) async {
-//    http.Response response = await http.get(baseUrl + route + '?apikey=' + apiKey);
-//    dynamic data =  jsonDecode(response.body)['matches'];
 
     NetworkHelper networkHelper = NetworkHelper(baseUrl + route + '?apikey=' + apiKey);
     dynamic data = await networkHelper.getData();

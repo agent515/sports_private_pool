@@ -9,11 +9,11 @@ class CustomToolTip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new GestureDetector(
-      child: new Tooltip(preferBelow: false,
-          message: "Copy", child: new Text(text)),
+    return GestureDetector(
+      child: Tooltip(preferBelow: false,
+          message: "Copy", child: Text(text)),
       onTap: () {
-        Clipboard.setData(new ClipboardData(text: text));
+        Clipboard.setData(ClipboardData(text: text));
       },
     );
   }

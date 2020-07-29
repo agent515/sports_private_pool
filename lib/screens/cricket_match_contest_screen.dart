@@ -172,6 +172,7 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.white,
       body: Column(children: <Widget>[
         SimpleAppBar(appBarTitle: 'C O N T E S T'),
