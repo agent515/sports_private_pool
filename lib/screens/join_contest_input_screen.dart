@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:sports_private_pool/components/rounded_button.dart';
 import 'package:sports_private_pool/components/simple_app_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sports_private_pool/screens/home_page.dart';
 
 enum matchResultEnum {team_1, draw, team_2}
 
@@ -38,6 +37,8 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
   int mostWickets;
   String matchResult;
 
+  int index = 1;
+
   @override
   void initState() {
     super.initState();
@@ -66,7 +67,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
   }
 
   Future<void> joinContest() async {
-
+    //TODO:: passed loggedInUserData could be used.
     FirebaseUser loggedInUser = await _auth.currentUser();
     var loggedInUserData;
     var snapshots = await _firestore.collection('users').getDocuments();
@@ -345,6 +346,8 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
     ];
     return _step;
   }
+
+
 
   @override
   Widget build(BuildContext context) {

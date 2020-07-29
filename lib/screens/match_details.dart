@@ -1,8 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sports_private_pool/components/rounded_button.dart';
 import 'package:sports_private_pool/components/simple_app_bar.dart';
 import 'package:sports_private_pool/screens/cricket_match_contest_screen.dart';
 import 'package:sports_private_pool/services/networking.dart';
+import 'package:sports_private_pool/screens/join_contest_screen.dart';
+import 'package:sports_private_pool/screens/user_specific_screens/user_profile_screen.dart';
+import 'package:sports_private_pool/services/sport_data.dart';
+import 'package:sports_private_pool/screens/home_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+
+FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
+Firestore _firestore = Firestore.instance;
 
 NetworkHelper networkHelper;
 
@@ -22,9 +33,12 @@ class _MatchDetailsState extends State<MatchDetails> {
   dynamic dateObject;
   String date;
   dynamic squads;
+  dynamic loggedInUserData;
+  int index = 1;
 
   @override
   void initState() {
+
     super.initState();
     matchData = widget.matchData;
     matchId = matchData['unique_id'];
@@ -184,6 +198,8 @@ class _MatchDetailsState extends State<MatchDetails> {
               ],
             ))
       ],
-    ));
+        ),
+//      bottomNavigationBar: _bottomNavigationBar(),
+    );
   }
 }

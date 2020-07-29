@@ -5,7 +5,9 @@ import 'package:sports_private_pool/components/rounded_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sports_private_pool/screens/home_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sports_private_pool/screens/main_frame_app.dart';
 import 'package:sports_private_pool/services/sport_data.dart';
+import 'package:hive/hive.dart';
 
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -28,8 +30,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController cpasswordTextController =  TextEditingController();
 
   bool _success;
-  String _userEmail;
   String message = '';
+
+  Box<dynamic> userData;
+
+  @override
+  void initState() {
+    userData = Hive.box('userData');
+    super.initState();
+  }
 
   void _register() async {
     String firstName = firstNameTextController.text;
@@ -100,6 +109,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -166,20 +176,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 for (var user in snapshots.documents) {
                 if (user.data.containsValue(emailTextController.text)) {
-                loggedInUserData = user.data;
-                break;
+                  loggedInUserData = user.data;
+                  userData.put('user', loggedInUserData);
+                  break;
                 }
                 }
-
-                var sportData = SportData();
-                dynamic returnResult = await sportData.getNextMatches('/matches', context);
-                var upcomingMatchesList = returnResult;
-
-                print(upcomingMatchesList);
-                print(loggedInUserData);
 
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return HomePage(loggedInUserData, upcomingMatchesList);
+                return MainFrameApp();
                 }));
                   }
                 catch(e) {
