@@ -128,78 +128,74 @@ class _MatchDetailsState extends State<MatchDetails> {
   @override
   Widget build(BuildContext context) {
     print(dateObject);
-    return Scaffold(
-        backgroundColor: Colors.white,
-        body: Column(
+    return ListView(
+      scrollDirection: Axis.vertical,
       children: <Widget>[
-        SimpleAppBar(
-          appBarTitle: 'M A T C H   D E T A I L S',
+    SimpleAppBar(
+      appBarTitle: 'M A T C H   D E T A I L S',
+    ),
+    Flex(
+      direction: Axis.vertical,
+      children: <Widget>[
+        Text(
+          '${matchData['team-1']}',
+          style: TextStyle(
+            fontSize: 18.0,
+            fontWeight: FontWeight.w700,
+          ),
         ),
-        Flex(
-          direction: Axis.vertical,
-          children: <Widget>[
-            Text(
-              '${matchData['team-1']}',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            Text(
-              'vs',
-              style: TextStyle(
-                fontSize: 12.0,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            Text(
-              '${matchData['team-2']}',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
+        Text(
+          'vs',
+          style: TextStyle(
+            fontSize: 12.0,
+            fontWeight: FontWeight.w400,
+          ),
         ),
-        Container(
-            margin: EdgeInsets.only(top: 10.0),
-            child: Column(
-              children: <Widget>[
-                Center(
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        'Date  ${date.substring(0, 10)}',
-                      ),
-                      Text(
-                        'Time  ${date.substring(11, 16)}',
-                      )
-                    ],
-                  ),
-                ),
-                matchData['squad']
-                    ? createContest()
-                    : Container(
-                        margin: EdgeInsets.symmetric(vertical: 10.0),
-                        child: Text(
-                            'Cannot create contest without squad details',
-                            style: TextStyle(
-                              fontSize: 15.0,
-                              fontStyle: FontStyle.italic,
-                            ),
-                        )),
-                Container(
-                  margin: EdgeInsets.only(top: 10.0, right: 20.0, left: 20.0),
-                  height: 400,
-                  child: Column(
-                    children: <Widget>[getSquad(0), getSquad(1)],
-                  ),
-                )
-              ],
-            ))
+        Text(
+          '${matchData['team-2']}',
+          style: TextStyle(
+            fontSize: 18.0,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
       ],
-        ),
-//      bottomNavigationBar: _bottomNavigationBar(),
+    ),
+    Container(
+        margin: EdgeInsets.only(top: 10.0),
+        child: Column(
+          children: <Widget>[
+            Center(
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    'Date  ${date.substring(0, 10)}',
+                  ),
+                  Text(
+                    'Time  ${date.substring(11, 16)}',
+                  )
+                ],
+              ),
+            ),
+            matchData['squad']
+                ? createContest()
+                : Container(
+                    margin: EdgeInsets.symmetric(vertical: 10.0),
+                    child: Text(
+                        'Cannot create contest without squad details',
+                        style: TextStyle(
+                          fontSize: 15.0,
+                          fontStyle: FontStyle.italic,
+                        ),
+                    )),
+            Container(
+              margin: EdgeInsets.only(top: 10.0, right: 20.0, left: 20.0),
+              child: Column(
+                children: <Widget>[getSquad(0), getSquad(1)],
+              ),
+            )
+          ],
+        ))
+      ],
     );
   }
 }

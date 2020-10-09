@@ -32,9 +32,9 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
   String _message = 'Fill the contest entries..';
 
   int _currentStep = 0;
-  int MVP;
-  int mostRuns;
-  int mostWickets;
+  String MVP;
+  String mostRuns;
+  String mostWickets;
   String matchResult;
 
   int index = 1;
@@ -132,7 +132,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
         onTap: () {
           setState(() {
             if (choice == 'MVP') {
-              MVP = player['pid'];
+              MVP =  player['pid'];
             } else if (choice == 'mostRuns') {
               mostRuns = player['pid'];
             } else if (choice == 'mostWickets') {
@@ -361,6 +361,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
           Expanded(
             child: ListView(
               scrollDirection: Axis.vertical,
+              physics: ScrollPhysics(),
               children: [
                 Theme(
                   data : ThemeData(
@@ -368,6 +369,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                     accentColor: Colors.black54
                   ),
                   child: Stepper(
+                    physics: ClampingScrollPhysics(),
                     steps: _getSteps(),
                     currentStep: this._currentStep,
                     onStepTapped: (index) {
@@ -396,6 +398,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                         print('$MVP, $mostRuns, $mostWickets, $matchResult');
                         setState(() {
                           _show = true;
+                          print(_show);
                           _message = (contest['entryFee'] < loggedInUserData['purse']) ? "" : "You don't have enough money in the purse to enter the contest..";
                         });
                       }
@@ -410,7 +413,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                   ),
                 ),
                 _show ? Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
                   child: Column(
                     children: <Widget>[
                       Padding(
@@ -513,7 +516,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                 ) : SizedBox(
                   height: 20.0,
                   child: Text('$_message', textAlign: TextAlign.center, style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400),),
-                )
+                ),
               ],
             ),
           )
