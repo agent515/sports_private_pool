@@ -141,11 +141,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   color: Colors.lightBlue,
                   text: 'SIGN IN',
                   onpressed: () async {
+                    print(emailTextController.text);
+                    print(passwordTextController.text);
                     try {
                       final user = await _auth.signInWithEmailAndPassword(
                           email: emailTextController.text,
                           password: passwordTextController.text);
-
+                      print("in");
                       if (user != null) {
                         print("success");
                         Scaffold.of(context).showSnackBar(

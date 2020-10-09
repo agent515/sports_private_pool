@@ -17,6 +17,7 @@ class HomeTabNavigator extends StatelessWidget {
   HomeTabNavigator({this.tabItem, this.navigatorKey});
 
   Map<String, WidgetBuilder> _routeBuilder(context, upcomingMatchesData) {
+    print(upcomingMatchesData);
     return {
       HomeTabNavigatorRoutes.home : (context) => HomePage(upcomingMatchesData),
 //      HomeTabNavigatorRoutes.mathchDetails : (context) => MatchDetails(),
