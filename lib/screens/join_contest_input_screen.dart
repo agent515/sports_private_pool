@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sports_private_pool/components/rounded_button.dart';
 import 'package:sports_private_pool/components/simple_app_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum matchResultEnum {team_1, draw, team_2}
+enum matchResultEnum { team_1, draw, team_2 }
 
 Firestore _firestore = Firestore.instance;
 FirebaseAuth _auth = FirebaseAuth.instance;
@@ -27,7 +29,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
   dynamic matchData;
   dynamic squadData;
   matchResultEnum _matchResult;
-  bool  _show = false;
+  bool _show = false;
 
   String _message = 'Fill the contest entries..';
 
@@ -54,7 +56,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
   }
 
   String getTeamNames(matchResultEnum value) {
-    switch(value) {
+    switch (value) {
       case matchResultEnum.team_1:
         return matchData['team-1'].toString();
       case matchResultEnum.team_2:
@@ -84,43 +86,52 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
     print(loggedInUserData);
 
     var predictions = {
-      'MVP' : MVP,
-      'mostRuns' : mostRuns,
-      'mostWickets' : mostWickets,
-      'matchResult' : matchResult,
+      'MVP': MVP,
+      'mostRuns': mostRuns,
+      'mostWickets': mostWickets,
+      'matchResult': matchResult,
     };
 
-    final TransactionHandler joinContestTransactionHandler = (Transaction tx) async {
-
-      final contestSnapshot = await tx.get(_firestore.collection('contests/cricketMatchContest/cricketMatchContestCollection').document(contest['contestId']));
+    final TransactionHandler joinContestTransactionHandler =
+        (Transaction tx) async {
+      final contestSnapshot = await tx.get(_firestore
+          .collection(
+              'contests/cricketMatchContest/cricketMatchContestCollection')
+          .document(contest['contestId']));
       List participants = contestSnapshot.data['participants'];
 
-      if(participants.length == contestSnapshot.data['noOfParticipants']){
-        return {"status" : "Contest is full"};
+      if (participants.length == contestSnapshot.data['noOfParticipants']) {
+        return {"status": "Contest is full"};
       }
-      if(participants.contains(loggedInUserData['username'])) {
-        return {"status" : "Already entered the contest"};
+      if (participants.contains(loggedInUserData['username'])) {
+        return {"status": "Already entered the contest"};
       }
       participants.add(loggedInUserData['username']);
 
       List userContestsJoined = loggedInUserData['contestsJoined'];
       userContestsJoined.add(contest['contestId']);
 
-      await tx.update(_firestore.collection('users').document(loggedInUserData['username']), {'purse' : loggedInUserData['purse'] - contest['entryFee']});
-      await tx.update(_firestore.collection('contests/cricketMatchContest/cricketMatchContestCollection').document(contest['contestId']), {'participants' : participants, 'predictions' : predictions});
-      await tx.update(_firestore.collection('users').document(loggedInUserData['username']), {'contestsJoined' : userContestsJoined});
+      await tx.update(
+          _firestore.collection('users').document(loggedInUserData['username']),
+          {'purse': loggedInUserData['purse'] - contest['entryFee']});
+      await tx.update(
+          _firestore
+              .collection(
+                  'contests/cricketMatchContest/cricketMatchContestCollection')
+              .document(contest['contestId']),
+          {'participants': participants, 'predictions': predictions});
+      await tx.update(
+          _firestore.collection('users').document(loggedInUserData['username']),
+          {'contestsJoined': userContestsJoined});
 
-      return {"status" : "success"};
+      return {"status": "success"};
     };
 
-    _firestore.runTransaction(joinContestTransactionHandler).then((result){
-
-        print(result["status"]);
-
-    }).catchError((e){
+    _firestore.runTransaction(joinContestTransactionHandler).then((result) {
+      print(result["status"]);
+    }).catchError((e) {
       print(e);
     });
-
   }
 
   Widget _getTable(choice) {
@@ -132,11 +143,11 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
         onTap: () {
           setState(() {
             if (choice == 'MVP') {
-              MVP =  player['pid'];
+              MVP = player['pid'].toString();
             } else if (choice == 'mostRuns') {
-              mostRuns = player['pid'];
+              mostRuns = player['pid'].toString();
             } else if (choice == 'mostWickets') {
-              mostWickets = player['pid'];
+              mostWickets = player['pid'].toString();
             }
           });
         },
@@ -145,12 +156,14 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
           margin: EdgeInsets.symmetric(vertical: 2.5),
           decoration: BoxDecoration(
             color: choice == 'MVP'
-                ? (MVP == player['pid'] ? Colors.black54 : Colors.white)
+                ? (MVP == player['pid'].toString()
+                    ? Colors.black54
+                    : Colors.white)
                 : (choice == 'mostRuns'
-                    ? (mostRuns == player['pid']
+                    ? (mostRuns == player['pid'].toString()
                         ? Colors.black54
                         : Colors.white)
-                    : (mostWickets == player['pid']
+                    : (mostWickets == player['pid'].toString()
                         ? Colors.black54
                         : Colors.white)),
             border: Border.all(
@@ -170,12 +183,14 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                 player['name'].toString(),
                 style: TextStyle(
                     color: choice == 'MVP'
-                        ? (MVP == player['pid'] ? Colors.white : Colors.black54)
+                        ? (MVP == player['pid'].toString()
+                            ? Colors.white
+                            : Colors.black54)
                         : (choice == 'mostRuns'
-                            ? (mostRuns == player['pid']
+                            ? (mostRuns == player['pid'].toString()
                                 ? Colors.white
                                 : Colors.black54)
-                            : (mostWickets == player['pid']
+                            : (mostWickets == player['pid'].toString()
                                 ? Colors.white
                                 : Colors.black54)),
                     fontSize: 13.0),
@@ -193,11 +208,11 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
         onTap: () {
           setState(() {
             if (choice == 'MVP') {
-              MVP = player['pid'];
+              MVP = player['pid'].toString();
             } else if (choice == 'mostRuns') {
-              mostRuns = player['pid'];
+              mostRuns = player['pid'].toString();
             } else if (choice == 'mostWickets') {
-              mostWickets = player['pid'];
+              mostWickets = player['pid'].toString();
             }
           });
         },
@@ -206,12 +221,14 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
           margin: EdgeInsets.symmetric(vertical: 2.5),
           decoration: BoxDecoration(
             color: choice == 'MVP'
-                ? (MVP == player['pid'] ? Colors.black54 : Colors.white)
+                ? (MVP == player['pid'].toString()
+                    ? Colors.black54
+                    : Colors.white)
                 : (choice == 'mostRuns'
-                    ? (mostRuns == player['pid']
+                    ? (mostRuns == player['pid'].toString()
                         ? Colors.black54
                         : Colors.white)
-                    : (mostWickets == player['pid']
+                    : (mostWickets == player['pid'].toString()
                         ? Colors.black54
                         : Colors.white)),
             border: Border.all(
@@ -231,12 +248,14 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                 player['name'].toString(),
                 style: TextStyle(
                     color: choice == 'MVP'
-                        ? (MVP == player['pid'] ? Colors.white : Colors.black54)
+                        ? (MVP == player['pid'].toString()
+                            ? Colors.white
+                            : Colors.black54)
                         : (choice == 'mostRuns'
-                            ? (mostRuns == player['pid']
+                            ? (mostRuns == player['pid'].toString()
                                 ? Colors.white
                                 : Colors.black54)
-                            : (mostWickets == player['pid']
+                            : (mostWickets == player['pid'].toString()
                                 ? Colors.white
                                 : Colors.black54)),
                     fontSize: 13.0),
@@ -347,10 +366,19 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
     return _step;
   }
 
-
+  final ScrollController _controller = ScrollController();
 
   @override
   Widget build(BuildContext context) {
+    if (_show) {
+      Timer(
+          Duration(milliseconds: 500),
+          () => _controller.animateTo(
+                _controller.position.maxScrollExtent,
+                duration: Duration(seconds: 500),
+                curve: Curves.fastOutSlowIn,
+              ));
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -360,33 +388,33 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
           ),
           Expanded(
             child: ListView(
+              controller: _controller,
               scrollDirection: Axis.vertical,
               physics: ScrollPhysics(),
               children: [
                 Theme(
-                  data : ThemeData(
-                    primaryColor: Colors.black87,
-                    accentColor: Colors.black54
-                  ),
+                  data: ThemeData(
+                      primaryColor: Colors.black87,
+                      accentColor: Colors.black54),
                   child: Stepper(
                     physics: ClampingScrollPhysics(),
                     steps: _getSteps(),
                     currentStep: this._currentStep,
                     onStepTapped: (index) {
-                      if(index <= this._currentStep){
+                      if (index <= this._currentStep) {
                         setState(() {
                           this._currentStep = index;
                         });
                       }
                     },
                     onStepContinue: () {
-                      if(this._currentStep == 0  && MVP == null){
+                      if (this._currentStep == 0 && MVP == null) {
                         return;
                       }
-                      if(this._currentStep == 1 && mostRuns == null) {
+                      if (this._currentStep == 1 && mostRuns == null) {
                         return;
                       }
-                      if(this._currentStep == 2 && mostWickets == null){
+                      if (this._currentStep == 2 && mostWickets == null) {
                         return;
                       }
                       if (this._currentStep < _getSteps().length - 1) {
@@ -399,7 +427,10 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                         setState(() {
                           _show = true;
                           print(_show);
-                          _message = (contest['entryFee'] < loggedInUserData['purse']) ? "" : "You don't have enough money in the purse to enter the contest..";
+                          _message = (contest['entryFee'] <
+                                  loggedInUserData['purse'])
+                              ? ""
+                              : "You don't have enough money in the purse to enter the contest..";
                         });
                       }
                     },
@@ -412,111 +443,121 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                     },
                   ),
                 ),
-                _show ? Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 15.0),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                'Contest created by ',
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              Text(
-                                '${contest['admin']}',
-                                style: TextStyle(
-                                  fontSize: 20.0,
-                                  color: Colors.black87,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              )
-                            ]
+                _show
+                    ? Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 20.0, vertical: 0.0),
+                        child: Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 15.0),
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      'Contest created by ',
+                                      style: TextStyle(
+                                        fontSize: 20.0,
+                                        color: Colors.black54,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${contest['admin']}',
+                                      style: TextStyle(
+                                        fontSize: 20.0,
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    )
+                                  ]),
+                            ),
+                            Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    'Contest entry fee:',
+                                    style: TextStyle(
+                                      fontSize: 15.0,
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Rs. ${contest['entryFee']}',
+                                    style: TextStyle(
+                                      fontSize: 15.0,
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  )
+                                ]),
+                            Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    'Contest winning prize:',
+                                    style: TextStyle(
+                                      fontSize: 15.0,
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Rs. ${contest['prizeMoney']}',
+                                    style: TextStyle(
+                                      fontSize: 15.0,
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  )
+                                ]),
+                            Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    'No. of participants:',
+                                    style: TextStyle(
+                                      fontSize: 15.0,
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${contest['noOfParticipants']}',
+                                    style: TextStyle(
+                                      fontSize: 15.0,
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  )
+                                ]),
+                            RoundedButton(
+                              color: Colors.black87,
+                              text: 'Join',
+                              onpressed: (contest['entryFee'] <
+                                      loggedInUserData['purse'])
+                                  ? () async {
+                                      await joinContest();
+                                      Navigator.pop(context);
+                                    }
+                                  : null,
+                            )
+                          ],
+                        ),
+                      )
+                    : SizedBox(
+                        height: 20.0,
+                        child: Text(
+                          '$_message',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 18.0, fontWeight: FontWeight.w400),
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                              'Contest entry fee:',
-                            style: TextStyle(
-                              fontSize: 15.0,
-                              color: Colors.black87,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          Text(
-                              'Rs. ${contest['entryFee']}',
-                            style: TextStyle(
-                              fontSize: 15.0,
-                              color: Colors.black87,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          )
-                        ]
-                      ),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              'Contest winning prize:',
-                              style: TextStyle(
-                                fontSize: 15.0,
-                                color: Colors.black87,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            Text(
-                              'Rs. ${contest['prizeMoney']}',
-                              style: TextStyle(
-                                fontSize: 15.0,
-                                color: Colors.black87,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            )
-                          ]
-                      ),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              'No. of participants:',
-                              style: TextStyle(
-                                fontSize: 15.0,
-                                color: Colors.black87,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            Text(
-                              '${contest['noOfParticipants']}',
-                              style: TextStyle(
-                                fontSize: 15.0,
-                                color: Colors.black87,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            )
-                          ]
-                      ),
-                      RoundedButton(
-                        color: Colors.black87,
-                        text: 'Join',
-                        onpressed: (contest['entryFee'] < loggedInUserData['purse']) ? () async{
-                          await joinContest();
-                          Navigator.pop(context);
-                        }  : null,
-                      )
-                    ],
-                  ),
-                ) : SizedBox(
-                  height: 20.0,
-                  child: Text('$_message', textAlign: TextAlign.center, style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400),),
-                ),
               ],
             ),
           )
