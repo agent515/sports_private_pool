@@ -11,6 +11,7 @@ class MainFrameApp extends StatefulWidget {
 
 class _MainFrameAppState extends State<MainFrameApp> {
   int index = 0;
+  bool close;
   TabItem currentTab = TabItem.home;
   Map<TabItem, GlobalKey<NavigatorState>> navigatorKeys = {
     TabItem.home: GlobalKey<NavigatorState>(),
@@ -45,11 +46,56 @@ class _MainFrameAppState extends State<MainFrameApp> {
     );
   }
 
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Envision'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Are you sure you want to exit?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Yes'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                setState(() {
+                  close = true;
+                });
+              },
+            ),
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                setState(() {
+                  close = false;
+                });
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async =>
-          !await navigatorKeys[currentTab].currentState.maybePop(),
+      onWillPop: () async {
+        if (!await navigatorKeys[currentTab].currentState.maybePop()) {
+          await _showMyDialog();
+          print(close);
+          return close;
+        }
+        return false;
+      },
       child: Scaffold(
         body: Stack(
           children: <Widget>[
