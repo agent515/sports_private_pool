@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sports_private_pool/services/firebase.dart';
 import 'package:sports_private_pool/screens/login_screen.dart';
 
 FirebaseAuth _auth = FirebaseAuth.instance;
+Firebase _firebase = Firebase();
 
-class SimpleAppBar extends StatelessWidget {
+class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget{
   SimpleAppBar({this.appBarTitle});
   final String appBarTitle;
+
+  @override
+  Size get preferredSize {
+    return Size.fromHeight(50.0);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +46,10 @@ class SimpleAppBar extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(right: 5.0),
               child: GestureDetector(
-                onTap: () {
+                onTap: () async {
                   print('signing out..');
-                  _auth.signOut();
-                  Navigator.popUntil(context, ModalRoute.withName(LoginScreen.id));
+                  await _firebase.signOut();
+                  Navigator.popUntil(context, ModalRoute.withName('WelcomeScreen'));
                   print('signedOut');
                 },
                 child: Icon(

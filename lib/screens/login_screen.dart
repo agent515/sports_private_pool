@@ -6,6 +6,7 @@ import 'package:hive/hive.dart';
 import 'package:sports_private_pool/components/rounded_button.dart';
 import 'package:sports_private_pool/constants.dart';
 import 'package:sports_private_pool/screens/main_frame_app.dart';
+import 'package:sports_private_pool/services/firebase.dart';
 
 final _auth = FirebaseAuth.instance;
 final _firestore = Firestore.instance;
@@ -24,6 +25,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final TextEditingController emailTextController = TextEditingController();
   final TextEditingController passwordTextController = TextEditingController();
+
+  Firebase _firebase = Firebase();
 
   Box<dynamic> userData;
 
@@ -157,21 +160,18 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
 
                         var loggedInUserData;
-                        var snapshots =
-                            await _firestore.collection('users').getDocuments();
+                        var snapshot =
+                        await _firestore.collection('email-username').document(user.user.email).get();
+                        var temp = snapshot.data['username'];
+                        var _user = await _firestore.collection('users').document(temp).get();
 
-                        for (var user in snapshots.documents) {
-                          if (user.data.containsValue(email)) {
-                            loggedInUserData = user.data;
-                            userData.put('user', loggedInUserData);
-                            break;
-                          }
-                        }
+                        loggedInUserData = _user.data;
+                        userData.put('user', loggedInUserData);
 
 //                    var sportData = SportData();
 //                    dynamic returnResult = await sportData.getNextMatches('/matches', context);
 //                    upcomingMatchesList = returnResult;
-                        Navigator.push(context,
+                        Navigator.pushReplacement(context,
                             MaterialPageRoute(builder: (context) {
                           return MainFrameApp();
                         }));
@@ -216,8 +216,68 @@ class _LoginScreenState extends State<LoginScreen> {
                 RoundedButton(
                   color: Colors.deepOrangeAccent,
                   text: 'SIGN IN WITH GOOGLE',
-                  onpressed: () {
+                  onpressed: () async {
                     //TODO: Code for sign-in with google
+                    try {
+                      final user = await _firebase.signInWithGoogle();
+
+                      print("in");
+                      if (user != null) {
+                        print("success");
+
+                        DocumentSnapshot documentRef = await _firestore.collection("users").document(user.email).get();
+
+                        if (!documentRef.exists) {
+
+                          await _firestore.collection("email-username").document(user.email).setData({
+                            'username' : user.email,
+                          });
+                          await _firestore.collection("users").document(user.email).setData(
+                              {
+                                'firstName' : user.displayName.split(' ')[0],
+                                'lastName' : user.displayName.split(' ')[1],
+                                'purse' : 100,
+                                'username' : user.email,
+                                'email' : user.email,
+                                'contestsCreated' : [],
+                                'contestsJoined' : [],
+                              }
+                          );
+                        }
+
+                        Scaffold.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Login Successful"),
+                          ),
+                        );
+
+                        var loggedInUserData;
+                        var snapshot =
+                        await _firestore.collection('email-username').document(user.email).get();
+                        var temp = snapshot.data['username'];
+                        var _user = await _firestore.collection('users').document(temp).get();
+
+                        loggedInUserData = _user.data;
+                        print("data: ${loggedInUserData}");
+                        await userData.put('user', loggedInUserData);
+//                    var sportData = SportData();
+//                    dynamic returnResult = await sportData.getNextMatches('/matches', context);
+//                    upcomingMatchesList = returnResult;
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) {
+                              return MainFrameApp();
+                            }));
+                        passwordTextController.clear();
+                      }
+                    } catch (e) {
+                      print(e);
+                      Scaffold.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Login Unsuccessful"),
+                        ),
+                      );
+                    }
+
                   },
                 ),
                 SizedBox(height: 10),

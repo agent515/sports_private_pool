@@ -4,6 +4,8 @@ import 'package:sports_private_pool/services/navigation/home_tab_naviagator.dart
 import 'package:sports_private_pool/services/navigation/join_tab_navigator.dart';
 import 'package:sports_private_pool/services/navigation/profile_tab_navigator.dart';
 
+import '../components/simple_app_bar.dart';
+
 class MainFrameApp extends StatefulWidget {
   @override
   _MainFrameAppState createState() => _MainFrameAppState();
@@ -97,6 +99,9 @@ class _MainFrameAppState extends State<MainFrameApp> {
         return false;
       },
       child: Scaffold(
+        appBar: SimpleAppBar(
+          appBarTitle: 'D A S H B O A R D',
+        ),
         body: Stack(
           children: <Widget>[
             _buildOffstageNavigator(TabItem.home),

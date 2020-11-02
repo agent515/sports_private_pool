@@ -37,9 +37,6 @@ class _JoinContestScreenState extends State<JoinContestScreen> {
     return Scaffold(
       body: Column(
           children: <Widget>[
-            SimpleAppBar(
-              appBarTitle: 'J O I N   C O N T E S T',
-            ),
             Container(
                 margin: EdgeInsets.symmetric(vertical: 40.0, horizontal: 30.0),
                 child: Column(

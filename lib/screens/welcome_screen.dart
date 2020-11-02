@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:sports_private_pool/components/rounded_button.dart';
 import 'package:sports_private_pool/screens/login_screen.dart';
 import 'package:sports_private_pool/screens/register_screen.dart';
+import 'login_screen.dart';
+import 'register_screen.dart';
+
 
 class WelcomeScreen extends StatefulWidget {
 
@@ -12,8 +15,10 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
@@ -41,7 +46,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 color: Colors.black87,
                 text: 'Login',
                 onpressed: () {
-                    Navigator.pushNamed(context, LoginScreen.id);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
                 },
               )
               ,
@@ -49,7 +54,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 color: Colors.black54,
                 text: 'Register',
                 onpressed: () {
-                    Navigator.pushNamed(context, RegisterScreen.id);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
                 },
               )
           ],
