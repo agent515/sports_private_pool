@@ -3,7 +3,7 @@ import 'package:sports_private_pool/services/constants.dart';
 import 'package:sports_private_pool/services/navigation/home_tab_naviagator.dart';
 import 'package:sports_private_pool/services/navigation/join_tab_navigator.dart';
 import 'package:sports_private_pool/services/navigation/profile_tab_navigator.dart';
-
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../components/simple_app_bar.dart';
 
 class MainFrameApp extends StatefulWidget {
@@ -24,6 +24,7 @@ class _MainFrameAppState extends State<MainFrameApp> {
   Widget _bottomNavigationBar() {
     return BottomNavigationBar(
       currentIndex: index,
+      iconSize: 20.0,
       selectedItemColor: Colors.white,
       unselectedItemColor: Colors.grey,
       backgroundColor: Colors.black87,
@@ -35,15 +36,22 @@ class _MainFrameAppState extends State<MainFrameApp> {
       },
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
+          icon: ImageIcon(
+              AssetImage('images/icons/icons8-home.png')
+          ),
           title: Text('Home'),
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.add),
+          icon: ImageIcon(
+              AssetImage('images/icons/icons8-plus.png')
+          ),
           title: Text('Join'),
         ),
         BottomNavigationBarItem(
-            icon: Icon(Icons.person_pin), title: Text('Profile'))
+          icon: ImageIcon(
+            AssetImage('images/icons/icons8-user.png')
+          ),
+          title: Text('Profile'))
       ],
     );
   }
@@ -99,16 +107,28 @@ class _MainFrameAppState extends State<MainFrameApp> {
         return false;
       },
       child: Scaffold(
-        appBar: SimpleAppBar(
-          appBarTitle: 'D A S H B O A R D',
-        ),
         body: Stack(
           children: <Widget>[
             _buildOffstageNavigator(TabItem.home),
             _buildOffstageNavigator(TabItem.join),
-            _buildOffstageNavigator(TabItem.profile)
+            _buildOffstageNavigator(TabItem.profile),
           ],
         ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.grey,
+          foregroundColor: Colors.white,
+          splashColor: Colors.black87,
+          child: ImageIcon(
+              AssetImage('images/icons/icons8-plus.png')
+          ),
+          onPressed: () {
+            setState(() {
+              index = 1;
+              currentTab = TabItem.values[index];
+            });
+          },
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: _bottomNavigationBar(),
       ),
     );

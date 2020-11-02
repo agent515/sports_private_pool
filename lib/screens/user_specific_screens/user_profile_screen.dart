@@ -53,6 +53,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     return Scaffold(
       body: Column(
           children: <Widget>[
+            SimpleAppBar(appBarTitle: 'P R O F I L E',),
             Expanded(
               child : ListView(
                 scrollDirection: Axis.vertical,

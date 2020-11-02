@@ -158,6 +158,9 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
+              SimpleAppBar(
+                appBarTitle: 'D A S H B O A R D',
+              ),
               Expanded(
                 child: ListView(
                     padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
