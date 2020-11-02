@@ -86,6 +86,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
               email: email, password: password);
           print(user.toString());
           if (user != null) {
+            await _firestore.collection("email-username").document(user.user.email).setData({
+              'username' : username,
+            });
+
             await _firestore.collection('users').document(username).setData({
               'username': username,
               'email': email,
