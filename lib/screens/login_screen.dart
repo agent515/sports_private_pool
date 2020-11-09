@@ -3,10 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sports_private_pool/components/rounded_button.dart';
 import 'package:sports_private_pool/constants.dart';
 import 'package:sports_private_pool/screens/main_frame_app.dart';
 import 'package:sports_private_pool/services/firebase.dart';
+import 'package:sports_private_pool/models/person.dart';
 
 final _auth = FirebaseAuth.instance;
 final _firestore = Firestore.instance;
@@ -22,6 +24,9 @@ class _LoginScreenState extends State<LoginScreen> {
   String email;
   String password;
   List<Widget> upcomingMatchesList;
+  Person currentUser;
+
+  SharedPreferences _preferences;
 
   final TextEditingController emailTextController = TextEditingController();
   final TextEditingController passwordTextController = TextEditingController();
@@ -29,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Firebase _firebase = Firebase();
 
   Box<dynamic> userData;
+  Box<Person> userBox;
 
   FocusNode emailNode;
   FocusNode passwordNode;
@@ -36,6 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     userData = Hive.box('userData');
+    userBox = Hive.box('user');
     print("User Data: $userData");
 
     //Used to initialize the focus nodes
@@ -43,6 +50,8 @@ class _LoginScreenState extends State<LoginScreen> {
     passwordNode = FocusNode();
     super.initState();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -166,11 +175,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         var _user = await _firestore.collection('users').document(temp).get();
 
                         loggedInUserData = _user.data;
-                        userData.put('user', loggedInUserData);
+                        currentUser = Person.fromMap(loggedInUserData);
 
-//                    var sportData = SportData();
-//                    dynamic returnResult = await sportData.getNextMatches('/matches', context);
-//                    upcomingMatchesList = returnResult;
+                        userData.put('userData', loggedInUserData);
+                        userBox.put('user', currentUser);
+
+                        _preferences = await SharedPreferences.getInstance();
+                        await _preferences.setString('email', email.toString());
+
+                        print("EMAIL: ${_preferences.getString('email')}");
+
                         Navigator.pushReplacement(context,
                             MaterialPageRoute(builder: (context) {
                           return MainFrameApp();
@@ -217,7 +231,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   color: Colors.deepOrangeAccent,
                   text: 'SIGN IN WITH GOOGLE',
                   onpressed: () async {
-                    //TODO: Code for sign-in with google
                     try {
                       final user = await _firebase.signInWithGoogle();
 
@@ -260,9 +273,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         loggedInUserData = _user.data;
                         print("data: ${loggedInUserData}");
                         await userData.put('user', loggedInUserData);
-//                    var sportData = SportData();
-//                    dynamic returnResult = await sportData.getNextMatches('/matches', context);
-//                    upcomingMatchesList = returnResult;
+
+                        currentUser = Person.fromMap(loggedInUserData);
+
+                        userData.put('userData', loggedInUserData);
+                        userBox.put('user', currentUser);
+
+                        _preferences = await SharedPreferences.getInstance();
+                        await _preferences.setString('email', email.toString());
+                        print("EMAIL: ${_preferences.getString('email')}");
+
                         Navigator.pushReplacement(context,
                             MaterialPageRoute(builder: (context) {
                               return MainFrameApp();

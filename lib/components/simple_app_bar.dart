@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sports_private_pool/services/firebase.dart';
 import 'package:sports_private_pool/screens/login_screen.dart';
 
@@ -9,6 +10,8 @@ Firebase _firebase = Firebase();
 class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget{
   SimpleAppBar({this.appBarTitle});
   final String appBarTitle;
+
+  SharedPreferences _preferences;
 
   @override
   Size get preferredSize {
@@ -49,6 +52,8 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget{
                 onTap: () async {
                   print('signing out..');
                   await _firebase.signOut();
+                  _preferences = await SharedPreferences.getInstance();
+                  _preferences.remove('email');
                   Navigator.popUntil(context, ModalRoute.withName('WelcomeScreen'));
                   print('signedOut');
                 },

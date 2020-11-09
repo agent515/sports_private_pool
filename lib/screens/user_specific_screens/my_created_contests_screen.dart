@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sports_private_pool/components/simple_app_bar.dart';
 import 'package:sports_private_pool/screens/user_specific_screens/my_created_contest_details_screen.dart';
 import 'package:sports_private_pool/services/sport_data.dart';
+import 'package:sports_private_pool/services/firebase.dart';
 
 class MyCreatedContestsScreen extends StatefulWidget {
 
@@ -20,6 +21,7 @@ class _MyCreatedContestsScreenState extends State<MyCreatedContestsScreen> {
   dynamic loggedInUserData;
   List contests_list;
   String type;
+  Firebase _firebase = Firebase();
 
   @override
   void initState() {
@@ -30,6 +32,12 @@ class _MyCreatedContestsScreenState extends State<MyCreatedContestsScreen> {
     print(contests_list);
   }
 
+  Future<void> getContests() async {
+    var list = await _firebase.getContests(type);
+    setState((){
+      contests_list = list;
+    });
+  }
 
   List<Widget> _buildContestWidgetsList () {
 
@@ -103,20 +111,25 @@ class _MyCreatedContestsScreenState extends State<MyCreatedContestsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Column(
-        children: <Widget>[
-          SimpleAppBar(
-            appBarTitle: type == 'Created' ? 'M Y   C O N T E S T S' : 'J O I N E D   C O N T E S T S',
-          ),
-          Expanded(
-              child : ListView(
-                scrollDirection: Axis.vertical,
-                children: _buildContestWidgetsList(),
-              )
-          )
-        ],
+    return RefreshIndicator(
+      onRefresh: () async {
+        await getContests();
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Column(
+          children: <Widget>[
+            SimpleAppBar(
+              appBarTitle: type == 'Created' ? 'M Y   C O N T E S T S' : 'J O I N E D   C O N T E S T S',
+            ),
+            Expanded(
+                child : ListView(
+                  scrollDirection: Axis.vertical,
+                  children: _buildContestWidgetsList(),
+                )
+            )
+          ],
+        ),
       ),
     );
   }

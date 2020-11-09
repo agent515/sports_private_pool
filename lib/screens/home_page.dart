@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sports_private_pool/components/simple_app_bar.dart';
 import 'package:hive/hive.dart';
 import 'package:sports_private_pool/services/sport_data.dart';
-
+import 'package:sports_private_pool/models/person.dart';
 import 'match_details.dart';
 
 class HomePage extends StatefulWidget {
@@ -20,16 +20,27 @@ class _HomePageState extends State<HomePage> {
   dynamic upcomingMatchesData;
   dynamic loggedInUserData;
   int index = 0;
+  Person currentUser;
 
   Box<dynamic> userData;
+  Box<Person> userBox;
 
   @override
   void initState() {
     super.initState();
-    userData = Hive.box('userData');
-    loggedInUserData = userData.get('user');
+    getCachedData();
     upcomingMatchesData = widget.upcomingMatchesData;
     print(loggedInUserData);
+  }
+
+  Future<void> getCachedData() async {
+    userData = await Hive.openBox('userData');
+    userBox = await Hive.openBox('user');
+    setState(() {
+      loggedInUserData = userData.get('userData');
+      currentUser = userBox.get('user');
+    });
+    print("CurrentUser: ${currentUser.firstName} ${currentUser.lastName}");
   }
 
   List<Widget> getUpcomingMatchesList() {

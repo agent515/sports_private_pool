@@ -3,12 +3,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
+import 'package:sports_private_pool/services/firebase.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sports_private_pool/models/person.dart';
 import 'package:sports_private_pool/components/input_box.dart';
 import 'package:sports_private_pool/components/rounded_button.dart';
 import 'package:sports_private_pool/screens/main_frame_app.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final Firestore _firestore = Firestore.instance;
+Firebase _firebase = Firebase();
 
 class RegisterScreen extends StatefulWidget {
   static const id = 'register_screen';
@@ -35,7 +39,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   FocusNode passwordNode;
   FocusNode cpasswordNode;
 
+  Person currentUser;
   Box<dynamic> userData;
+  SharedPreferences _preferences;
 
   @override
   void initState() {
@@ -237,25 +243,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   text: 'Register',
                   onpressed: () async {
                     //register button is pressed
-                    await _register();
+                    _register();
                     if (_success) {
                       try {
-                        dynamic user = _auth.signInWithEmailAndPassword(
-                            email: emailTextController.text,
-                            password: passwordTextController.text);
-
                         var loggedInUserData;
-                        var snapshots =
-                            await _firestore.collection('users').getDocuments();
+                        var snapshot =
+                        await _firestore.collection('email-username').document(emailTextController.text).get();
+                        var temp = snapshot.data['username'];
+                        var _user = await _firestore.collection('users').document(temp).get();
 
-                        for (var user in snapshots.documents) {
-                          if (user.data
-                              .containsValue(emailTextController.text)) {
-                            loggedInUserData = user.data;
-                            userData.put('user', loggedInUserData);
-                            break;
-                          }
-                        }
+                        loggedInUserData = _user.data;
+                        print("data: ${loggedInUserData}");
+                        await userData.put('user', loggedInUserData);
+
+                        currentUser = Person.fromMap(loggedInUserData);
+
+                        userData.put('userData', loggedInUserData);
+                        userData.put('user', currentUser);
+
+                        _preferences = await SharedPreferences.getInstance();
+                        _preferences.setString('email', emailTextController.text);
 
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
@@ -300,7 +307,74 @@ class _RegisterScreenState extends State<RegisterScreen> {
               RoundedButton(
                   color: Colors.deepOrangeAccent,
                   text: 'Sign Up With Google',
-                  onpressed: () {}),
+                  onpressed: () async {
+                    try {
+                      final user = await _firebase.signInWithGoogle();
+
+                      print("in");
+                      if (user != null) {
+                        print("success");
+
+                        DocumentSnapshot documentRef = await _firestore.collection("users").document(user.email).get();
+
+                        if (!documentRef.exists) {
+
+                          await _firestore.collection("email-username").document(user.email).setData({
+                            'username' : user.email,
+                          });
+                          await _firestore.collection("users").document(user.email).setData(
+                              {
+                                'firstName' : user.displayName.split(' ')[0],
+                                'lastName' : user.displayName.split(' ')[1],
+                                'purse' : 100,
+                                'username' : user.email,
+                                'email' : user.email,
+                                'contestsCreated' : [],
+                                'contestsJoined' : [],
+                              }
+                          );
+                        }
+
+                        Scaffold.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Login Successful"),
+                          ),
+                        );
+
+                        var loggedInUserData;
+                        var snapshot =
+                        await _firestore.collection('email-username').document(user.email).get();
+                        var temp = snapshot.data['username'];
+                        var _user = await _firestore.collection('users').document(temp).get();
+
+                        loggedInUserData = _user.data;
+                        print("data: ${loggedInUserData}");
+                        await userData.put('user', loggedInUserData);
+
+                        currentUser = Person.fromMap(loggedInUserData);
+
+                        userData.put('userData', loggedInUserData);
+                        userData.put('user', currentUser);
+
+                        _preferences = await SharedPreferences.getInstance();
+                        _preferences.setString('email', emailTextController.text);
+
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) {
+                              return MainFrameApp();
+                            }));
+                        passwordTextController.clear();
+                      }
+                    } catch (e) {
+                      print(e);
+                      Scaffold.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Login Unsuccessful"),
+                        ),
+                      );
+                    }
+
+                  }),
             ],
           ),
         ),

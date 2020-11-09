@@ -4,6 +4,8 @@ import 'package:sports_private_pool/components/simple_app_bar.dart';
 import 'package:sports_private_pool/constants.dart';
 import 'package:sports_private_pool/screens/user_specific_screens/my_created_contests_screen.dart';
 import 'package:hive/hive.dart';
+import 'package:sports_private_pool/services/firebase.dart';
+import 'package:sports_private_pool/models/person.dart';
 
 Firestore _firestore = Firestore.instance;
 
@@ -20,12 +22,29 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   dynamic loggedInUserData;
   int index = 2;
   Box<dynamic> userData;
+  Box<Person> userBox;
+  Firebase _firebase = Firebase();
+  Person user;
 
   @override
   void initState() {
     super.initState();
     userData = Hive.box<dynamic>('userData');
-    loggedInUserData = userData.get('user');
+    userBox = Hive.box<Person>('user');
+    loggedInUserData = userData.get('userData');
+    user = userBox.get('user');
+    _getUserDetails();
+
+  }
+
+  Future<void> _getUserDetails() async {
+    user = await _firebase.getUserDetails();
+    userData.put('userData', user.toMap());
+    userBox.put('user', user);
+    setState(() {
+      loggedInUserData = user.toMap();
+      user = user;
+    });
   }
   
   Future<List<Map>> getContestsList(type) async {

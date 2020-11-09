@@ -5,6 +5,7 @@ import 'package:sports_private_pool/components/simple_app_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sports_private_pool/screens/join_contest_input_screen.dart';
 import 'package:sports_private_pool/services/sport_data.dart';
+import 'package:sports_private_pool/models/person.dart';
 
 final _firestore = Firestore.instance;
 
@@ -23,12 +24,17 @@ class _JoinContestScreenState extends State<JoinContestScreen> {
   String message = '';
   int index = 1;
   Box<dynamic> userData;
+  Box<Person> userBox;
+  Person currentUser;
 
   @override
   void initState() {
     super.initState();
     userData = Hive.box<dynamic>('userData');
-    loggedInUserData = userData.get('user');
+    userBox = Hive.box<Person>('user');
+    loggedInUserData = userData.get('userData');
+    currentUser = userBox.get('user');
+    print("Current User: ${currentUser.firstName} ${currentUser.lastName}");
   }
 
 

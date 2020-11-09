@@ -3,8 +3,6 @@ import 'package:sports_private_pool/services/constants.dart';
 import 'package:sports_private_pool/services/navigation/home_tab_naviagator.dart';
 import 'package:sports_private_pool/services/navigation/join_tab_navigator.dart';
 import 'package:sports_private_pool/services/navigation/profile_tab_navigator.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../components/simple_app_bar.dart';
 
 class MainFrameApp extends StatefulWidget {
   @override
