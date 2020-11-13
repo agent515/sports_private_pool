@@ -39,7 +39,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.agent515.sports_private_pool"
+        applicationId "com.envision.Envision"
         minSdkVersion 16
         multiDexEnabled true
         targetSdkVersion 28

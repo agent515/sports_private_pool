@@ -15,6 +15,51 @@
       },
       "oauth_client": [
         {
+          "client_id": "663704993997-ei3v7u4n2esb122s9c33c5av5ptlhqor.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.envision.Envision",
+            "certificate_hash": "bc413781639c2a39a4f1445dafac680211ca0ada"
+          }
+        },
+        {
+          "client_id": "663704993997-kl4d6povvs2bendphi90fmql7mcghf99.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBf8ZK9Az4XD7Pc52pr7Q-i-ZQwbA3wZ0k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "663704993997-kl4d6povvs2bendphi90fmql7mcghf99.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:663704993997:android:3f9e8ea816dcbccd24a984",
+        "android_client_info": {
+          "package_name": "com.envision.Envision"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "663704993997-qsltg6c0q7nda430g65n4e2g3c9uopl1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.envision.Envision",
+            "certificate_hash": "bc413781639c2a39a4f1445dafac680211ca0ada"
+          }
+        },
+        {
           "client_id": "663704993997-kl4d6povvs2bendphi90fmql7mcghf99.apps.googleusercontent.com",
           "client_type": 3
         }
