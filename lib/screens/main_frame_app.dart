@@ -5,12 +5,18 @@ import 'package:sports_private_pool/services/navigation/join_tab_navigator.dart'
 import 'package:sports_private_pool/services/navigation/profile_tab_navigator.dart';
 
 class MainFrameApp extends StatefulWidget {
+
+  MainFrameApp({this.defaultPage = 0, this.joinCode});
+
+  final int defaultPage;
+  final String joinCode;
+
   @override
   _MainFrameAppState createState() => _MainFrameAppState();
 }
 
 class _MainFrameAppState extends State<MainFrameApp> {
-  int index = 0;
+  int index;
   bool close;
   TabItem currentTab = TabItem.home;
   Map<TabItem, GlobalKey<NavigatorState>> navigatorKeys = {
@@ -18,6 +24,13 @@ class _MainFrameAppState extends State<MainFrameApp> {
     TabItem.join: GlobalKey<NavigatorState>(),
     TabItem.profile: GlobalKey<NavigatorState>()
   };
+
+
+  @override
+  void initState() {
+    super.initState();
+    index = widget.defaultPage;
+  }
 
   Widget _bottomNavigationBar() {
     return BottomNavigationBar(

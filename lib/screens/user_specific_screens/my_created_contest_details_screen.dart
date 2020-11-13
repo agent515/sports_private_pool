@@ -3,6 +3,8 @@ import 'package:sports_private_pool/components/custom_tool_tip.dart';
 import 'package:sports_private_pool/components/simple_app_bar.dart';
 import 'package:sports_private_pool/constants.dart';
 import 'package:sports_private_pool/services/sport_data.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:share/share.dart';
 
 class MyCreatedContestDetailsScreen extends StatefulWidget {
   MyCreatedContestDetailsScreen({this.contest, this.type, this.matchScore});
@@ -37,6 +39,35 @@ class _MyCreatedContestDetailsScreenState
     print(matchScore);
     print(contest);
     print(type);
+  }
+
+  Future<void> _createDynamicLink(String joinCode) async {
+    final DynamicLinkParameters parameters =
+    DynamicLinkParameters(
+      uriPrefix: 'https://envision.page.link',
+      // TODO: App download link here
+      link: Uri.parse('https://play.google.com/store/apps/details?id=com.whatsapp&join_code=$joinCode'),
+      androidParameters: AndroidParameters(
+        packageName: 'com.envision.Envision',
+        minimumVersion:0,
+      ),
+
+//      iosParameters: IosParameters(
+//        bundleId: 'com.example',
+//        minimumVersion: '1.0.1',
+//        appStoreId: '1405860595',
+//      )
+    );
+    final Uri uri = await parameters.buildUrl();
+    final ShortDynamicLink shortDynamicLink =
+    await DynamicLinkParameters.shortenUrl(
+        uri,
+        DynamicLinkParametersOptions(
+          shortDynamicLinkPathLength: ShortDynamicLinkPathLength.short,
+        )
+    );
+    final Uri shortUrl = shortDynamicLink.shortUrl;
+    Share.share("${shortUrl.toString()}\nJoin Code: $joinCode", subject: "Envision Join code: $joinCode");
   }
 
   Widget _buildJoinedContestDetails() {
@@ -91,6 +122,12 @@ class _MyCreatedContestDetailsScreenState
             child: CustomToolTip(text: contest['joinCode'],),
             onTap: () {
 
+            },
+          ),
+          trailing: IconButton(
+            icon: Icon(Icons.share),
+            onPressed: () async {
+              await _createDynamicLink(contest['joinCode']);
             },
           ),
         ),

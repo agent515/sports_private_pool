@@ -32,6 +32,7 @@ class _MyCreatedContestsScreenState extends State<MyCreatedContestsScreen> {
     print(contests_list);
   }
 
+
   Future<void> getContests() async {
     var list = await _firebase.getContests(type);
     setState((){
