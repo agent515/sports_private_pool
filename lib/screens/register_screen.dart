@@ -71,7 +71,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  void _register() async {
+  Future<void> _register() async {
     String firstName = firstNameTextController.text;
     String lastName = lastNameTextController.text;
     String username = usernameTextController.text;
@@ -103,7 +103,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               'lastName': lastName,
               'contestsCreated': [],
               'contestsJoined': [],
-              'purse': 100,
+              'purse': 100.0,
             });
 
             setState(() {
@@ -243,7 +243,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   text: 'Register',
                   onpressed: () async {
                     //register button is pressed
-                    _register();
+                    await _register();
                     if (_success) {
                       try {
                         var loggedInUserData;
@@ -268,8 +268,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             MaterialPageRoute(builder: (context) {
                           return MainFrameApp();
                         }));
-                      } catch (e) {
+                      } catch (e, stack) {
                         print(e);
+                        print(stack);
                       }
                     }
                   },

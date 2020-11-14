@@ -6,7 +6,9 @@ import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sports_private_pool/components/rounded_button.dart';
 import 'package:sports_private_pool/constants.dart';
+import 'package:sports_private_pool/screens/forgot_password.dart';
 import 'package:sports_private_pool/screens/main_frame_app.dart';
+import 'package:sports_private_pool/screens/register_screen.dart';
 import 'package:sports_private_pool/services/firebase.dart';
 import 'package:sports_private_pool/models/person.dart';
 
@@ -141,6 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: GestureDetector(
                       onTap: () {
                         //forgot password is pressed
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>ForgotPasswordPage()));
                       },
                       child: Text(
                         'Forgot Password?',
@@ -191,8 +194,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         }));
                         passwordTextController.clear();
                       }
-                    } catch (e) {
+                    } catch (e, stack) {
                       print(e);
+                      print(stack);
                       Scaffold.of(context).showSnackBar(
                         SnackBar(
                           content: Text("Login Unsuccessful"),
@@ -313,6 +317,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     GestureDetector(
                       onTap: () {
                         //Sign up is pressed
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> RegisterScreen()));
                       },
                       child: Text(
                         'Sign up.',

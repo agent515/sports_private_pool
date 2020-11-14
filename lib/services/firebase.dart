@@ -81,4 +81,9 @@ class Firebase {
     }
     return contests_list;
   }
+
+  Future<void> forgotPassword(String email) async {
+    await _firebaseAuth.sendPasswordResetEmail(email: email);
+  }
+
 }
