@@ -4,7 +4,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sports_private_pool/models/person.dart';
 
 class Firebase {
-
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   Firestore _firestore = Firestore.instance;
   GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -18,13 +17,12 @@ class Firebase {
         idToken: gAuth.idToken,
         accessToken: gAuth.accessToken,
       );
-      AuthResult authResult = await _firebaseAuth.signInWithCredential(
-          credential);
+      AuthResult authResult =
+          await _firebaseAuth.signInWithCredential(credential);
       _user = authResult.user;
       print("signed in");
       return _user;
-    }
-    catch (e) {
+    } catch (e) {
       print(e);
       return null;
     }
@@ -33,18 +31,14 @@ class Firebase {
   Future<Person> getUserDetails() async {
     FirebaseUser user = await _firebaseAuth.currentUser();
 
-    DocumentSnapshot temp =
-    await _firestore
+    DocumentSnapshot temp = await _firestore
         .collection("email-username")
         .document(user.email)
         .get();
     String username = temp.data['username'];
 
     DocumentSnapshot userDetails =
-    await _firestore
-        .collection("users")
-        .document(username)
-        .get();
+        await _firestore.collection("users").document(username).get();
     return Person.fromMap(userDetails.data);
   }
 
@@ -53,8 +47,7 @@ class Firebase {
       await _firebaseAuth.signOut();
       await _googleSignIn.disconnect();
       await _googleSignIn.signOut();
-    }
-    catch (e) {
+    } catch (e) {
       print(e);
     }
   }
@@ -68,11 +61,11 @@ class Firebase {
     //    print(contests);
     List<Map> contests_list = [];
 
-    for(var contest_id in contests){
-      if(contest_id.substring(0, 3) == 'CMC'){
-
+    for (var contest_id in contests) {
+      if (contest_id.substring(0, 3) == 'CMC') {
         var contestSnapshot = await _firestore
-            .collection('contests/cricketMatchContest/cricketMatchContestCollection')
+            .collection(
+                'contests/cricketMatchContest/cricketMatchContestCollection')
             .document(contest_id)
             .get();
         var contest = contestSnapshot.data;
@@ -85,5 +78,4 @@ class Firebase {
   Future<void> forgotPassword(String email) async {
     await _firebaseAuth.sendPasswordResetEmail(email: email);
   }
-
 }
