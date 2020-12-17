@@ -5,7 +5,6 @@ import 'package:sports_private_pool/services/navigation/join_tab_navigator.dart'
 import 'package:sports_private_pool/services/navigation/profile_tab_navigator.dart';
 
 class MainFrameApp extends StatefulWidget {
-
   MainFrameApp({this.defaultPage = 0, this.joinCode});
 
   final int defaultPage;
@@ -24,7 +23,6 @@ class _MainFrameAppState extends State<MainFrameApp> {
     TabItem.join: GlobalKey<NavigatorState>(),
     TabItem.profile: GlobalKey<NavigatorState>()
   };
-
 
   @override
   void initState() {
@@ -47,22 +45,17 @@ class _MainFrameAppState extends State<MainFrameApp> {
       },
       items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: ImageIcon(
-              AssetImage('images/icons/icons8-home.png')
-          ),
+          icon: ImageIcon(AssetImage('images/icons/icons8-home.png')),
           title: Text('Home'),
         ),
         BottomNavigationBarItem(
-          icon: ImageIcon(
-              AssetImage('images/icons/icons8-plus.png')
-          ),
+          icon: ImageIcon(AssetImage('images/icons/icons8-plus.png')),
           title: Text('Join'),
         ),
         BottomNavigationBarItem(
-          icon: ImageIcon(
-            AssetImage('images/icons/icons8-user.png')
-          ),
-          title: Text('Profile'))
+          icon: ImageIcon(AssetImage('images/icons/icons8-user.png')),
+          title: Text('Profile'),
+        )
       ],
     );
   }
@@ -129,9 +122,7 @@ class _MainFrameAppState extends State<MainFrameApp> {
           backgroundColor: Colors.grey,
           foregroundColor: Colors.white,
           splashColor: Colors.black87,
-          child: ImageIcon(
-              AssetImage('images/icons/icons8-plus.png')
-          ),
+          child: ImageIcon(AssetImage('images/icons/icons8-plus.png')),
           onPressed: () {
             setState(() {
               index = 1;

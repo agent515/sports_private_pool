@@ -1,11 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:sports_private_pool/components/simple_app_bar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sports_private_pool/models/person.dart';
 import 'package:sports_private_pool/screens/join_contest_input_screen.dart';
 import 'package:sports_private_pool/services/sport_data.dart';
-import 'package:sports_private_pool/models/person.dart';
 
 final _firestore = Firestore.instance;
 
@@ -37,11 +37,11 @@ class _JoinContestScreenState extends State<JoinContestScreen> {
     print("Current User: ${currentUser.firstName} ${currentUser.lastName}");
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
+    return SafeArea(
+      child: Scaffold(
+        body: Column(
           children: <Widget>[
             SimpleAppBar(appBarTitle: 'J O I N   C O N T E S T'),
             Container(
@@ -89,22 +89,26 @@ class _JoinContestScreenState extends State<JoinContestScreen> {
                                 print(docSnap.data['contestId']);
                                 String contestId = docSnap.data['contestId'];
 
-
                                 print("ContestID: $contestId");
 
-                                var userSnapshot = await _firestore.collection('users').document(loggedInUserData['username']).get();
+                                var userSnapshot = await _firestore
+                                    .collection('users')
+                                    .document(loggedInUserData['username'])
+                                    .get();
                                 loggedInUserData = userSnapshot.data;
 
-                                print('${loggedInUserData['contestsJoined'].contains(contestId)}');
-                                if(loggedInUserData['contestsJoined'].contains(contestId)){
+                                print(
+                                    '${loggedInUserData['contestsJoined'].contains(contestId)}');
+                                if (loggedInUserData['contestsJoined']
+                                    .contains(contestId)) {
                                   setState(() {
-                                    message = "You've already entered the contest";
+                                    message =
+                                        "You've already entered the contest";
                                   });
-                                }
-                                else{
+                                } else {
                                   var contestSnap = await _firestore
                                       .collection(
-                                      'contests/cricketMatchContest/cricketMatchContestCollection')
+                                          'contests/cricketMatchContest/cricketMatchContestCollection')
                                       .document(contestId)
                                       .get();
                                   var contest = contestSnap.data;
@@ -113,28 +117,28 @@ class _JoinContestScreenState extends State<JoinContestScreen> {
                                   var matchData = await sportData
                                       .getMatchData(contest['matchId']);
 
-                                  var squadData =
-                                  await sportData.getSquads(contest['matchId']);
+                                  var squadData = await sportData
+                                      .getSquads(contest['matchId']);
 
-                                  if(matchData == null){
+                                  if (matchData == null) {
                                     setState(() {
                                       message = 'The contest has already ended';
                                     });
-                                  }
-                                  else{
+                                  } else {
                                     message = "";
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => JoinCMCInputScreen(
-                                              loggedInUserData: loggedInUserData,
-                                              contest: contest,
-                                              matchData: matchData,
-                                              squadData: squadData,
-                                            )));
+                                            builder: (context) =>
+                                                JoinCMCInputScreen(
+                                                  loggedInUserData:
+                                                      loggedInUserData,
+                                                  contest: contest,
+                                                  matchData: matchData,
+                                                  squadData: squadData,
+                                                )));
                                   }
                                 }
-
                               } catch (e) {
                                 print(e);
                               }
@@ -163,6 +167,7 @@ class _JoinContestScreenState extends State<JoinContestScreen> {
                   ],
                 ))
           ],
+        ),
       ),
     );
   }

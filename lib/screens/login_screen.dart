@@ -6,11 +6,11 @@ import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sports_private_pool/components/rounded_button.dart';
 import 'package:sports_private_pool/constants.dart';
+import 'package:sports_private_pool/models/person.dart';
 import 'package:sports_private_pool/screens/forgot_password.dart';
 import 'package:sports_private_pool/screens/main_frame_app.dart';
 import 'package:sports_private_pool/screens/register_screen.dart';
 import 'package:sports_private_pool/services/firebase.dart';
-import 'package:sports_private_pool/models/person.dart';
 
 final _auth = FirebaseAuth.instance;
 final _firestore = Firestore.instance;
@@ -52,8 +52,6 @@ class _LoginScreenState extends State<LoginScreen> {
     passwordNode = FocusNode();
     super.initState();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -143,7 +141,10 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: GestureDetector(
                       onTap: () {
                         //forgot password is pressed
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>ForgotPasswordPage()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ForgotPasswordPage()));
                       },
                       child: Text(
                         'Forgot Password?',
@@ -172,10 +173,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
 
                         var loggedInUserData;
-                        var snapshot =
-                        await _firestore.collection('email-username').document(user.user.email).get();
+                        var snapshot = await _firestore
+                            .collection('email-username')
+                            .document(user.user.email)
+                            .get();
                         var temp = snapshot.data['username'];
-                        var _user = await _firestore.collection('users').document(temp).get();
+                        var _user = await _firestore
+                            .collection('users')
+                            .document(temp)
+                            .get();
 
                         loggedInUserData = _user.data;
                         currentUser = Person.fromMap(loggedInUserData);
@@ -216,7 +222,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     SizedBox(width: 10),
                     Text(
-                      'OR LOGIN WITH',
+                      'OR',
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                       ),
@@ -242,24 +248,30 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (user != null) {
                         print("success");
 
-                        DocumentSnapshot documentRef = await _firestore.collection("users").document(user.email).get();
+                        DocumentSnapshot documentRef = await _firestore
+                            .collection("users")
+                            .document(user.email)
+                            .get();
 
                         if (!documentRef.exists) {
-
-                          await _firestore.collection("email-username").document(user.email).setData({
-                            'username' : user.email,
+                          await _firestore
+                              .collection("email-username")
+                              .document(user.email)
+                              .setData({
+                            'username': user.email,
                           });
-                          await _firestore.collection("users").document(user.email).setData(
-                              {
-                                'firstName' : user.displayName.split(' ')[0],
-                                'lastName' : user.displayName.split(' ')[1],
-                                'purse' : 100,
-                                'username' : user.email,
-                                'email' : user.email,
-                                'contestsCreated' : [],
-                                'contestsJoined' : [],
-                              }
-                          );
+                          await _firestore
+                              .collection("users")
+                              .document(user.email)
+                              .setData({
+                            'firstName': user.displayName.split(' ')[0],
+                            'lastName': user.displayName.split(' ')[1],
+                            'purse': 100,
+                            'username': user.email,
+                            'email': user.email,
+                            'contestsCreated': [],
+                            'contestsJoined': [],
+                          });
                         }
 
                         Scaffold.of(context).showSnackBar(
@@ -269,10 +281,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         );
 
                         var loggedInUserData;
-                        var snapshot =
-                        await _firestore.collection('email-username').document(user.email).get();
+                        var snapshot = await _firestore
+                            .collection('email-username')
+                            .document(user.email)
+                            .get();
                         var temp = snapshot.data['username'];
-                        var _user = await _firestore.collection('users').document(temp).get();
+                        var _user = await _firestore
+                            .collection('users')
+                            .document(temp)
+                            .get();
 
                         loggedInUserData = _user.data;
                         print("data: ${loggedInUserData}");
@@ -289,8 +306,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         Navigator.pushReplacement(context,
                             MaterialPageRoute(builder: (context) {
-                              return MainFrameApp();
-                            }));
+                          return MainFrameApp();
+                        }));
                         passwordTextController.clear();
                       }
                     } catch (e) {
@@ -301,7 +318,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       );
                     }
-
                   },
                 ),
                 SizedBox(height: 10),
@@ -317,13 +333,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     GestureDetector(
                       onTap: () {
                         //Sign up is pressed
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> RegisterScreen()));
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RegisterScreen()));
                       },
                       child: Text(
-                        'Sign up.',
+                        ' Sign up.',
                         style: TextStyle(
                           fontSize: 15.0,
                           fontWeight: FontWeight.bold,
+                          color: Colors.teal,
                         ),
                       ),
                     ),

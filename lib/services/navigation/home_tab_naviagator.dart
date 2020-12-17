@@ -9,7 +9,6 @@ class HomeTabNavigatorRoutes {
 //  static const mathchDetails = 'matchDetails';
 }
 
-
 class HomeTabNavigator extends StatelessWidget {
   final TabItem tabItem;
   final GlobalKey<NavigatorState> navigatorKey;
@@ -17,9 +16,9 @@ class HomeTabNavigator extends StatelessWidget {
   HomeTabNavigator({this.tabItem, this.navigatorKey});
 
   Map<String, WidgetBuilder> _routeBuilder(context, upcomingMatchesData) {
-    print(upcomingMatchesData);
+    // print(upcomingMatchesData);
     return {
-      HomeTabNavigatorRoutes.home : (context) => HomePage(upcomingMatchesData),
+      HomeTabNavigatorRoutes.home: (context) => HomePage(upcomingMatchesData),
 //      HomeTabNavigatorRoutes.mathchDetails : (context) => MatchDetails(),
     };
   }
@@ -27,25 +26,24 @@ class HomeTabNavigator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: SportData().getUpcomingMatchesData('/matches'),
-      builder: (context, snapshot) {
-        Map<String, WidgetBuilder> routeBuilder = _routeBuilder(context, snapshot.data);
+        future: SportData().getUpcomingMatchesData('/matches'),
+        builder: (context, snapshot) {
+          Map<String, WidgetBuilder> routeBuilder =
+              _routeBuilder(context, snapshot.data);
 
-        if (snapshot.connectionState == ConnectionState.done) {
-          return Navigator(
-            key: navigatorKey,
-            initialRoute: HomeTabNavigatorRoutes.home,
-            onGenerateRoute: (routeSettings) {
-              return MaterialPageRoute(
-                builder: (context) => routeBuilder[routeSettings.name](context)
-              );
-            },
-          );
-        }
-        else {
-          return CustomProgressIndicator();
-        }
-      }
-    );
+          if (snapshot.connectionState == ConnectionState.done) {
+            return Navigator(
+              key: navigatorKey,
+              initialRoute: HomeTabNavigatorRoutes.home,
+              onGenerateRoute: (routeSettings) {
+                return MaterialPageRoute(
+                    builder: (context) =>
+                        routeBuilder[routeSettings.name](context));
+              },
+            );
+          } else {
+            return CustomProgressIndicator();
+          }
+        });
   }
 }
