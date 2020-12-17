@@ -108,12 +108,33 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
       }
       participants.add(loggedInUserData['username']);
 
+      // Add this contest to the current user's joined contest list
       List userContestsJoined = loggedInUserData['contestsJoined'];
-      userContestsJoined.add(contest['contestId']);
+      var tempObj = {
+        'contestId' : contest['contestId'],
+        'admin' : loggedInUserData['username'],
+        'team1' : matchData["team-1"],
+        'team2' : matchData["team-2"]
+      };
+      userContestsJoined.add(tempObj);
 
+      // Contest Admin user data fetch
+      var adminDataSnapshot = await tx.get(
+        _firestore.collection('users').document(contest['admin'])
+      );
+      var adminData = adminDataSnapshot.data;
+
+      // Subtract entry fee from the current user's purse
       await tx.update(
           _firestore.collection('users').document(loggedInUserData['username']),
           {'purse': loggedInUserData['purse'] - contest['entryFee']});
+
+      // Add entry fee to the contest admin's purse
+      await tx.update(
+          _firestore.collection('users').document(contest['admin']),
+          {'purse': adminData['purse'] + contest['entryFee']});
+
+      // Update contest document with updated participants and predictions list
       await tx.update(
           _firestore
               .collection(

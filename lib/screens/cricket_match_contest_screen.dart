@@ -7,9 +7,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sports_private_pool/components/custom_tool_tip.dart';
 
 import 'package:random_string/random_string.dart';
+import 'package:sports_private_pool/services/firebase.dart';
+import 'package:sports_private_pool/models/person.dart';
 
 FirebaseAuth _auth = FirebaseAuth.instance;
 Firestore _firestore = Firestore.instance;
+Firebase _firebase = Firebase();
 
 class CricketMatchContestScreen extends StatefulWidget {
   CricketMatchContestScreen({this.matchData, this.squadData});
@@ -36,18 +39,30 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
       TextEditingController();
 
   Future<void> createContestTransaction() async {
+    var loggedInUserData;
     try {
+      Person loggedInUser = await _firebase.getUserDetails();
+      loggedInUserData = loggedInUser.toMap();
+
       final double prizeMoneyValue =
           double.parse(prizeMoneyTextController.text);
       final double entryFeeValue = double.parse(entryFeeTextController.text);
       final int noOfParticipants =
           int.parse(noOfParticipantsTextController.text);
 
-      if (prizeMoneyValue < 0 || entryFeeValue < 0 || noOfParticipants < 2) {
+      if (prizeMoneyValue < 0 ||entryFeeValue < 0 || noOfParticipants < 2) {
         setState(() {
           _error = true;
           _errorMessage =
               'Monetary values cannot be negative and no. of participants should be at least 2';
+        });
+        return;
+      }
+      else if (prizeMoneyValue > loggedInUserData['purse']) {
+        setState(() {
+          _error = true;
+          _errorMessage =
+          'Prize money value cannot be greater than the value in your purse! ';
         });
         return;
       }
@@ -58,22 +73,9 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
       });
     }
 
-    FirebaseUser loggedInUser = await _auth.currentUser();
-    var loggedInUserData;
-    var snapshots = await _firestore.collection('users').getDocuments();
-
-    for (var user in snapshots.documents) {
-      if (user.data.containsValue(loggedInUser.email)) {
-        loggedInUserData = user.data;
-        print(user.data);
-        break;
-      }
-    }
-    print("in");
-    print(loggedInUser.email);
-    print(loggedInUserData);
-
     final type = 'CMC';
+
+    // TODO: Unique join code check
     joinCode = type + randomAlphaNumeric(8);
     final int matchId = matchData['unique_id'];
 
@@ -139,7 +141,16 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
               .collection('contests/joinCodes/joinCodesCollection')
               .document(joinCode),
           {'contestId': contestId, 'createdAt': FieldValue.serverTimestamp()});
-      contestsCreated.add(contestId);
+      await tx.update(
+          _firestore.collection('users').document(loggedInUserData['username']),
+          {'purse': loggedInUserData['purse'] - contest['prizeMoney']});
+      var tempObj = {
+        'contestId' : contestId,
+        'admin' : loggedInUserData['username'],
+        'team1' : matchData['team-1'],
+        'team2' : matchData['team-2']
+      };
+      contestsCreated.add(tempObj);
       await tx.update(
           _firestore.collection('users').document(loggedInUserData['username']),
           {'contestsCreated': contestsCreated});
