@@ -5,6 +5,7 @@ import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sports_private_pool/models/person.dart';
 import 'package:sports_private_pool/screens/match_details.dart';
+import 'package:sports_private_pool/screens/user_specific_screens/my_created_contest_details_screen.dart';
 import 'package:sports_private_pool/services/firebase.dart';
 import 'package:sports_private_pool/services/sport_data.dart';
 
@@ -91,7 +92,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       // print(match);
       tiles.add(MatchCard(
         screenSize: screenSize,
-        matchData: match,
+        contestMeta: match,
+        type: 'created',
       ));
     }
 
@@ -103,11 +105,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     Size screenSize = MediaQuery.of(context).size;
 
     for (var match in contestsJoined) {
-      // print(match);
+      print(match);
       tiles.add(
         MatchCard(
           screenSize: screenSize,
-          matchData: match,
+          contestMeta: match,
+          type: 'joined',
         ),
       );
     }
@@ -136,19 +139,19 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         OutlinedButton(
-                          // onPressed: () async {
-                          //   print('signing out..');
-                          //   await _firebase.signOut();
-                          //   await SharedPreferences.getInstance()
-                          //       .then((prefs) => prefs.remove('email'));
-                          //   Navigator.of(context).pushAndRemoveUntil(
-                          //     MaterialPageRoute(
-                          //       builder: (context) => WelcomeScreen(),
-                          //     ),
-                          //     (Route<dynamic> route) => false,
-                          //   );
-                          //   print('signedOut');
-                          // },
+//                           onPressed: () async {
+//                             print('signing out..');
+//                             await _firebase.signOut();
+//                             await SharedPreferences.getInstance()
+//                                 .then((prefs) => prefs.remove('email'));
+//                             Navigator.of(context).pushAndRemoveUntil(
+//                               MaterialPageRoute(
+//                                 builder: (context) => WelcomeScreen(),
+//                               ),
+//                               (Route<dynamic> route) => false,
+//                             );
+//                             print('signedOut');
+//                           },
                           child: Text(
                             'Logout',
                             style: TextStyle(
@@ -364,11 +367,13 @@ class MatchCard extends StatelessWidget {
   const MatchCard({
     Key key,
     @required this.screenSize,
-    @required this.matchData,
+    @required this.contestMeta,
+    @required this.type
   }) : super(key: key);
 
   final Size screenSize;
-  final dynamic matchData;
+  final dynamic contestMeta;
+  final String type;
 
   @override
   Widget build(BuildContext context) {
@@ -376,16 +381,19 @@ class MatchCard extends StatelessWidget {
       padding: EdgeInsets.only(top: 8.0),
       child: GestureDetector(
         onTap: () async {
+          var temp = await _firestore.collection('contests/cricketMatchContest/cricketMatchContestCollection').document(contestMeta['contestId']).get();
+          var contest = temp.data;
           SportData sportData = SportData();
-          var squadData = await sportData.getSquads(matchData['contestId']);
+          var matchScore = await sportData.getScore(contest['matchId']);
           // print(squadData);
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) {
-                return MatchDetails(
-                  matchData: matchData,
-                  squadData: squadData,
+                return MyCreatedContestDetailsScreen(
+                  contest: contest,
+                  type: type,
+                  matchScore: matchScore,
                 );
               },
             ),
@@ -413,50 +421,81 @@ class MatchCard extends StatelessWidget {
           ),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Expanded(
-                      child: Flex(
-                        direction: Axis.vertical,
-                        children: [
-                          for (var word in matchData['team1'].split(" "))
-                            Text(
-                              word,
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w500,
-                                fontStyle: FontStyle.italic,
-                                color: Colors.white,
+            child: Stack(
+              children: [Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: Flex(
+                          direction: Axis.vertical,
+                          children: [
+                            for (var word in contestMeta['team1'].split(" "))
+                              Text(
+                                word,
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.w500,
+                                  fontStyle: FontStyle.italic,
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      child: Flex(
-                        direction: Axis.vertical,
-                        children: [
-                          for (var word in matchData['team2'].split(" "))
-                            Text(
-                              word,
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w500,
-                                fontStyle: FontStyle.italic,
-                                color: Colors.white,
+                      Expanded(
+                        child: Flex(
+                          direction: Axis.vertical,
+                          children: [
+                            for (var word in contestMeta['team2'].split(" "))
+                              Text(
+                                word,
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.w500,
+                                  fontStyle: FontStyle.italic,
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        contestMeta['contestId'],
+                        style: TextStyle(
+                            decoration: TextDecoration.none,
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.w300,
+                            fontSize: 12.0,
+                            color: Colors.white
+                        ),
+                      ),
+                      Text(
+                        contestMeta['admin'],
+                        style: TextStyle(
+                          decoration: TextDecoration.none,
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.w300,
+                          fontSize: 12.0,
+                          color: Colors.white
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ]
             ),
           ),
         ),

@@ -119,42 +119,44 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-//              Flex(
-//                direction: Axis.vertical,
-//                children: RowComponents,
-//              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Expanded(
-                    // flex: 5,
-                    child: Flex(
-                      direction: Axis.vertical,
-                      children: team1Text,
+          child: Stack(
+            children: [
+              Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Expanded(
+                      child: Flex(
+                        direction: Axis.vertical,
+                        children: team1Text,
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    // flex: 5,
-                    child: Flex(
-                      direction: Axis.vertical,
-                      children: team2Text,
+                    Expanded(
+                      child: Flex(
+                        direction: Axis.vertical,
+                        children: team2Text,
+                      ),
                     ),
+                  ],
+                ),
+              ],
+            ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Text(
+                  match['type'],
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 13.0,
+                    fontWeight: FontWeight.w500,
+                    fontStyle: FontStyle.italic,
+                    color: Colors.white,
                   ),
-                ],
-              ),
-              Text(
-                match['type'],
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 13.0,
-                  fontWeight: FontWeight.w300,
-                  color: Colors.black54,
                 ),
               )
-            ],
+            ]
           ),
         ),
       );
