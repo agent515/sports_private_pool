@@ -52,27 +52,10 @@ class Firebase {
     }
   }
 
-  Future<List<Map>> getContests(String type) async {
-    var loggedInUserData;
-    Person user = await getUserDetails();
-    loggedInUserData = user.toMap();
-    var contests = loggedInUserData['contests${type}'];
-    print(loggedInUserData['contests${type}']);
-    //    print(contests);
-    List<Map> contests_list = [];
-
-    for (var contest_id in contests) {
-      if (contest_id.substring(0, 3) == 'CMC') {
-        var contestSnapshot = await _firestore
-            .collection(
-                'contests/cricketMatchContest/cricketMatchContestCollection')
-            .document(contest_id)
-            .get();
-        var contest = contestSnapshot.data;
-        contests_list.add(contest);
-      }
-    }
-    return contests_list;
+  Future<Map<dynamic, dynamic>> getContestDetails(String contestId) async {
+    var temp = await _firestore.collection('contests/cricketMatchContest/cricketMatchContestCollection').document(contestId).get();
+    var contest = temp.data;
+    return contest;
   }
 
   Future<void> forgotPassword(String email) async {
