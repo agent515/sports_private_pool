@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:sports_private_pool/components/custom_tool_tip.dart';
+import 'package:sports_private_pool/components/rounded_button.dart';
 import 'package:sports_private_pool/components/simple_app_bar.dart';
 import 'package:sports_private_pool/constants.dart';
 import 'package:sports_private_pool/services/sport_data.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:share/share.dart';
+import 'package:sports_private_pool/services/firebase.dart';
+
 
 class MyCreatedContestDetailsScreen extends StatefulWidget {
   MyCreatedContestDetailsScreen({this.contest, this.type, this.matchScore});
@@ -27,6 +30,7 @@ class _MyCreatedContestDetailsScreenState
   dynamic MVP;
   dynamic mostRuns;
   dynamic mostWickets;
+  Firebase _firebase = Firebase();
 
   Widget predictionWidget = Icon(Icons.arrow_drop_down);
 
@@ -248,6 +252,14 @@ class _MyCreatedContestDetailsScreenState
                       ),
                     ],
                   ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 60.0),
+                child: RoundedButton(
+                  text: 'Calculate Result',
+                  color: Colors.pink,
+                  onpressed: () => {_firebase.calculateResult(contest)},
                 ),
               ),
               type == 'Joined' ? _buildJoinedContestDetails() : _buildCreatedContestDetails(),

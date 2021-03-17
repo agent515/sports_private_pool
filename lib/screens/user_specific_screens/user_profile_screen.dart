@@ -66,9 +66,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   getCreatedMatchTiles(List<dynamic> contestsCreated) {
     List<Widget> tiles = [];
     Size screenSize = MediaQuery.of(context).size;
-
+//    print(contestsCreated);
     for (var match in contestsCreated) {
-      // print(match);
+//      print(match);
       tiles.add(MatchCard(
         screenSize: screenSize,
         contestMeta: match,
