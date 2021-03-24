@@ -6,15 +6,15 @@ Fantasy sports were already a big thing in foreign countries, but since India ha
 
 
 
-<p align="center"><img src="./images/docs/envision.gif" width="200" height="300"></p>
+<p align="center"><img src="./images/docs/envision.gif" width="200" height="400"></p>
 
 ### Architecture:
 
-<p align="center"><img src="./images/docs/sysArch.jpg" width="300" height="300"></p>
+<p align="center"><img src="./images/docs/sysArch.jpg" width="500" height="300"></p>
 
 ### Information Architecture:
 
-<p align="center"><img src="./images/docs/InformationArch.jpg" width="300" height="300"></p>
+<p align="center"><img src="./images/docs/InformationArch.jpg" width="500" height="300"></p>
 
 ### Future Scope:
 
