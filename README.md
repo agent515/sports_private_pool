@@ -10,6 +10,6 @@ Fantasy sports were already a big thing in foreign countries, but since India ha
 
 ### Future Scope:
 
-Game is simple and quick to play but limits users to play one type of contest for a match.. Other types of contests can be added like second innings in Gamezy [6] where users predict the events which will happen between overs. For example, powerplay score for a team, death-overs score. Second innings games are easy and swift, which adhere to our approach towards the fantasy games.
+Game is simple and quick to play but limits users to play one type of contest for a match.. Other types of contests can be added like second innings in Gamezy where users predict the events which will happen between overs. For example, powerplay score for a team, death-overs score. Second innings games are easy and swift, which adhere to our approach towards the fantasy games.
 
 Cricket was chosen as the sport for the game, because of the awareness, popularity and craze of the same in the country. This should not limit this game for only one sport but provides a template to refer to for other sports like football, kabaddi, etc.
