@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sports_private_pool/models/person.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -82,6 +81,7 @@ class Firebase {
     };
     try {
       final result = await httpsCallable.call(params);
+      print(result.data);
     } catch (e) {
       print(e);
     }
