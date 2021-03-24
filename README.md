@@ -6,7 +6,7 @@ Fantasy sports were already a big thing in foreign countries, but since India ha
 
 ### Information Architecture:
 
-<p align="center"><img src="/images/docs/InfomationArch.jpg"></p>
+![](./images/docs/InformationArch.jpg)
 
 ### Future Scope:
 
