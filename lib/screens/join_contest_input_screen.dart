@@ -69,7 +69,6 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
   }
 
   Future<void> joinContest() async {
-    //TODO:: passed loggedInUserData could be used.
     FirebaseUser loggedInUser = await _auth.currentUser();
     var loggedInUserData;
     var snapshots = await _firestore.collection('users').getDocuments();
@@ -85,12 +84,15 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
     print(loggedInUser.email);
     print(loggedInUserData);
 
+    // TODO: Create contest object append this user's predictions to the already existing predictions
     var predictions = {
       'MVP': MVP,
       'mostRuns': mostRuns,
       'mostWickets': mostWickets,
       'matchResult': matchResult,
     };
+
+    print(predictions);
 
     final TransactionHandler joinContestTransactionHandler =
         (Transaction tx) async {
@@ -99,39 +101,44 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
               'contests/cricketMatchContest/cricketMatchContestCollection')
           .document(contest['contestId']));
       List participants = contestSnapshot.data['participants'];
+      Map<String, dynamic> contestPredictions =
+          contestSnapshot.data['predictions'];
 
       if (participants.length == contestSnapshot.data['noOfParticipants']) {
+        print("Contest is full");
         return {"status": "Contest is full"};
       }
       if (participants.contains(loggedInUserData['username'])) {
+        print("Already entered the contest");
         return {"status": "Already entered the contest"};
       }
       participants.add(loggedInUserData['username']);
-
+      contestPredictions['${loggedInUserData.username}'] = predictions;
       // Add this contest to the current user's joined contest list
       List userContestsJoined = loggedInUserData['contestsJoined'];
       var tempObj = {
-        'contestId' : contest['contestId'],
-        'admin' : loggedInUserData['username'],
-        'team1' : matchData["team-1"],
-        'team2' : matchData["team-2"]
+        'contestId': contest['contestId'],
+        'admin': loggedInUserData['username'],
+        'team1': matchData["team-1"],
+        'team2': matchData["team-2"]
       };
       userContestsJoined.add(tempObj);
 
       // Contest Admin user data fetch
-      var adminDataSnapshot = await tx.get(
-        _firestore.collection('users').document(contest['admin'])
-      );
+      var adminDataSnapshot = await tx
+          .get(_firestore.collection('users').document(contest['admin']));
       var adminData = adminDataSnapshot.data;
 
       // Subtract entry fee from the current user's purse
       await tx.update(
           _firestore.collection('users').document(loggedInUserData['username']),
-          {'purse': loggedInUserData['purse'] - contest['entryFee']});
+          {
+            'purse': loggedInUserData['purse'] - contest['entryFee'],
+            'contestsJoined': userContestsJoined,
+          });
 
       // Add entry fee to the contest admin's purse
-      await tx.update(
-          _firestore.collection('users').document(contest['admin']),
+      await tx.update(_firestore.collection('users').document(contest['admin']),
           {'purse': adminData['purse'] + contest['entryFee']});
 
       // Update contest document with updated participants and predictions list
@@ -140,10 +147,10 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
               .collection(
                   'contests/cricketMatchContest/cricketMatchContestCollection')
               .document(contest['contestId']),
-          {'participants': participants, 'predictions': predictions});
-      await tx.update(
-          _firestore.collection('users').document(loggedInUserData['username']),
-          {'contestsJoined': userContestsJoined});
+          {'participants': participants, 'predictions': contestPredictions});
+      // await tx.update(
+      //     _firestore.collection('users').document(loggedInUserData['username']),
+      //     {'contestsJoined': userContestsJoined});
 
       return {"status": "success"};
     };

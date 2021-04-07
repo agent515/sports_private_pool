@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sports_private_pool/models/person.dart';
-import 'package:sports_private_pool/screens/user_specific_screens/my_created_contest_details_screen.dart';
+import 'package:sports_private_pool/screens/user_specific_screens/my_contest_details_screen.dart';
 import 'package:sports_private_pool/screens/welcome_screen.dart';
 import 'package:sports_private_pool/services/firebase.dart';
 import 'package:sports_private_pool/services/sport_data.dart';
@@ -333,8 +333,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               child: ListView(
                                 physics: ScrollPhysics(),
                                 shrinkWrap: true,
-                                children:
-                                    matchList ?? CircularProgressIndicator(),
+                                children: matchList ??
+                                    [
+                                      Center(
+                                          child: Text('No contests to show.'))
+                                    ],
                               ),
                             ),
                           ),

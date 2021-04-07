@@ -1,8 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sports_private_pool/core/errors/exceptions.dart';
 import 'package:sports_private_pool/models/person.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:instant/instant.dart';
+import 'package:sports_private_pool/services/sport_data.dart';
 
 class Firebase {
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -10,9 +15,38 @@ class Firebase {
   CloudFunctions _cloudFunctions = CloudFunctions.instance;
   GoogleSignIn _googleSignIn = GoogleSignIn();
   FirebaseUser _user;
+  SportData _sportData = SportData();
 
   Firebase() {
     _cloudFunctions.useFunctionsEmulator(origin: "http://10.0.2.2:5001");
+  }
+
+  Future<dynamic> getUpcomingMatches() async {
+    DateTime currentIndiaTime = curDateTimeByZone(zone: "IST");
+    DateTime yesterdayIndiaTime = currentIndiaTime.subtract(Duration(days: 1));
+
+    final currentDateString = currentIndiaTime.toString().substring(0, 10);
+    final yesterdayDateString = yesterdayIndiaTime.toString().substring(0, 10);
+
+    final result = await _firestore
+        .collection('upcomingMatches')
+        .document(currentDateString)
+        .get();
+    if (result.exists) {
+      print("upcomingMatches data exist.");
+      return result.data['data'];
+    }
+    print("upcomingMatches data updated");
+    final data = await _sportData.getUpcomingMatchesData('/matches');
+    _firestore
+        .collection('upcomingMatches')
+        .document(yesterdayDateString)
+        .delete();
+    _firestore
+        .collection('upcomingMatches')
+        .document(currentDateString)
+        .setData({'data': data});
+    return data;
   }
 
   Future<FirebaseUser> signInWithGoogle() async {
@@ -72,7 +106,8 @@ class Firebase {
     await _firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
-  Future<void> calculateResult(Map<dynamic, dynamic> contest) async {
+  Future<Map<dynamic, dynamic>> calculateResult(
+      Map<dynamic, dynamic> contest) async {
     HttpsCallable httpsCallable =
         _cloudFunctions.getHttpsCallable(functionName: 'calculate_result');
     final params = <String, dynamic>{
@@ -81,9 +116,12 @@ class Firebase {
     };
     try {
       final result = await httpsCallable.call(params);
-      print(result.data);
+      return result.data['data'];
+    } on PlatformException {
+      throw ServerException();
     } catch (e) {
       print(e);
+      throw NotFoundException();
     }
   }
 }

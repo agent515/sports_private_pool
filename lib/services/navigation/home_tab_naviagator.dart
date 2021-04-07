@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sports_private_pool/components/custom_progress_indicator.dart';
 import 'package:sports_private_pool/screens/home_page.dart';
 import 'package:sports_private_pool/services/constants.dart';
-import 'package:sports_private_pool/services/sport_data.dart';
+import 'package:sports_private_pool/services/firebase.dart';
 
 class HomeTabNavigatorRoutes {
   static const home = '/';
@@ -12,6 +12,7 @@ class HomeTabNavigatorRoutes {
 class HomeTabNavigator extends StatelessWidget {
   final TabItem tabItem;
   final GlobalKey<NavigatorState> navigatorKey;
+  final Firebase _firebase = Firebase();
 
   HomeTabNavigator({this.tabItem, this.navigatorKey});
 
@@ -26,7 +27,7 @@ class HomeTabNavigator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: SportData().getUpcomingMatchesData('/matches'),
+        future: _firebase.getUpcomingMatches(),
         builder: (context, snapshot) {
           Map<String, WidgetBuilder> routeBuilder =
               _routeBuilder(context, snapshot.data);

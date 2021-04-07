@@ -266,7 +266,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               .setData({
                             'firstName': user.displayName.split(' ')[0],
                             'lastName': user.displayName.split(' ')[1],
-                            'purse': 100,
+                            'purse': 100.0,
                             'username': user.email,
                             'email': user.email,
                             'contestsCreated': [],
@@ -294,7 +294,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         loggedInUserData = _user.data;
                         print("data: ${loggedInUserData}");
                         await userData.put('user', loggedInUserData);
-
+                        print("in");
                         currentUser = Person.fromMap(loggedInUserData);
 
                         userData.put('userData', loggedInUserData);
