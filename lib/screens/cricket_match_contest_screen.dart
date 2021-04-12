@@ -129,7 +129,7 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
         'noOfParticipants': double.parse(noOfParticipantsTextController.text),
         'participants': [],
         'predictions': {},
-        'result': []
+        'result': {}
       };
 
       List<dynamic> contestsCreated = loggedInUserData['contestsCreated'];

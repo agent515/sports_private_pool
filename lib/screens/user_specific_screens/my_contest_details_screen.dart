@@ -6,6 +6,7 @@ import 'package:sports_private_pool/components/simple_app_bar.dart';
 import 'package:sports_private_pool/constants.dart';
 import 'package:sports_private_pool/core/errors/exceptions.dart';
 import 'package:sports_private_pool/models/person.dart';
+import 'package:sports_private_pool/screens/user_specific_screens/contest_result_screen.dart';
 import 'package:sports_private_pool/services/sport_data.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:share/share.dart';
@@ -28,7 +29,7 @@ class _MyCreatedContestDetailsScreenState
   dynamic matchScore;
   String type;
   bool _tapped = false;
-  Map<dynamic, dynamic> matchResult;
+  Map<dynamic, dynamic> contestResult;
   Person _user;
   Box<Person> userBox;
 
@@ -49,6 +50,7 @@ class _MyCreatedContestDetailsScreenState
     contest = widget.contest;
     type = widget.type;
     matchScore = widget.matchScore;
+    contestResult = contest['result'];
     _getUserDetails();
     print(matchScore);
     print(contest);
@@ -270,92 +272,151 @@ class _MyCreatedContestDetailsScreenState
     }
   }
 
+  Future<void> _showMyDialog(String message) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Envision'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(message),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Column(children: <Widget>[
-        SimpleAppBar(
-          appBarTitle: 'C O N T E S T   D E T A I L S',
-        ),
-        Expanded(
-          child: ListView(
-            scrollDirection: Axis.vertical,
-            children: <Widget>[
-              Flex(
-                direction: Axis.vertical,
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Column(children: <Widget>[
+            SimpleAppBar(
+              appBarTitle: 'C O N T E S T   D E T A I L S',
+            ),
+            Expanded(
+              child: ListView(
+                scrollDirection: Axis.vertical,
                 children: <Widget>[
-                  Text(
-                    '${matchScore['team-1']}',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  Text(
-                    'vs',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  Text(
-                    '${matchScore['team-2']}',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: Center(
-                  child: Column(
+                  Flex(
+                    direction: Axis.vertical,
                     children: <Widget>[
                       Text(
-                        'Match start: ' +
-                            (matchScore['matchStarted']
-                                ? 'Has started'
-                                : matchScore['stat']),
+                        '${matchScore['team-1']}',
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Text(
+                        'vs',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      Text(
+                        '${matchScore['team-2']}',
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ],
                   ),
-                ),
-              ),
-              type == 'Joined'
-                  ? Container()
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 60.0),
-                      child: RoundedButton(
-                        text: 'Calculate Result',
-                        color: Colors.pink,
-                        onpressed: () async {
-                          try {
-                            // TODO: Use match result data to display error or match result accordingly.
-                            final tempResult =
-                                await _firebase.calculateResult(contest);
-                            print(tempResult);
-                            setState(() {
-                              matchResult = tempResult;
-                            });
-                          } on ServerException {
-                            // TODO: Display error message
-                            print("Server Excpetion");
-                          } on NotFoundException {
-                            // TODO: Display error message
-                            print("Result data not available");
-                          }
-                        },
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Center(
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            'Match start: ' +
+                                (matchScore['matchStarted']
+                                    ? 'Has started'
+                                    : matchScore['stat']),
+                          ),
+                        ],
                       ),
                     ),
-              type == 'Joined'
-                  ? _buildJoinedContestDetails()
-                  : _buildCreatedContestDetails(),
-            ],
-          ),
-        ),
-      ]),
-    );
+                  ),
+                  type == 'Joined'
+                      ? Container()
+                      : (contest['participants'].length > 0 &&
+                              (contestResult != null
+                                  ? contestResult.isEmpty
+                                  : true))
+                          ? Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 60.0),
+                              child: RoundedButton(
+                                text: 'Calculate Result',
+                                color: Colors.pink,
+                                onpressed: () async {
+                                  try {
+                                    final tempResult = await _firebase
+                                        .calculateResult(contest);
+                                    print(tempResult);
+                                    setState(() {
+                                      contestResult = tempResult;
+                                    });
+                                  } on ServerException {
+                                    _showMyDialog(
+                                        "Sever Error: Try again later");
+                                    print("Server Excpetion");
+                                  } on NotFoundException {
+                                    _showMyDialog(
+                                        "Result data not available yet.");
+                                    print("Result data not available");
+                                  }
+                                },
+                              ),
+                            )
+                          : contest['participants'].length == 0
+                              ? Center(
+                                  child: Text(
+                                  'Sorry, no one participated',
+                                  style: TextStyle(
+                                      fontStyle: FontStyle.italic,
+                                      color: Colors.grey),
+                                ))
+                              : Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 60.0),
+                                  child: RoundedButton(
+                                    text: 'View Result',
+                                    color: Colors.pink,
+                                    onpressed: () async {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ContestResultScreen(
+                                                    result: contestResult,
+                                                  )));
+                                    },
+                                  ),
+                                ),
+                  type == 'Joined'
+                      ? _buildJoinedContestDetails()
+                      : _buildCreatedContestDetails(),
+                ],
+              ),
+            ),
+          ]),
+        ));
   }
 }

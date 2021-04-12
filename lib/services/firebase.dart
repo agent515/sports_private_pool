@@ -120,6 +120,8 @@ class Firebase {
     };
     try {
       final result = await httpsCallable.call(params);
+      print(result.data);
+      if (result.data['error'] != null) throw NotFoundException();
       return result.data['data'];
     } on PlatformException {
       throw ServerException();
