@@ -18,17 +18,24 @@ class Person {
   @HiveField(6)
   List<dynamic> contestsJoined;
 
-  Person({this.email, this.firstName, this.lastName, this.username, this.purse, this.contestsCreated, this.contestsJoined});
+  Person(
+      {this.email,
+      this.firstName,
+      this.lastName,
+      this.username,
+      this.purse,
+      this.contestsCreated,
+      this.contestsJoined});
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> person = {
-      'email' : this.email,
-      'firstName' : this.firstName,
-      'lastName' : this.lastName,
-      'purse' : this.purse,
-      'username' : this.username,
-      'contestsCreated' : this.contestsCreated,
-      'contestsJoined' : this.contestsJoined,
+      'email': this.email,
+      'firstName': this.firstName,
+      'lastName': this.lastName,
+      'purse': this.purse,
+      'username': this.username,
+      'contestsCreated': this.contestsCreated,
+      'contestsJoined': this.contestsJoined,
     };
     return person;
   }
@@ -38,7 +45,7 @@ class Person {
     p.email = map['email'];
     p.firstName = map['firstName'];
     p.lastName = map['lastName'];
-    p.purse = map['purse'];
+    p.purse = map['purse'] + 0.0;
     p.username = map['username'];
     p.contestsCreated = map['contestsCreated'];
     p.contestsJoined = map['contestsJoined'];

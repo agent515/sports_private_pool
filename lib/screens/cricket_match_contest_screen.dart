@@ -50,19 +50,18 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
       final int noOfParticipants =
           int.parse(noOfParticipantsTextController.text);
 
-      if (prizeMoneyValue < 0 ||entryFeeValue < 0 || noOfParticipants < 2) {
+      if (prizeMoneyValue < 0 || entryFeeValue < 0 || noOfParticipants < 2) {
         setState(() {
           _error = true;
           _errorMessage =
               'Monetary values cannot be negative and no. of participants should be at least 2';
         });
         return;
-      }
-      else if (prizeMoneyValue > loggedInUserData['purse']) {
+      } else if (prizeMoneyValue > loggedInUserData['purse']) {
         setState(() {
           _error = true;
           _errorMessage =
-          'Prize money value cannot be greater than the value in your purse! ';
+              'Prize money value cannot be greater than the value in your purse! ';
         });
         return;
       }
@@ -75,8 +74,18 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
 
     final type = 'CMC';
 
-    // TODO: Unique join code check
-    joinCode = type + randomAlphaNumeric(8);
+    // Unique join code check
+    bool duplicate = true;
+
+    while (duplicate) {
+      joinCode = type + randomAlphaNumeric(8);
+      DocumentSnapshot joinCodeSnapshot = await _firestore
+          .collection('contest/joinCodes/joinCodesCollection/')
+          .document(joinCode)
+          .get();
+      if (!joinCodeSnapshot.exists) duplicate = false;
+    }
+
     final int matchId = matchData['unique_id'];
 
     final TransactionHandler createContestTransaction = (Transaction tx) async {
@@ -113,7 +122,7 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
         'type': type,
         'contestId': type + countStr,
         'matchId': matchId,
-        'match' : '${matchData['team-1']} Vs ${matchData['team-2']}',
+        'match': '${matchData['team-1']} Vs ${matchData['team-2']}',
         'joinCode': joinCode,
         'prizeMoney': double.parse(prizeMoneyTextController.text),
         'entryFee': double.parse(entryFeeTextController.text),
@@ -145,10 +154,10 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
           _firestore.collection('users').document(loggedInUserData['username']),
           {'purse': loggedInUserData['purse'] - contest['prizeMoney']});
       var tempObj = {
-        'contestId' : contestId,
-        'admin' : loggedInUserData['username'],
-        'team1' : matchData['team-1'],
-        'team2' : matchData['team-2']
+        'contestId': contestId,
+        'admin': loggedInUserData['username'],
+        'team1': matchData['team-1'],
+        'team2': matchData['team-2']
       };
       contestsCreated.add(tempObj);
       await tx.update(
@@ -183,106 +192,112 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.white,
-      body: Column(children: <Widget>[
-        SimpleAppBar(appBarTitle: 'C O N T E S T'),
-        Flex(
-          direction: Axis.vertical,
+      body: SingleChildScrollView(
+        child: Column(
           children: <Widget>[
-            Text(
-              '${matchData['team-1']}',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.w700,
+            SimpleAppBar(appBarTitle: 'C O N T E S T'),
+            Flex(
+              direction: Axis.vertical,
+              children: <Widget>[
+                Text(
+                  '${matchData['team-1']}',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                Text(
+                  'vs',
+                  style: TextStyle(
+                    fontSize: 12.0,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                Text(
+                  '${matchData['team-2']}',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 10.0),
+              child: Text(
+                'Create a contest by entering the prize money, entry fee and maximum participants',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontStyle: FontStyle.italic),
               ),
             ),
-            Text(
-              'vs',
-              style: TextStyle(
-                fontSize: 12.0,
-                fontWeight: FontWeight.w400,
+            ContestInputField(
+              hintText: 'Rs. 10',
+              labelText: 'Prize money',
+              rightMargin: 200.0,
+              textEditingController: prizeMoneyTextController,
+            ),
+            ContestInputField(
+              hintText: 'Rs. 10',
+              labelText: 'Entry fee',
+              rightMargin: 200.0,
+              textEditingController: entryFeeTextController,
+            ),
+            ContestInputField(
+              hintText: 'max 100',
+              labelText: 'No. of participants',
+              rightMargin: 200.0,
+              textEditingController: noOfParticipantsTextController,
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 30.0),
+              child: RoundedButton(
+                color: Colors.black54,
+                text: 'Create',
+                onpressed: () async {
+                  //Create contest and make the sharable invitation link
+                  await createContestTransaction();
+                },
               ),
             ),
-            Text(
-              '${matchData['team-2']}',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.w700,
+            Container(
+              alignment: Alignment.center,
+              child: Column(
+                children: <Widget>[
+                  _error == true
+                      ? Text(
+                          _errorMessage,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.purple,
+                          ),
+                        )
+                      : SizedBox(
+                          height: 0,
+                        ),
+                  SizedBox(
+                    height: 5.0,
+                  ),
+                  Container(
+                    child: _success == null
+                        ? Text('')
+                        : (_success
+                            ? Column(children: <Widget>[
+                                Text(
+                                    'Contest created.. Here is the the code to join the contest: '),
+                                GestureDetector(
+                                  child: CustomToolTip(text: joinCode),
+                                  onTap: () {},
+                                )
+                              ])
+                            : Text('Registration failed')),
+                  ),
+                ],
               ),
-            ),
+            )
           ],
         ),
-        Container(
-          margin: EdgeInsets.symmetric(vertical: 10.0),
-          child: Text(
-            'Create a contest by entering the prize money, entry fee and maximum participants',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontStyle: FontStyle.italic),
-          ),
-        ),
-        ContestInputField(
-          hintText: 'Rs. 10',
-          labelText: 'Prize money',
-          rightMargin: 200.0,
-          textEditingController: prizeMoneyTextController,
-        ),
-        ContestInputField(
-          hintText: 'Rs. 10',
-          labelText: 'Entry fee',
-          rightMargin: 200.0,
-          textEditingController: entryFeeTextController,
-        ),
-        ContestInputField(
-          hintText: 'max 100',
-          labelText: 'No. of participants',
-          rightMargin: 200.0,
-          textEditingController: noOfParticipantsTextController,
-        ),
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 30.0),
-          child: RoundedButton(
-            color: Colors.black54,
-            text: 'Create',
-            onpressed: () async {
-              //Create contest and make the sharable invitation link
-              await createContestTransaction();
-            },
-          ),
-        ),
-        Container(
-          alignment: Alignment.center,
-          child: Column(
-            children: <Widget>[
-              _error == true
-                  ? Text(
-                      _errorMessage,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.purple,
-                      ),
-                    )
-                  : SizedBox(height: 0,),
-              SizedBox(height: 5.0,),
-              Container(
-                child:
-              _success == null ? Text('')
-                      : (_success
-                      ? Column(children: <Widget>[Text('Contest created.. Here is the the code to join the contest: '),
-                        GestureDetector(
-                          child: CustomToolTip(text: joinCode),
-                          onTap: () {
-
-                          },
-                        )
-                    ])
-                      : Text('Registration failed')),
-              ),
-            ],
-          ),
-        )
-      ]),
+      ),
     );
   }
 }
-
