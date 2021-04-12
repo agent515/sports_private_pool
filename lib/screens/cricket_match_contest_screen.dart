@@ -74,8 +74,18 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
 
     final type = 'CMC';
 
-    // TODO: Unique join code check
-    joinCode = type + randomAlphaNumeric(8);
+    // Unique join code check
+    bool duplicate = true;
+
+    while (duplicate) {
+      joinCode = type + randomAlphaNumeric(8);
+      DocumentSnapshot joinCodeSnapshot = await _firestore
+          .collection('contest/joinCodes/joinCodesCollection/')
+          .document(joinCode)
+          .get();
+      if (!joinCodeSnapshot.exists) duplicate = false;
+    }
+
     final int matchId = matchData['unique_id'];
 
     final TransactionHandler createContestTransaction = (Transaction tx) async {
@@ -119,7 +129,7 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
         'noOfParticipants': double.parse(noOfParticipantsTextController.text),
         'participants': [],
         'predictions': {},
-        'result': {}
+        'result': []
       };
 
       List<dynamic> contestsCreated = loggedInUserData['contestsCreated'];

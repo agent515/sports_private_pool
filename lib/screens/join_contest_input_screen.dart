@@ -113,7 +113,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
         return {"status": "Already entered the contest"};
       }
       participants.add(loggedInUserData['username']);
-      contestPredictions['${loggedInUserData.username}'] = predictions;
+      contestPredictions['${loggedInUserData["username"]}'] = predictions;
       // Add this contest to the current user's joined contest list
       List userContestsJoined = loggedInUserData['contestsJoined'];
       var tempObj = {
@@ -491,7 +491,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                                       ),
                                     ),
                                     Text(
-                                      '${contest['admin']}',
+                                      '${contest["admin"]}',
                                       style: TextStyle(
                                         fontSize: 20.0,
                                         color: Colors.black87,

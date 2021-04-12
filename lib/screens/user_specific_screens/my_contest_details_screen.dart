@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:sports_private_pool/components/custom_tool_tip.dart';
 import 'package:sports_private_pool/components/rounded_button.dart';
 import 'package:sports_private_pool/components/simple_app_bar.dart';
 import 'package:sports_private_pool/constants.dart';
 import 'package:sports_private_pool/core/errors/exceptions.dart';
+import 'package:sports_private_pool/models/person.dart';
 import 'package:sports_private_pool/services/sport_data.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:share/share.dart';
@@ -27,6 +29,8 @@ class _MyCreatedContestDetailsScreenState
   String type;
   bool _tapped = false;
   Map<dynamic, dynamic> matchResult;
+  Person _user;
+  Box<Person> userBox;
 
   dynamic MVP;
   dynamic mostRuns;
@@ -38,12 +42,28 @@ class _MyCreatedContestDetailsScreenState
   @override
   void initState() {
     super.initState();
+    userBox = Hive.box<Person>('user');
+    print(userBox.isOpen);
+    print(userBox.isEmpty);
+    _user = userBox.get('user');
     contest = widget.contest;
     type = widget.type;
     matchScore = widget.matchScore;
+    _getUserDetails();
     print(matchScore);
     print(contest);
     print(type);
+  }
+
+  Future<void> _getUserDetails() {
+    _firebase.getUserDetails().then(
+      (user) {
+        userBox.put('user', user);
+        setState(() {
+          _user = user;
+        });
+      },
+    );
   }
 
   Future<void> _createDynamicLink(String joinCode) async {
@@ -223,11 +243,12 @@ class _MyCreatedContestDetailsScreenState
     } else {
       var sportData = SportData();
 
-      MVP = await sportData.getPlayerInfo(contest['predictions']['MVP']);
-      mostRuns =
-          await sportData.getPlayerInfo(contest['predictions']['mostRuns']);
-      mostWickets =
-          await sportData.getPlayerInfo(contest['predictions']['mostWickets']);
+      MVP = await sportData
+          .getPlayerInfo(contest['predictions'][_user.username]['MVP']);
+      mostRuns = await sportData
+          .getPlayerInfo(contest['predictions'][_user.username]['mostRuns']);
+      mostWickets = await sportData
+          .getPlayerInfo(contest['predictions'][_user.username]['mostWickets']);
 
       setState(() {
         predictionWidget = Column(
@@ -241,7 +262,8 @@ class _MyCreatedContestDetailsScreenState
                 title: Text('${mostWickets['name']}')),
             ListTile(
                 leading: Text('Match Result :'),
-                title: Text('${contest['predictions']['matchResult']}')),
+                title: Text(
+                    '${contest['predictions'][_user.username]['matchResult']}')),
           ],
         );
       });
@@ -301,30 +323,32 @@ class _MyCreatedContestDetailsScreenState
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 60.0),
-                child: RoundedButton(
-                  text: 'Calculate Result',
-                  color: Colors.pink,
-                  onpressed: () async {
-                    try {
-                      // TODO: Use match result data to display error or match result accordingly.
-                      final tempResult =
-                          await _firebase.calculateResult(contest);
-                      print(tempResult);
-                      setState(() {
-                        matchResult = tempResult;
-                      });
-                    } on ServerException {
-                      // TODO: Display error message
-                      print("Server Excpetion");
-                    } on NotFoundException {
-                      // TODO: Display error message
-                      print("Result data not available");
-                    }
-                  },
-                ),
-              ),
+              type == 'Joined'
+                  ? Container()
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 60.0),
+                      child: RoundedButton(
+                        text: 'Calculate Result',
+                        color: Colors.pink,
+                        onpressed: () async {
+                          try {
+                            // TODO: Use match result data to display error or match result accordingly.
+                            final tempResult =
+                                await _firebase.calculateResult(contest);
+                            print(tempResult);
+                            setState(() {
+                              matchResult = tempResult;
+                            });
+                          } on ServerException {
+                            // TODO: Display error message
+                            print("Server Excpetion");
+                          } on NotFoundException {
+                            // TODO: Display error message
+                            print("Result data not available");
+                          }
+                        },
+                      ),
+                    ),
               type == 'Joined'
                   ? _buildJoinedContestDetails()
                   : _buildCreatedContestDetails(),

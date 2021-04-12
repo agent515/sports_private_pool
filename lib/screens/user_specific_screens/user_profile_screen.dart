@@ -5,11 +5,9 @@ import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sports_private_pool/models/person.dart';
 import 'package:sports_private_pool/screens/user_specific_screens/my_contest_details_screen.dart';
-import 'package:sports_private_pool/screens/welcome_screen.dart';
 import 'package:sports_private_pool/services/firebase.dart';
 import 'package:sports_private_pool/services/sport_data.dart';
 
-Firestore _firestore = Firestore.instance;
 Firebase _firebase = Firebase();
 
 class UserProfileScreen extends StatefulWidget {
@@ -38,18 +36,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
   void initState() {
     print('here in profile page');
-    userData = Hive.box<dynamic>('userData');
+    // userData = Hive.box<dynamic>('userData');
     userBox = Hive.box<Person>('user');
-    loggedInUserData = userData.get('userData');
+    // loggedInUserData = userData.get('userData');
     user = userBox.get('user');
     _getUserDetails();
     super.initState();
   }
 
-  Future<void> _getUserDetails() async {
-    await _firebase.getUserDetails().then(
+  Future<void> _getUserDetails() {
+    _firebase.getUserDetails().then(
       (user) {
-        userData.put('userData', user.toMap());
+        // userData.put('userData', user.toMap());
         userBox.put('user', user);
         // print("CONTEST CREATED" + user.contestsCreated.toString());
         setState(() {
@@ -427,7 +425,7 @@ class MatchCard extends StatelessWidget {
                           children: [
                             for (var word in contestMeta['team1'].split(" "))
                               Text(
-                                word,
+                                word ?? "",
                                 style: TextStyle(
                                   fontSize: 16.0,
                                   fontWeight: FontWeight.w500,
@@ -444,7 +442,7 @@ class MatchCard extends StatelessWidget {
                           children: [
                             for (var word in contestMeta['team2'].split(" "))
                               Text(
-                                word,
+                                word ?? "",
                                 style: TextStyle(
                                   fontSize: 16.0,
                                   fontWeight: FontWeight.w500,
@@ -465,7 +463,7 @@ class MatchCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      contestMeta['contestId'],
+                      contestMeta['contestId'] ?? "",
                       style: TextStyle(
                           decoration: TextDecoration.none,
                           fontStyle: FontStyle.italic,
@@ -474,7 +472,7 @@ class MatchCard extends StatelessWidget {
                           color: Colors.white),
                     ),
                     Text(
-                      contestMeta['admin'],
+                      contestMeta['admin'] ?? "",
                       style: TextStyle(
                           decoration: TextDecoration.none,
                           fontStyle: FontStyle.italic,
@@ -492,117 +490,3 @@ class MatchCard extends StatelessWidget {
     );
   }
 }
-
-// Column(
-// children: <Widget>[
-// // SimpleAppBar(
-// //   appBarTitle: 'P R O F I L E',
-// // ),
-// Expanded(
-// child: ListView(
-// scrollDirection: Axis.vertical,
-// children: <Widget>[
-// ListTile(
-// leading: Text(
-// 'First Name',
-// style: kUserProfileInfoTextStyle,
-// ),
-// title: Text(loggedInUserData['firstName']),
-// ),
-// ListTile(
-// leading: Text(
-// 'Last Name',
-// style: kUserProfileInfoTextStyle,
-// ),
-// title: Text(loggedInUserData['lastName']),
-// ),
-// ListTile(
-// leading: Text(
-// 'username',
-// style: kUserProfileInfoTextStyle,
-// ),
-// title: Text(loggedInUserData['username']),
-// ),
-// ListTile(
-// leading: Text(
-// 'Email',
-// style: kUserProfileInfoTextStyle,
-// ),
-// title: Text(loggedInUserData['email']),
-// ),
-// ListTile(
-// leading: Text(
-// 'Wallet',
-// style: kUserProfileInfoTextStyle,
-// ),
-// title: Text(loggedInUserData['purse'].toString()),
-// ),
-// Padding(
-// padding: EdgeInsets.only(
-// left: 20.0, top: 10.0, bottom: 10.0, right: 200),
-// child: Material(
-// elevation: 5.0,
-// color: Colors.grey,
-// borderRadius: BorderRadius.circular(10.0),
-// child: MaterialButton(
-// child: Text('My Contests'),
-// onPressed: () async {
-// print("my contests");
-// // DB read
-// /*
-//                             var userSnapshot = await _firestore.collection('users').document(loggedInUserData['username']).get();
-//                             loggedInUserData = userSnapshot.data;
-//                             */
-//
-// // HIVE READ but also ensure updated Hive Box
-//
-// var contests_list = await getContestsList('Created');
-//
-// Navigator.push(context,
-// MaterialPageRoute(builder: (context) {
-// return MyCreatedContestsScreen(
-// loggedInUserData: loggedInUserData,
-// contests_list: contests_list,
-// type: 'Created',
-// );
-// }));
-// },
-// ),
-// ),
-// ),
-// Padding(
-// padding: EdgeInsets.only(
-// left: 20.0, top: 10.0, bottom: 10.0, right: 200),
-// child: Material(
-// elevation: 5.0,
-// color: Colors.grey,
-// borderRadius: BorderRadius.circular(10.0),
-// child: MaterialButton(
-// child: Text('Joined Contests'),
-// onPressed: () async {
-// print("joined my contests");
-//
-// // DB READ
-// /*
-//                             var userSnapshot = await _firestore.collection('users').document(loggedInUserData['username']).get();
-//                             loggedInUserData = userSnapshot.data;
-//                             */
-//
-// var contests_list = await getContestsList('Joined');
-//
-// Navigator.push(context,
-// MaterialPageRoute(builder: (context) {
-// return MyCreatedContestsScreen(
-// loggedInUserData: loggedInUserData,
-// contests_list: contests_list,
-// type: 'Joined',
-// );
-// }));
-// },
-// ),
-// ),
-// ),
-// ],
-// ))
-// ],
-// ),

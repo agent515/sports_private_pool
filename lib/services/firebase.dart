@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sports_private_pool/core/errors/exceptions.dart';
@@ -23,30 +22,35 @@ class Firebase {
 
   Future<dynamic> getUpcomingMatches() async {
     DateTime currentIndiaTime = curDateTimeByZone(zone: "IST");
-    DateTime yesterdayIndiaTime = currentIndiaTime.subtract(Duration(days: 1));
 
     final currentDateString = currentIndiaTime.toString().substring(0, 10);
-    final yesterdayDateString = yesterdayIndiaTime.toString().substring(0, 10);
+    try {
+      final result = await _firestore
+          .collection('upcomingMatches')
+          .document(currentDateString)
+          .get();
+      if (result.exists) {
+        print("upcomingMatches data exist.");
+        return result.data['data'];
+      }
+      print("upcomingMatches data updated");
 
-    final result = await _firestore
-        .collection('upcomingMatches')
-        .document(currentDateString)
-        .get();
-    if (result.exists) {
-      print("upcomingMatches data exist.");
-      return result.data['data'];
+      final data = await _sportData.getUpcomingMatchesData('/matches');
+      QuerySnapshot prevRecords =
+          await _firestore.collection('upcomingMatches').getDocuments();
+      for (var doc in prevRecords.documents) {
+        await doc.reference.delete();
+      }
+
+      _firestore
+          .collection('upcomingMatches')
+          .document(currentDateString)
+          .setData({'data': data});
+      return data;
+    } catch (e) {
+      print(e);
+      return _sportData.getUpcomingMatchesData('/matches');
     }
-    print("upcomingMatches data updated");
-    final data = await _sportData.getUpcomingMatchesData('/matches');
-    _firestore
-        .collection('upcomingMatches')
-        .document(yesterdayDateString)
-        .delete();
-    _firestore
-        .collection('upcomingMatches')
-        .document(currentDateString)
-        .setData({'data': data});
-    return data;
   }
 
   Future<FirebaseUser> signInWithGoogle() async {
