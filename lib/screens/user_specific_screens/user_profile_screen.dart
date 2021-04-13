@@ -1,8 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sports_private_pool/models/authentication.dart';
 import 'package:sports_private_pool/models/person.dart';
 import 'package:sports_private_pool/screens/user_specific_screens/my_contest_details_screen.dart';
 import 'package:sports_private_pool/services/firebase.dart';
@@ -127,14 +128,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                 await _firebase.signOut();
                                 await SharedPreferences.getInstance()
                                     .then((prefs) => prefs.remove('email'));
-//                                 Navigator.of(context).pushAndRemoveUntil(
-//                                   MaterialPageRoute(
-//                                     builder: (context) => WelcomeScreen(),
-//                                   ),
-//                                   (Route<dynamic> route) => false,
-//                                 );
-                                Navigator.popUntil(context,
-                                    ModalRoute.withName('WelcomeScreen'));
+
+                                Provider.of<Authentication>(context,
+                                        listen: false)
+                                    .logout();
                                 print('signedOut');
                               },
                               child: Text(
