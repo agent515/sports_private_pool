@@ -8,6 +8,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:instant/instant.dart';
 import 'package:sports_private_pool/services/sport_data.dart';
 
+/// Utility class for doing all the firebase related work
 class Firebase {
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   Firestore _firestore = Firestore.instance;
@@ -20,6 +21,10 @@ class Firebase {
     _cloudFunctions.useFunctionsEmulator(origin: "http://10.0.2.2:5001");
   }
 
+  /// This function returns upcoming matches data from the cloud firestore (for today's date).
+  /// If the data is not present in the firestore it calls API and then stores
+  /// the returned response-data to the firestore after deleting stale upcoming matches data
+  /// in firestore.
   Future<dynamic> getUpcomingMatches() async {
     DateTime currentIndiaTime = curDateTimeByZone(zone: "IST");
 
@@ -53,6 +58,7 @@ class Firebase {
     }
   }
 
+  /// Wrappper function to do Google Sign In
   Future<FirebaseUser> signInWithGoogle() async {
     try {
       GoogleSignInAccount gAccount = await _googleSignIn.signIn();
@@ -72,6 +78,7 @@ class Firebase {
     }
   }
 
+  /// Returns Person object of the Signed in user
   Future<Person> getUserDetails() async {
     FirebaseUser user = await _firebaseAuth.currentUser();
 
@@ -86,6 +93,7 @@ class Firebase {
     return Person.fromMap(userDetails.data);
   }
 
+  /// Wrapper function to do GoogleSignOut and FireAuth SignOut
   Future<void> signOut() async {
     try {
       await _firebaseAuth.signOut();
@@ -96,6 +104,7 @@ class Firebase {
     }
   }
 
+  /// Fetch ContestData from the firestore for given contestId
   Future<Map<dynamic, dynamic>> getContestDetails(String contestId) async {
     var temp = await _firestore
         .collection(
@@ -106,10 +115,16 @@ class Firebase {
     return contest;
   }
 
+  /// Send Password Reset mail to given Email-Id
   Future<void> forgotPassword(String email) async {
     await _firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
+  /// Calculate result of the contest by calling Firebase Cloud Function calculate_result
+  /// Function returns resul (LinkedHashMap) or throws two Exceptions ServerException and NotFoundException
+  /// ServerException: Funtion took more amount of time than usual possibly due to POOR_INTERNET_CONNECTION.
+  /// NotFoundException: Match Result data from the API is absent or Inefficient to calculate result of the
+  /// contest.
   Future<Map<dynamic, dynamic>> calculateResult(
       Map<dynamic, dynamic> contest) async {
     HttpsCallable httpsCallable =
