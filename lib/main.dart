@@ -3,15 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart' as pathProvider;
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sports_private_pool/models/authentication.dart';
 
 import 'models/person.dart';
-import 'screens/login_screen.dart';
 import 'screens/main_frame_app.dart';
-import 'screens/register_screen.dart';
 import 'screens/welcome_screen.dart';
 
 bool userLoggedIn = false;
+SharedPreferences preferences;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,13 +21,12 @@ void main() async {
   await Hive.initFlutter(appDocumentDirectory.path);
   Hive.registerAdapter(PersonAdapter());
 
-  SharedPreferences preferences = await SharedPreferences.getInstance();
-  userLoggedIn = preferences.getString('email') != null;
-  print("EMAIL: ${preferences.getString('email')}");
+  preferences = await SharedPreferences.getInstance();
 
   await Hive.openBox<dynamic>('userData');
   await Hive.openBox<Person>('user');
-  runApp(Envision());
+  runApp(ChangeNotifierProvider(
+      create: (context) => Authentication(), child: Envision()));
 }
 
 class Envision extends StatefulWidget {
@@ -35,6 +35,16 @@ class Envision extends StatefulWidget {
 }
 
 class _EnvisionState extends State<Envision> {
+  Box<Person> userBox;
+
+  @override
+  initState() {
+    userBox = Hive.box('user');
+    userLoggedIn = preferences.getString('email') != null;
+    print("EMAIL: ${preferences.getString('email')}");
+    super.initState();
+  }
+
   Future<void> initDynamicLinks() async {
     FirebaseDynamicLinks.instance.onLink(
         onSuccess: (PendingDynamicLinkData dynamicLink) async {
@@ -69,16 +79,19 @@ class _EnvisionState extends State<Envision> {
 
   @override
   Widget build(BuildContext context) {
+    if (userLoggedIn)
+      Provider.of<Authentication>(context, listen: false)
+          .login(userBox.get('user'));
+
     return MaterialApp(
       theme: Theme.of(context).copyWith(accentColor: Colors.black87),
       debugShowCheckedModeBanner: false,
-      initialRoute: userLoggedIn ? 'MainFrameApp' : 'WelcomeScreen',
-      routes: {
-        'WelcomeScreen': (context) => WelcomeScreen(),
-        'LoginScreen': (context) => LoginScreen(),
-        'RegisterScreen': (context) => RegisterScreen(),
-        'MainFrameApp': (context) => MainFrameApp(),
-      },
+      home: Consumer<Authentication>(builder: (context, state, child) {
+        if (state.loggedIn) {
+          return MainFrameApp();
+        }
+        return WelcomeScreen();
+      }),
     );
   }
 }

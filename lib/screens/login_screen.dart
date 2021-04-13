@@ -3,12 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sports_private_pool/components/rounded_button.dart';
 import 'package:sports_private_pool/constants.dart';
+import 'package:sports_private_pool/models/authentication.dart';
 import 'package:sports_private_pool/models/person.dart';
 import 'package:sports_private_pool/screens/forgot_password.dart';
-import 'package:sports_private_pool/screens/main_frame_app.dart';
 import 'package:sports_private_pool/screens/register_screen.dart';
 import 'package:sports_private_pool/services/firebase.dart';
 
@@ -194,10 +195,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         print("EMAIL: ${_preferences.getString('email')}");
 
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) {
-                          return MainFrameApp();
-                        }));
+                        Provider.of<Authentication>(context, listen: false)
+                            .login(currentUser);
+
+                        // Navigator.pushReplacement(context,
+                        //     MaterialPageRoute(builder: (context) {
+                        //   return MainFrameApp();
+                        // }));
+                        Navigator.pop(context);
                         passwordTextController.clear();
                       }
                     } catch (e, stack) {
@@ -304,10 +309,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         await _preferences.setString('email', email.toString());
                         print("EMAIL: ${_preferences.getString('email')}");
 
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) {
-                          return MainFrameApp();
-                        }));
+                        Provider.of<Authentication>(context, listen: false)
+                            .login(currentUser);
+
+                        // Navigator.pushReplacement(context,
+                        //     MaterialPageRoute(builder: (context) {
+                        //   return MainFrameApp();
+                        // }));
+                        Navigator.pop(context);
                         passwordTextController.clear();
                       }
                     } catch (e) {
@@ -364,6 +373,9 @@ class _LoginScreenState extends State<LoginScreen> {
     //Dispose focus node
     emailNode.dispose();
     passwordNode.dispose();
+
+    emailTextController.dispose();
+    passwordTextController.dispose();
 
     super.dispose();
   }
