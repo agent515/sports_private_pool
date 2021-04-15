@@ -4,6 +4,10 @@ import 'package:sports_private_pool/services/navigation/home_tab_naviagator.dart
 import 'package:sports_private_pool/services/navigation/join_tab_navigator.dart';
 import 'package:sports_private_pool/services/navigation/profile_tab_navigator.dart';
 
+const double ICON_SIZE = 20.0;
+const Color SELECTED_COLOR = Colors.white;
+const Color UNSELECTED_COLOR = Colors.grey;
+
 class MainFrameApp extends StatefulWidget {
   MainFrameApp({this.defaultPage = 0, this.joinCode});
 
@@ -28,36 +32,6 @@ class _MainFrameAppState extends State<MainFrameApp> {
   void initState() {
     super.initState();
     index = widget.defaultPage;
-  }
-
-  Widget _bottomNavigationBar() {
-    return BottomNavigationBar(
-      currentIndex: index,
-      iconSize: 20.0,
-      selectedItemColor: Colors.white,
-      unselectedItemColor: Colors.grey,
-      backgroundColor: Colors.black87,
-      onTap: (int x) {
-        setState(() {
-          index = x;
-          currentTab = TabItem.values[index];
-        });
-      },
-      items: <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: ImageIcon(AssetImage('images/icons/icons8-home.png')),
-          title: Text('Home'),
-        ),
-        BottomNavigationBarItem(
-          icon: ImageIcon(AssetImage('images/icons/icons8-plus.png')),
-          title: Text('Join'),
-        ),
-        BottomNavigationBarItem(
-          icon: ImageIcon(AssetImage('images/icons/icons8-user.png')),
-          title: Text('Profile'),
-        )
-      ],
-    );
   }
 
   Future<void> _showMyDialog() async {
@@ -99,6 +73,41 @@ class _MainFrameAppState extends State<MainFrameApp> {
     );
   }
 
+  Widget _buildBottomAppBarButton(
+      {int index_, String label, String imagePath}) {
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: 60, minHeight: 60),
+      child: ElevatedButton(
+          style: ButtonStyle(
+              backgroundColor:
+                  MaterialStateProperty.all<Color>(Colors.transparent),
+              elevation: MaterialStateProperty.all<double>(0.0)),
+          onPressed: () {
+            setState(() {
+              index = index_;
+              currentTab = TabItem.values[index];
+            });
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ImageIcon(
+                AssetImage(imagePath),
+                color: index == index_ ? SELECTED_COLOR : UNSELECTED_COLOR,
+              ),
+              Text(
+                label,
+                style: TextStyle(
+                    color: index == index_ ? SELECTED_COLOR : UNSELECTED_COLOR),
+              ),
+              SizedBox(
+                height: 8.0,
+              )
+            ],
+          )),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -118,20 +127,61 @@ class _MainFrameAppState extends State<MainFrameApp> {
             _buildOffstageNavigator(TabItem.profile),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.grey,
-          foregroundColor: Colors.white,
-          splashColor: Colors.black87,
-          child: ImageIcon(AssetImage('images/icons/icons8-plus.png')),
-          onPressed: () {
-            setState(() {
-              index = 1;
-              currentTab = TabItem.values[index];
-            });
-          },
+        bottomNavigationBar: BottomAppBar(
+          color: Colors.transparent,
+          child: Container(
+            height: 70,
+            child: Stack(
+              alignment: AlignmentDirectional.bottomCenter,
+              children: [
+                Container(
+                  height: 60,
+                  color: Colors.black87,
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    _buildBottomAppBarButton(
+                        index_: 0,
+                        label: 'Home',
+                        imagePath: 'images/icons/icons8-home.png'),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(maxHeight: 70, minHeight: 70),
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                            elevation: MaterialStateProperty.all<double>(5.0),
+                            shape: MaterialStateProperty.all<CircleBorder>(
+                              CircleBorder(
+                                side: BorderSide(color: Colors.grey),
+                              ),
+                            ),
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(Colors.grey)),
+                        child: ImageIcon(
+                          AssetImage('images/icons/icons8-plus.png'),
+                          size: ICON_SIZE + 10,
+                          color: SELECTED_COLOR,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            index = 1;
+                            currentTab = TabItem.values[index];
+                          });
+                        },
+                      ),
+                    ),
+                    _buildBottomAppBarButton(
+                        index_: 2,
+                        label: 'Profile',
+                        imagePath: 'images/icons/icons8-user.png'),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        bottomNavigationBar: _bottomNavigationBar(),
       ),
     );
   }
