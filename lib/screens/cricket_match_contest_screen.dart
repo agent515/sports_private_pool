@@ -80,7 +80,7 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
     while (duplicate) {
       joinCode = type + randomAlphaNumeric(8);
       DocumentSnapshot joinCodeSnapshot = await _firestore
-          .collection('contest/joinCodes/joinCodesCollection/')
+          .collection('contest/joinCodes/joinCodesCollection')
           .document(joinCode)
           .get();
       if (!joinCodeSnapshot.exists) duplicate = false;
