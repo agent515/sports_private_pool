@@ -54,6 +54,43 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
   }
 
+  Future<void> _signinHelper(context, FirebaseUser user) async {
+    try {
+      var loggedInUserData;
+      var snapshot = await _firestore
+          .collection('email-username')
+          .document(user.email)
+          .get();
+      var temp = snapshot.data['username'];
+      var _user = await _firestore.collection('users').document(temp).get();
+
+      loggedInUserData = _user.data;
+      currentUser = Person.fromMap(loggedInUserData);
+
+      userData.put('userData', loggedInUserData);
+      userBox.put('user', currentUser);
+
+      _preferences = await SharedPreferences.getInstance();
+      await _preferences.setString('email', email.toString());
+
+      print("EMAIL: ${_preferences.getString('email')}");
+
+      Provider.of<Authentication>(context, listen: false).login(currentUser);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Login Successful"),
+        ),
+      );
+
+      Navigator.pop(context);
+    } catch (e, stack) {
+      print(e);
+      print(stack);
+      throw Exception();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -164,51 +201,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       final user = await _auth.signInWithEmailAndPassword(
                           email: emailTextController.text,
                           password: passwordTextController.text);
-                      print("in");
+
                       if (user != null) {
                         print("success");
-                        Scaffold.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Login Successful"),
-                          ),
-                        );
-
-                        var loggedInUserData;
-                        var snapshot = await _firestore
-                            .collection('email-username')
-                            .document(user.user.email)
-                            .get();
-                        var temp = snapshot.data['username'];
-                        var _user = await _firestore
-                            .collection('users')
-                            .document(temp)
-                            .get();
-
-                        loggedInUserData = _user.data;
-                        currentUser = Person.fromMap(loggedInUserData);
-
-                        userData.put('userData', loggedInUserData);
-                        userBox.put('user', currentUser);
-
-                        _preferences = await SharedPreferences.getInstance();
-                        await _preferences.setString('email', email.toString());
-
-                        print("EMAIL: ${_preferences.getString('email')}");
-
-                        Provider.of<Authentication>(context, listen: false)
-                            .login(currentUser);
-
-                        // Navigator.pushReplacement(context,
-                        //     MaterialPageRoute(builder: (context) {
-                        //   return MainFrameApp();
-                        // }));
-                        Navigator.pop(context);
+                        await _signinHelper(context, user.user);
                         passwordTextController.clear();
                       }
                     } catch (e, stack) {
                       print(e);
                       print(stack);
-                      Scaffold.of(context).showSnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text("Login Unsuccessful"),
                         ),
@@ -249,79 +251,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     try {
                       final user = await _firebase.signInWithGoogle();
 
-                      print("in");
                       if (user != null) {
                         print("success");
 
-                        DocumentSnapshot documentRef = await _firestore
-                            .collection("users")
-                            .document(user.email)
-                            .get();
-
-                        if (!documentRef.exists) {
-                          await _firestore
-                              .collection("email-username")
-                              .document(user.email)
-                              .setData({
-                            'username': user.email,
-                          });
-                          await _firestore
-                              .collection("users")
-                              .document(user.email)
-                              .setData({
-                            'firstName': user.displayName.split(' ')[0],
-                            'lastName': user.displayName.split(' ')[1],
-                            'purse': 100.0,
-                            'username': user.email,
-                            'email': user.email,
-                            'contestsCreated': [],
-                            'contestsJoined': [],
-                          });
-                        }
-
-                        Scaffold.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Login Successful"),
-                          ),
-                        );
-
-                        var loggedInUserData;
-                        var snapshot = await _firestore
-                            .collection('email-username')
-                            .document(user.email)
-                            .get();
-                        var temp = snapshot.data['username'];
-                        var _user = await _firestore
-                            .collection('users')
-                            .document(temp)
-                            .get();
-
-                        loggedInUserData = _user.data;
-                        print("data: ${loggedInUserData}");
-                        await userData.put('user', loggedInUserData);
-                        print("in");
-                        currentUser = Person.fromMap(loggedInUserData);
-
-                        userData.put('userData', loggedInUserData);
-                        userBox.put('user', currentUser);
-
-                        _preferences = await SharedPreferences.getInstance();
-                        await _preferences.setString('email', email.toString());
-                        print("EMAIL: ${_preferences.getString('email')}");
-
-                        Provider.of<Authentication>(context, listen: false)
-                            .login(currentUser);
-
-                        // Navigator.pushReplacement(context,
-                        //     MaterialPageRoute(builder: (context) {
-                        //   return MainFrameApp();
-                        // }));
-                        Navigator.pop(context);
+                        await _signinHelper(context, user);
                         passwordTextController.clear();
                       }
                     } catch (e) {
                       print(e);
-                      Scaffold.of(context).showSnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text("Login Unsuccessful"),
                         ),

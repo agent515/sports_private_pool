@@ -71,6 +71,28 @@ class Firebase {
           await _firebaseAuth.signInWithCredential(credential);
       _user = authResult.user;
       print("signed in");
+      if (_user != null) {
+        DocumentSnapshot documentRef =
+            await _firestore.collection("users").document(_user.email).get();
+
+        if (!documentRef.exists) {
+          await _firestore
+              .collection("email-username")
+              .document(_user.email)
+              .setData({
+            'username': _user.email,
+          });
+          await _firestore.collection("users").document(_user.email).setData({
+            'firstName': _user.displayName.split(' ')[0],
+            'lastName': _user.displayName.split(' ')[1],
+            'purse': 100.0,
+            'username': _user.email,
+            'email': _user.email,
+            'contestsCreated': [],
+            'contestsJoined': [],
+          });
+        }
+      }
       return _user;
     } catch (e) {
       print(e);

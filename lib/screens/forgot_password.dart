@@ -56,8 +56,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ],
                   textAlign: TextAlign.center,
                   alignment:
-                  AlignmentDirectional.topStart // or Alignment.topLeft
-              ),
+                      AlignmentDirectional.topStart // or Alignment.topLeft
+                  ),
             ),
             SizedBox(
               height: 30.0,
@@ -82,53 +82,54 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       });
                     },
                     validator: (inpEmail) {
-                      if (inpEmail.isEmpty)
-                        return "Email cannot be empty.";
-                      bool emailValid = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(inpEmail);
-                      if (!emailValid)
-                        return "Enter valid email.";
+                      if (inpEmail.isEmpty) return "Email cannot be empty.";
+                      bool emailValid = RegExp(
+                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                          .hasMatch(inpEmail);
+                      if (!emailValid) return "Enter valid email.";
                       return null;
                     },
                   ),
                   RoundedButton(
-                    color: Colors.pink,
-                    text: "Send Mail",
-                    onpressed: () async {
-                      if (_formKey.currentState.validate()) {
-                        try {
-                          await _firebase.forgotPassword(email);
-                          print("email sent");
-                        }
-                        catch(e) {
-                          if (Platform.isAndroid) {
-                            switch (e.message) {
-                              case 'There is no user record corresponding to this identifier. The user may have been deleted.':
-                                setState(() {
-                                  errorMessage = "Email is not registerd";
-                                });
-                                break;
-                              case 'The password is invalid or the user does not have a password.':
-                                setState(() {
-                                  errorMessage = "Email is not registerd";
-                                });
-                                break;
-                              case 'A network error (such as timeout, interrupted connection or unreachable host) has occurred.':
-                                setState(() {
-                                  errorMessage = "Network Error: Try again";
-                                });
-                                break;
-                              default:
-                                setState(() {
-                                  errorMessage = "Sorry.\nThere was some problem. Try again.";
-                                });
-                              print('Case ${e.message} is not yet implemented');
+                      color: Colors.pink,
+                      text: "Send Mail",
+                      onpressed: () async {
+                        if (_formKey.currentState.validate()) {
+                          try {
+                            await _firebase.forgotPassword(email);
+                            print("email sent");
+                            Navigator.pop(context);
+                          } catch (e) {
+                            if (Platform.isAndroid) {
+                              switch (e.message) {
+                                case 'There is no user record corresponding to this identifier. The user may have been deleted.':
+                                  setState(() {
+                                    errorMessage = "Email is not registerd";
+                                  });
+                                  break;
+                                case 'The password is invalid or the user does not have a password.':
+                                  setState(() {
+                                    errorMessage = "Email is not registerd";
+                                  });
+                                  break;
+                                case 'A network error (such as timeout, interrupted connection or unreachable host) has occurred.':
+                                  setState(() {
+                                    errorMessage = "Network Error: Try again";
+                                  });
+                                  break;
+                                default:
+                                  setState(() {
+                                    errorMessage =
+                                        "Sorry.\nThere was some problem. Try again.";
+                                  });
+                                  print(
+                                      'Case ${e.message} is not yet implemented');
+                              }
+                              print(errorMessage);
                             }
-                            print(errorMessage);
                           }
                         }
-                      }
-                    }
-                  )
+                      })
                 ],
               ),
             ),
