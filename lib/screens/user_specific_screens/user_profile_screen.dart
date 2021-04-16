@@ -8,6 +8,7 @@ import 'package:sports_private_pool/models/person.dart';
 import 'package:sports_private_pool/screens/user_specific_screens/my_contest_details_screen.dart';
 import 'package:sports_private_pool/services/firebase.dart';
 import 'package:sports_private_pool/services/sport_data.dart';
+import 'package:sports_private_pool/wallet/wallet.dart';
 
 Firebase _firebase = Firebase();
 
@@ -229,12 +230,20 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                 SizedBox(
                                   height: 0.01 * screenSize.height,
                                 ),
-                                Text(
+                                ElevatedButton(
+                                    child: Text(
                                   'Wallet',
                                   style: TextStyle(
                                     color: Colors.white60,
                                     fontSize: 0.02 * screenSize.height,
                                   ),
+                                ),
+                                  onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => MyWallet()),
+                                      );
+                                  },
                                 )
                               ],
                             ),
