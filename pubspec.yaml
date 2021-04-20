@@ -27,8 +27,6 @@ dependencies:
   share: ^0.6.5+4
   shared_preferences: ^0.5.12+4
   webview_flutter: ^2.0.4
-  razorpay_flutter: ^1.2.5
-  fluttertoast: ^8.0.4
 
 dev_dependencies:
   flutter_test:
