@@ -67,7 +67,7 @@ class ContestResultScreen extends StatelessWidget {
         LeaderboardTile(
             rank: (index + 1).toString(),
             username: result['leaderboard'][index]['username'],
-            points: result['leaderboard'][index]['points'].toString()),
+            points: result['leaderboard'][index]['points'].toStringAsFixed(2)),
         Divider(
           height: 5,
           color: Colors.grey,
