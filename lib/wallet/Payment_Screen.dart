@@ -3,11 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:sports_private_pool/wallet/constants.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:sports_private_pool/services/navigation/profile_tab_navigator.dart';
-import 'package:sports_private_pool/screens/user_specific_screens/user_profile_screen.dart';
 
 class PaymentScreen extends StatefulWidget {
-
   final String amount;
 
   PaymentScreen({this.amount});
@@ -45,9 +42,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       } else if (paytmResponse["STATUS"] == "TXN_FAILURE") {
         _responseStatus = STATUS_FAILED;
       }
-      this.setState(() {
-
-      });
+      this.setState(() {});
     });
   }
 
@@ -66,7 +61,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   @override
   void dispose() {
     _webController = null;
-      super.dispose();
+    super.dispose();
   }
 
   @override
@@ -83,7 +78,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 javascriptMode: JavascriptMode.unrestricted,
                 onWebViewCreated: (controller) {
                   _webController = controller;
-                  _webController.loadUrl(new Uri.dataFromString(_loadHTML(), mimeType: 'text/html').toString());
+                  _webController.loadUrl(
+                      new Uri.dataFromString(_loadHTML(), mimeType: 'text/html')
+                          .toString());
                 },
                 onPageFinished: (page) {
                   if (page.contains("/process")) {
@@ -100,11 +97,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
               ),
             ),
             (_loadingPayment)
-              ? Center(
-              child: CircularProgressIndicator(),
-            )
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
                 : Center(),
-            (_responseStatus != STATUS_LOADING) ? Center(child: getResponseScreen()) : Center()
+            (_responseStatus != STATUS_LOADING)
+                ? Center(child: getResponseScreen())
+                : Center()
           ],
         ),
       ),
@@ -131,7 +130,10 @@ class PaymentSuccessfulScreen extends StatelessWidget {
                 child: Text(
                   "Great!",
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 25),
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25),
                 ),
               ),
               SizedBox(
@@ -151,7 +153,8 @@ class PaymentSuccessfulScreen extends StatelessWidget {
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () {
-                    Navigator.popUntil(context, ModalRoute.withName("/"));
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
                   })
             ],
           ),
@@ -180,7 +183,10 @@ class PaymentFailedScreen extends StatelessWidget {
                 child: Text(
                   "OOPS!",
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 25),
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25),
                 ),
               ),
               SizedBox(
@@ -200,7 +206,8 @@ class PaymentFailedScreen extends StatelessWidget {
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () {
-                    Navigator.popUntil(context, ModalRoute.withName("/"));
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
                   })
             ],
           ),
@@ -229,7 +236,10 @@ class CheckSumFailedScreen extends StatelessWidget {
                 child: Text(
                   "Oh Snap!",
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 25),
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25),
                 ),
               ),
               SizedBox(

@@ -1,4 +1,5 @@
-const PAYMENT_URL = "http://10.0.2.2:5000/envision-sports/us-central1/customFunctions/payment";
+const PAYMENT_URL =
+    "http://10.0.2.2:5001/envision-sports/us-central1/customFunctions/payment";
 
 const ORDER_DATA = {
   "custID": "USER_1122334455",
