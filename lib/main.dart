@@ -6,6 +6,8 @@ import 'package:path_provider/path_provider.dart' as pathProvider;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sports_private_pool/models/authentication.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'
+    as local_notification;
 
 import 'models/person.dart';
 import 'screens/main_frame_app.dart';
@@ -14,17 +16,41 @@ import 'screens/welcome_screen.dart';
 bool userLoggedIn = false;
 SharedPreferences preferences;
 
+local_notification.FlutterLocalNotificationsPlugin
+    flutterLocalNotificationsPlugin =
+    local_notification.FlutterLocalNotificationsPlugin();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  preferences = await SharedPreferences.getInstance();
+
   final appDocumentDirectory =
       await pathProvider.getApplicationDocumentsDirectory();
   await Hive.initFlutter(appDocumentDirectory.path);
   Hive.registerAdapter(PersonAdapter());
 
-  preferences = await SharedPreferences.getInstance();
-
   await Hive.openBox<dynamic>('userData');
   await Hive.openBox<Person>('user');
+
+  // Flutter Local Notification
+  var initializationSettingsAndroid =
+      local_notification.AndroidInitializationSettings('@mipmap/ic_launcher');
+  var initializationSettingsIOS = local_notification.IOSInitializationSettings(
+    requestAlertPermission: true,
+    requestBadgePermission: true,
+    requestSoundPermission: true,
+    onDidReceiveLocalNotification:
+        (int id, String title, String body, String payload) async {},
+  );
+  var initializationSettings = local_notification.InitializationSettings(
+    android: initializationSettingsAndroid,
+    iOS: initializationSettingsIOS,
+  );
+
+  flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      onSelectNotification: (String payload) async {});
+
   runApp(ChangeNotifierProvider(
       create: (context) => Authentication(), child: Envision()));
 }
@@ -79,9 +105,10 @@ class _EnvisionState extends State<Envision> {
 
   @override
   Widget build(BuildContext context) {
-    if (userLoggedIn)
+    if (userLoggedIn) {
       Provider.of<Authentication>(context, listen: false)
           .login(userBox.get('user'));
+    }
 
     return MaterialApp(
       theme: Theme.of(context).copyWith(accentColor: Colors.black87),

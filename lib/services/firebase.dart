@@ -2,7 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 import 'package:sports_private_pool/core/errors/exceptions.dart';
+import 'package:sports_private_pool/main.dart';
+import 'package:sports_private_pool/models/authentication.dart';
 import 'package:sports_private_pool/models/person.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:instant/instant.dart';
@@ -102,11 +105,11 @@ class Firebase {
 
   /// Returns Person object of the Signed in user
   Future<Person> getUserDetails() async {
-    FirebaseUser user = await _firebaseAuth.currentUser();
+    _user = await _firebaseAuth.currentUser();
 
     DocumentSnapshot temp = await _firestore
         .collection("email-username")
-        .document(user.email)
+        .document(_user.email)
         .get();
     String username = temp.data['username'];
 
@@ -165,6 +168,25 @@ class Firebase {
     } catch (e) {
       print(e);
       throw NotFoundException();
+    }
+  }
+
+  Future<void> saveDeviceToken(String token) async {
+    try {
+      _user = await _firebaseAuth.currentUser();
+      DocumentSnapshot temp = await _firestore
+          .collection("email-username")
+          .document(_user.email)
+          .get();
+      String username = temp.data['username'];
+      print(username);
+      await _firestore
+          .collection("users")
+          .document(username)
+          .updateData({'currentToken': token});
+      print("Token: $token saved.");
+    } catch (e) {
+      print(e);
     }
   }
 }

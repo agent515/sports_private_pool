@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sports_private_pool/models/push_notification.dart';
 import 'package:sports_private_pool/services/constants.dart';
 import 'package:sports_private_pool/services/navigation/home_tab_naviagator.dart';
 import 'package:sports_private_pool/services/navigation/join_tab_navigator.dart';
@@ -32,6 +33,8 @@ class _MainFrameAppState extends State<MainFrameApp> {
   void initState() {
     super.initState();
     index = widget.defaultPage;
+    PushNotification _pushNotification = PushNotification();
+    _pushNotification.initializeFCM();
   }
 
   Future<void> _showMyDialog() async {
