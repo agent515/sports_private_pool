@@ -34,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailTextController = TextEditingController();
   final TextEditingController passwordTextController = TextEditingController();
 
-  Firebase _firebase = Firebase();
+  FirebaseRepository _firebase = FirebaseRepository();
 
   Box<dynamic> userData;
   Box<Person> userBox;

@@ -1,16 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sports_private_pool/services/firebase.dart';
-
-FirebaseAuth _auth = FirebaseAuth.instance;
-Firebase _firebase = Firebase();
 
 class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
   SimpleAppBar({this.appBarTitle});
   final String appBarTitle;
-
-  SharedPreferences _preferences;
 
   @override
   Size get preferredSize {

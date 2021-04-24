@@ -2,17 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:provider/provider.dart';
+import 'package:sports_private_pool/constants.dart';
 import 'package:sports_private_pool/core/errors/exceptions.dart';
-import 'package:sports_private_pool/main.dart';
-import 'package:sports_private_pool/models/authentication.dart';
 import 'package:sports_private_pool/models/person.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:instant/instant.dart';
 import 'package:sports_private_pool/services/sport_data.dart';
+import 'constants.dart';
 
 /// Utility class for doing all the firebase related work
-class Firebase {
+class FirebaseRepository {
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   Firestore _firestore = Firestore.instance;
   CloudFunctions _cloudFunctions = CloudFunctions.instance;
@@ -20,7 +19,7 @@ class Firebase {
   FirebaseUser _user;
   SportData _sportData = SportData();
 
-  Firebase() {
+  FirebaseRepository() {
     _cloudFunctions.useFunctionsEmulator(origin: "http://10.0.2.2:5001");
   }
 
@@ -187,6 +186,20 @@ class Firebase {
       print("Token: $token saved.");
     } catch (e) {
       print(e);
+    }
+  }
+
+  Future<void> sendNotification(
+      Map<String, dynamic> payload, NotificationEnum type) async {
+    HttpsCallable httpsCallable;
+    if (type == NotificationEnum.userJoinsContest) {
+      httpsCallable =
+          _cloudFunctions.getHttpsCallable(functionName: 'userJoinsContest');
+      try {
+        await httpsCallable.call(payload);
+      } catch (e) {
+        print(e);
+      }
     }
   }
 }

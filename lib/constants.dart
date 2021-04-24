@@ -23,3 +23,7 @@ const kTextInputFieldDecoration = InputDecoration(
 
 const kUserProfileInfoTextStyle =
     TextStyle(fontSize: 18.0, color: Colors.black54);
+
+enum NotificationEnum {
+  userJoinsContest,
+}

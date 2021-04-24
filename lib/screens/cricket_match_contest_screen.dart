@@ -12,7 +12,7 @@ import 'package:sports_private_pool/models/person.dart';
 
 FirebaseAuth _auth = FirebaseAuth.instance;
 Firestore _firestore = Firestore.instance;
-Firebase _firebase = Firebase();
+FirebaseRepository _firebase = FirebaseRepository();
 
 class CricketMatchContestScreen extends StatefulWidget {
   CricketMatchContestScreen({this.matchData, this.squadData});

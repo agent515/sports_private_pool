@@ -7,7 +7,7 @@ import 'package:sports_private_pool/services/firebase.dart';
 
 class PushNotification {
   final FirebaseMessaging _messaging = FirebaseMessaging();
-  Firebase _firebase = Firebase();
+  FirebaseRepository _firebase = FirebaseRepository();
   String title;
   String body;
   String joinCode;

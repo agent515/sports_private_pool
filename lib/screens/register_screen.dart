@@ -13,7 +13,7 @@ import 'package:sports_private_pool/components/rounded_button.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final Firestore _firestore = Firestore.instance;
-Firebase _firebase = Firebase();
+FirebaseRepository _firebase = FirebaseRepository();
 
 class RegisterScreen extends StatefulWidget {
   static const id = 'register_screen';

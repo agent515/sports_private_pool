@@ -5,11 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:sports_private_pool/components/rounded_button.dart';
 import 'package:sports_private_pool/components/simple_app_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sports_private_pool/constants.dart';
+import 'package:sports_private_pool/services/firebase.dart';
 
 enum matchResultEnum { team_1, draw, team_2 }
 
 Firestore _firestore = Firestore.instance;
 FirebaseAuth _auth = FirebaseAuth.instance;
+FirebaseRepository _firebase = FirebaseRepository();
 
 class JoinCMCInputScreen extends StatefulWidget {
   JoinCMCInputScreen(
@@ -84,7 +87,6 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
     print(loggedInUser.email);
     print(loggedInUserData);
 
-    // TODO: Create contest object append this user's predictions to the already existing predictions
     var predictions = {
       'MVP': MVP,
       'mostRuns': mostRuns,
@@ -118,7 +120,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
       List userContestsJoined = loggedInUserData['contestsJoined'];
       var tempObj = {
         'contestId': contest['contestId'],
-        'admin': loggedInUserData['username'],
+        'admin': contest['admin'],
         'team1': matchData["team-1"],
         'team2': matchData["team-2"]
       };
@@ -157,6 +159,12 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
 
     _firestore.runTransaction(joinContestTransactionHandler).then((result) {
       print(result["status"]);
+      _firebase.sendNotification({
+        'title': 'Join Contest',
+        'body':
+            '${loggedInUserData["username"]} joined contest ${contest["contestId"]}',
+        'receiverUsername': '${contest["admin"]}',
+      }, NotificationEnum.userJoinsContest);
     }).catchError((e) {
       print(e);
     });

@@ -12,7 +12,7 @@ class HomeTabNavigatorRoutes {
 class HomeTabNavigator extends StatelessWidget {
   final TabItem tabItem;
   final GlobalKey<NavigatorState> navigatorKey;
-  final Firebase _firebase = Firebase();
+  final FirebaseRepository _firebase = FirebaseRepository();
 
   HomeTabNavigator({this.tabItem, this.navigatorKey});
 

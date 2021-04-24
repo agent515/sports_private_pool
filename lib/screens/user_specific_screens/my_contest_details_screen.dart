@@ -36,7 +36,7 @@ class _MyCreatedContestDetailsScreenState
   dynamic MVP;
   dynamic mostRuns;
   dynamic mostWickets;
-  Firebase _firebase = Firebase();
+  FirebaseRepository _firebase = FirebaseRepository();
 
   Widget predictionWidget = Icon(Icons.arrow_drop_down);
 
