@@ -120,6 +120,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
       List userContestsJoined = loggedInUserData['contestsJoined'];
       var tempObj = {
         'contestId': contest['contestId'],
+        'matchId': contest['matchId'],
         'admin': contest['admin'],
         'team1': matchData["team-1"],
         'team2': matchData["team-2"]
@@ -159,12 +160,17 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
 
     _firestore.runTransaction(joinContestTransactionHandler).then((result) {
       print(result["status"]);
+      //* Skip sending notification if the contest creator joins the contest.
+      // if (loggedInUserData["username"] != contest["admin"]) {
       _firebase.sendNotification({
         'title': 'Join Contest',
         'body':
             '${loggedInUserData["username"]} joined contest ${contest["contestId"]}',
         'receiverUsername': '${contest["admin"]}',
+        'contestId': '${contest["contestId"]}',
+        'matchId': '${contest["matchId"]}',
       }, NotificationEnum.userJoinsContest);
+      // }
     }).catchError((e) {
       print(e);
     });

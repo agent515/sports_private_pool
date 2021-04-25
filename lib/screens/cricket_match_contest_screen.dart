@@ -155,6 +155,7 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
           {'purse': loggedInUserData['purse'] - contest['prizeMoney']});
       var tempObj = {
         'contestId': contestId,
+        'matchId': matchId,
         'admin': loggedInUserData['username'],
         'team1': matchData['team-1'],
         'team2': matchData['team-2']
