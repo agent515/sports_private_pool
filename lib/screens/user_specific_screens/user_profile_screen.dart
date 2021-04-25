@@ -42,11 +42,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     userBox = Hive.box<Person>('user');
     // loggedInUserData = userData.get('userData');
     user = userBox.get('user');
+    loggedInUserData = user.toMap();
     _getUserDetails();
     super.initState();
   }
 
-  Future<void> _getUserDetails() {
+  Future<void> _getUserDetails() async {
     _firebase.getUserDetails().then(
       (user) {
         // userData.put('userData', user.toMap());
@@ -108,7 +109,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             await _getUserDetails();
           },
           child: Stack(
-            overflow: Overflow.visible,
+            clipBehavior: Clip.none,
             children: [
               ListView(),
               SingleChildScrollView(
@@ -378,19 +379,15 @@ class MatchCard extends StatelessWidget {
       padding: EdgeInsets.only(top: 8.0),
       child: GestureDetector(
         onTap: () async {
-          var contest =
-              await _firebase.getContestDetails(contestMeta['contestId']);
-          SportData sportData = SportData();
-          var matchScore = await sportData.getScore(contest['matchId']);
           // print(squadData);
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) {
                 return MyCreatedContestDetailsScreen(
-                  contest: contest,
+                  contestId: contestMeta['contestId'],
                   type: type,
-                  matchScore: matchScore,
+                  matchId: contestMeta['matchId'],
                 );
               },
             ),
