@@ -3,22 +3,21 @@ import 'package:sports_private_pool/components/rounded_button.dart';
 import 'package:sports_private_pool/components/simple_app_bar.dart';
 import 'package:sports_private_pool/components/contest_input_field.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sports_private_pool/components/custom_tool_tip.dart';
 
 import 'package:random_string/random_string.dart';
 import 'package:sports_private_pool/services/firebase.dart';
 import 'package:sports_private_pool/models/person.dart';
 
-FirebaseAuth _auth = FirebaseAuth.instance;
 Firestore _firestore = Firestore.instance;
 FirebaseRepository _firebase = FirebaseRepository();
 
 class CricketMatchContestScreen extends StatefulWidget {
-  CricketMatchContestScreen({this.matchData, this.squadData});
+  CricketMatchContestScreen(
+      {@required this.matchData, @required this.squadData});
 
-  dynamic matchData;
-  dynamic squadData;
+  final dynamic matchData;
+  final dynamic squadData;
 
   @override
   _CricketMatchContestScreenState createState() =>

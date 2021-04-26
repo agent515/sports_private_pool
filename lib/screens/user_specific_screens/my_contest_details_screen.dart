@@ -34,6 +34,7 @@ class _MyCreatedContestDetailsScreenState
   Person _user;
   Box<Person> userBox;
 
+  // ignore: non_constant_identifier_names
   dynamic MVP;
   dynamic mostRuns;
   dynamic mostWickets;
@@ -70,6 +71,7 @@ class _MyCreatedContestDetailsScreenState
   Future<void> _createDynamicLink(String joinCode) async {
     final DynamicLinkParameters parameters = DynamicLinkParameters(
       uriPrefix: 'https://envision.page.link',
+      // ignore: todo
       // TODO: App download link here
       link: Uri.parse(
           'https://play.google.com/store/apps/details?id=com.whatsapp&join_code=$joinCode'),

@@ -8,7 +8,6 @@ import 'package:sports_private_pool/models/person.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:instant/instant.dart';
 import 'package:sports_private_pool/services/sport_data.dart';
-import 'constants.dart';
 
 /// Utility class for doing all the firebase related work
 class FirebaseRepository {
@@ -18,6 +17,7 @@ class FirebaseRepository {
   GoogleSignIn _googleSignIn = GoogleSignIn();
   FirebaseUser _user;
   SportData _sportData = SportData();
+  Person person;
 
   FirebaseRepository() {
     _cloudFunctions.useFunctionsEmulator(origin: "http://10.0.2.2:5001");
@@ -114,6 +114,7 @@ class FirebaseRepository {
 
     DocumentSnapshot userDetails =
         await _firestore.collection("users").document(username).get();
+    person = Person.fromMap(userDetails.data);
     return Person.fromMap(userDetails.data);
   }
 

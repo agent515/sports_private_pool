@@ -37,6 +37,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
   String _message = 'Fill the contest entries..';
 
   int _currentStep = 0;
+  // ignore: non_constant_identifier_names
   String MVP;
   String mostRuns;
   String mostWickets;

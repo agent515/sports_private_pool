@@ -11,7 +11,7 @@ class HomePage extends StatefulWidget {
 
   HomePage(this.upcomingMatchesData);
 
-  dynamic upcomingMatchesData;
+  final dynamic upcomingMatchesData;
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -31,7 +31,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     getCachedData();
     upcomingMatchesData = widget.upcomingMatchesData;
-    // print(loggedInUserData);
   }
 
   Future<void> getCachedData() async {
@@ -50,8 +49,6 @@ class _HomePageState extends State<HomePage> {
     List<Widget> upcomingMatchesList = [];
 
     for (var match in data) {
-      var fixture = match['team-1'] + ' vs ' + match['team-2'];
-
       List<Widget> team1Text = [];
       for (var word in match['team-1'].split(" ")) {
         var wordWidget = Text(
@@ -119,9 +116,8 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
-          child: Stack(
-            children: [
-              Column(
+          child: Stack(children: [
+            Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Row(
@@ -143,21 +139,20 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Text(
-                  match['type'],
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 13.0,
-                    fontWeight: FontWeight.w500,
-                    fontStyle: FontStyle.italic,
-                    color: Colors.white,
-                  ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Text(
+                match['type'],
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 13.0,
+                  fontWeight: FontWeight.w500,
+                  fontStyle: FontStyle.italic,
+                  color: Colors.white,
                 ),
-              )
-            ]
-          ),
+              ),
+            )
+          ]),
         ),
       );
 

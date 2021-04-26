@@ -69,18 +69,23 @@ class _JoinContestScreenState extends State<JoinContestScreen> {
                       ),
                     ),
                     Container(
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          shape: MaterialStateProperty.all<OutlinedBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.grey),
                         ),
-                        elevation: 5.0,
                         onPressed: () async {
-                          var joinCode = codeTextController.text;
+                          final joinCode = codeTextController.text;
                           if (joinCode.length == 11) {
-                            var type = joinCode.substring(0, 3);
+                            final type = joinCode.substring(0, 3);
                             if (type == 'CMC') {
                               try {
-                                var docSnap = await _firestore
+                                final docSnap = await _firestore
                                     .collection(
                                         'contests/joinCodes/joinCodesCollection')
                                     .document(joinCode)
@@ -91,7 +96,7 @@ class _JoinContestScreenState extends State<JoinContestScreen> {
 
                                 print("ContestID: $contestId");
 
-                                var userSnapshot = await _firestore
+                                final userSnapshot = await _firestore
                                     .collection('users')
                                     .document(loggedInUserData['username'])
                                     .get();
@@ -106,18 +111,18 @@ class _JoinContestScreenState extends State<JoinContestScreen> {
                                         "You've already entered the contest";
                                   });
                                 } else {
-                                  var contestSnap = await _firestore
+                                  final contestSnap = await _firestore
                                       .collection(
                                           'contests/cricketMatchContest/cricketMatchContestCollection')
                                       .document(contestId)
                                       .get();
-                                  var contest = contestSnap.data;
+                                  final contest = contestSnap.data;
 
                                   SportData sportData = SportData();
-                                  var matchData = await sportData
+                                  final matchData = await sportData
                                       .getMatchData(contest['matchId']);
 
-                                  var squadData = await sportData
+                                  final squadData = await sportData
                                       .getSquads(contest['matchId']);
 
                                   if (matchData == null) {
@@ -125,18 +130,21 @@ class _JoinContestScreenState extends State<JoinContestScreen> {
                                       message = 'The contest has already ended';
                                     });
                                   } else {
-                                    message = "";
+                                    setState(() {
+                                      message = "";
+                                    });
                                     Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                JoinCMCInputScreen(
-                                                  loggedInUserData:
-                                                      loggedInUserData,
-                                                  contest: contest,
-                                                  matchData: matchData,
-                                                  squadData: squadData,
-                                                )));
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            JoinCMCInputScreen(
+                                          loggedInUserData: loggedInUserData,
+                                          contest: contest,
+                                          matchData: matchData,
+                                          squadData: squadData,
+                                        ),
+                                      ),
+                                    );
                                   }
                                 }
                               } catch (e) {
@@ -150,13 +158,14 @@ class _JoinContestScreenState extends State<JoinContestScreen> {
                             print("The code is of invalid length");
                           }
                         },
-                        color: Colors.grey,
-                        child: Text('Join',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: Colors.white,
-                                letterSpacing: 1.0,
-                                fontWeight: FontWeight.w300)),
+                        child: Text(
+                          'Join',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Colors.white,
+                              letterSpacing: 1.0,
+                              fontWeight: FontWeight.w300),
+                        ),
                       ),
                     ),
                     Container(
