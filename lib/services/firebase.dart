@@ -203,4 +203,63 @@ class FirebaseRepository {
       }
     }
   }
+
+  Future<Map<String, dynamic>> joinContest(String joinCode) async {
+    final type = joinCode.substring(0, 3);
+    if (type == 'CMC') {
+      try {
+        final docSnap = await _firestore
+            .collection('contests/joinCodes/joinCodesCollection')
+            .document(joinCode)
+            .get();
+
+        String contestId = docSnap.data['contestId'];
+
+        print("ContestID: $contestId");
+
+        person = await getUserDetails();
+
+        bool alreadyJoined = false;
+
+        for (var contest in person.contestsJoined) {
+          if (contest['contestId'] == contestId) {
+            alreadyJoined = true;
+            break;
+          }
+        }
+
+        if (alreadyJoined) {
+          return {"message": "You've already entered the contest."};
+        } else {
+          final contestSnap = await _firestore
+              .collection(
+                  'contests/cricketMatchContest/cricketMatchContestCollection')
+              .document(contestId)
+              .get();
+          final contest = contestSnap.data;
+
+          SportData sportData = SportData();
+          final matchData = await sportData.getMatchData(contest['matchId']);
+
+          final squadData = await sportData.getSquads(contest['matchId']);
+
+          if (matchData == null) {
+            return {"message": "The contest has already ended."};
+          } else {
+            return {
+              "message": "",
+              "userData": person.toMap(),
+              "contest": contest,
+              "squadData": squadData,
+              "matchData": matchData,
+            };
+          }
+        }
+      } catch (e) {
+        print(e);
+      }
+    }
+    assert(type == "CMC");
+    return {};
+  }
 }
