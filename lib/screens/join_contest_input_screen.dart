@@ -494,25 +494,33 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                           children: <Widget>[
                             Padding(
                               padding: const EdgeInsets.only(bottom: 15.0),
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Text(
-                                      'Contest created by ',
-                                      style: TextStyle(
-                                        fontSize: 20.0,
-                                        color: Colors.black54,
-                                        fontWeight: FontWeight.w400,
+                                    RichText(
+                                      textAlign: TextAlign.left,
+                                      softWrap: true,
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'Contest created by ',
+                                            style: TextStyle(
+                                              fontSize: 20.0,
+                                              color: Colors.black54,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: '${contest["admin"]}',
+                                            style: TextStyle(
+                                              fontSize: 20.0,
+                                              color: Colors.black87,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Text(
-                                      '${contest["admin"]}',
-                                      style: TextStyle(
-                                        fontSize: 20.0,
-                                        color: Colors.black87,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    )
                                   ]),
                             ),
                             Row(
