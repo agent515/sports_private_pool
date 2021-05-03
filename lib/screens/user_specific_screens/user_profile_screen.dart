@@ -136,9 +136,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               child: Text(
                                 'Logout',
                                 style: TextStyle(
-                                  fontSize: 0.02 * screenSize.height,
-                                  color: Colors.white60,
-                                ),
+                                    fontSize: 0.02 * screenSize.height,
+                                    color: Colors.white),
                               ),
                             ),
                           ],
@@ -193,66 +192,82 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
-                              children: [
-                                Text(
-                                  loggedInUserData['email'],
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 0.022 * screenSize.height,
+                            Container(
+                              width: 0.4 * screenSize.width,
+                              height: 50.0,
+                              child: Column(
+                                children: [
+                                  Text(
+                                    loggedInUserData['email'],
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 0.022 * screenSize.height,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 0.01 * screenSize.height,
-                                ),
-                                Text(
-                                  'Email',
-                                  style: TextStyle(
-                                    color: Colors.white60,
-                                    fontSize: 0.02 * screenSize.height,
+                                  SizedBox(
+                                    height: 0.01 * screenSize.height,
                                   ),
-                                )
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                Text(
-                                  '₹ ' + loggedInUserData['purse'].toString(),
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 0.022 * screenSize.height,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 0.01 * screenSize.height,
-                                ),
-                                ElevatedButton(
-                                  child: Text(
-                                    'Wallet',
+                                  Text(
+                                    'Email',
                                     style: TextStyle(
                                       color: Colors.white60,
                                       fontSize: 0.02 * screenSize.height,
                                     ),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => MyWallet()),
-                                    );
-                                  },
-                                )
-                              ],
+                                  )
+                                ],
+                              ),
                             ),
-                            OutlinedButton(
-                              onPressed: () {},
-                              child: Text(
-                                'Edit Profile',
-                                style: TextStyle(
-                                  fontSize: 0.025 * screenSize.height,
-                                  color: Colors.white60,
+                            Container(
+                              width: 0.2 * screenSize.width,
+                              height: 50.0,
+                              child: Column(
+                                children: [
+                                  Text(
+                                    '₹ ' + loggedInUserData['purse'].toString(),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 0.022 * screenSize.height,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 0.01 * screenSize.height,
+                                  ),
+                                  Container(
+                                    height: 25,
+                                    child: OutlinedButton(
+                                      child: Text(
+                                        'Wallet',
+                                        style: TextStyle(
+                                          color: Colors.white60,
+                                          fontSize: 0.02 * screenSize.height,
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => MyWallet()),
+                                        );
+                                      },
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Container(
+                              width: 0.2 * screenSize.width,
+                              height: 50.0,
+                              child: OutlinedButton(
+                                onPressed: () {},
+                                child: Text(
+                                  'Edit',
+                                  style: TextStyle(
+                                    fontSize: 0.025 * screenSize.height,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ),
