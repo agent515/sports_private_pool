@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sports_private_pool/models/push_notification.dart';
+import 'package:sports_private_pool/screens/user_specific_screens/my_contest_details_screen.dart';
 import 'package:sports_private_pool/services/constants.dart';
 import 'package:sports_private_pool/services/navigation/home_tab_naviagator.dart';
 import 'package:sports_private_pool/services/navigation/join_tab_navigator.dart';
@@ -10,10 +11,13 @@ const Color SELECTED_COLOR = Colors.white;
 const Color UNSELECTED_COLOR = Colors.grey;
 
 class MainFrameApp extends StatefulWidget {
-  MainFrameApp({this.defaultPage = 0, this.joinCode});
+  MainFrameApp(
+      {this.defaultPage = 0, this.joinCode, this.contestId, this.matchId});
 
   final int defaultPage;
   final String joinCode;
+  final String contestId;
+  final String matchId;
 
   @override
   _MainFrameAppState createState() => _MainFrameAppState();
@@ -35,6 +39,17 @@ class _MainFrameAppState extends State<MainFrameApp> {
     index = widget.defaultPage;
     PushNotification _pushNotification = PushNotification();
     _pushNotification.initializeFCM();
+    if (index == 2) {
+      navigatorKeys[TabItem.profile].currentState.push(
+            MaterialPageRoute(
+              builder: (context) => MyCreatedContestDetailsScreen(
+                type: 'Created',
+                contestId: widget.contestId,
+                matchId: widget.matchId,
+              ),
+            ),
+          );
+    }
   }
 
   Future<void> _showMyDialog() async {
@@ -77,7 +92,10 @@ class _MainFrameAppState extends State<MainFrameApp> {
   }
 
   Widget _buildBottomAppBarButton(
-      {int index_, String label, String imagePath}) {
+      // ignore: non_constant_identifier_names
+      {int index_,
+      String label,
+      String imagePath}) {
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: 60, minHeight: 60),
       child: ElevatedButton(

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -19,6 +21,8 @@ SharedPreferences preferences;
 local_notification.FlutterLocalNotificationsPlugin
     flutterLocalNotificationsPlugin =
     local_notification.FlutterLocalNotificationsPlugin();
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,11 +52,50 @@ void main() async {
     iOS: initializationSettingsIOS,
   );
 
-  flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onSelectNotification: (String payload) async {});
+  flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+    onSelectNotification: (String payload) async {
+      if (payload != null) {
+        try {
+          print("notification payload: $payload");
+          Map<String, dynamic> payloadJson = json.decode(payload);
+          print(payloadJson);
+          // if (payloadJson['data']['type'] == 'joinContest') {
+          //   print(payloadJson['data']);
+          //   print(navigatorKey.currentState.context);
 
-  runApp(ChangeNotifierProvider(
-      create: (context) => Authentication(), child: Envision()));
+          //   Navigator.push(
+          //     navigatorKey.currentState.context,
+          //     MaterialPageRoute(
+          //       builder: (context) => MainFrameApp(
+          //         defaultPage: 2,
+          //         contestId: payloadJson['data']['contestId'],
+          //         matchId: payloadJson['data']['matchId'],
+          //       ),
+          //     ),
+          //   );
+          // }
+        } catch (e) {
+          print(e);
+        }
+      } else {
+        print("notification payload: $payload");
+      }
+    },
+  );
+
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => Authentication(),
+      child: MaterialApp(
+        title: 'Envision',
+        navigatorKey: navigatorKey,
+        theme: ThemeData(accentColor: Colors.black87),
+        debugShowCheckedModeBanner: false,
+        home: Envision(),
+      ),
+    ),
+  );
 }
 
 class Envision extends StatefulWidget {
@@ -68,6 +111,14 @@ class _EnvisionState extends State<Envision> {
     userBox = Hive.box('user');
     userLoggedIn = preferences.getString('email') != null;
     print("EMAIL: ${preferences.getString('email')}");
+
+    Future.delayed(Duration.zero, () async {
+      if (userLoggedIn) {
+        Provider.of<Authentication>(context, listen: false)
+            .login(userBox.get('user'));
+      }
+    });
+
     super.initState();
   }
 
@@ -105,20 +156,13 @@ class _EnvisionState extends State<Envision> {
 
   @override
   Widget build(BuildContext context) {
-    if (userLoggedIn) {
-      Provider.of<Authentication>(context, listen: false)
-          .login(userBox.get('user'));
-    }
-
-    return MaterialApp(
-      theme: Theme.of(context).copyWith(accentColor: Colors.black87),
-      debugShowCheckedModeBanner: false,
-      home: Consumer<Authentication>(builder: (context, state, child) {
+    return Consumer<Authentication>(
+      builder: (context, state, child) {
         if (state.loggedIn) {
           return MainFrameApp();
         }
         return WelcomeScreen();
-      }),
+      },
     );
   }
 }
