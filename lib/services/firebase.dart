@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sports_private_pool/constants.dart';
 import 'package:sports_private_pool/core/errors/exceptions.dart';
 import 'package:sports_private_pool/models/person.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -9,15 +10,16 @@ import 'package:instant/instant.dart';
 import 'package:sports_private_pool/services/sport_data.dart';
 
 /// Utility class for doing all the firebase related work
-class Firebase {
+class FirebaseRepository {
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   Firestore _firestore = Firestore.instance;
   CloudFunctions _cloudFunctions = CloudFunctions.instance;
   GoogleSignIn _googleSignIn = GoogleSignIn();
   FirebaseUser _user;
   SportData _sportData = SportData();
+  Person person;
 
-  Firebase() {
+  FirebaseRepository() {
     _cloudFunctions.useFunctionsEmulator(origin: "http://10.0.2.2:5001");
   }
 
@@ -102,16 +104,17 @@ class Firebase {
 
   /// Returns Person object of the Signed in user
   Future<Person> getUserDetails() async {
-    FirebaseUser user = await _firebaseAuth.currentUser();
+    _user = await _firebaseAuth.currentUser();
 
     DocumentSnapshot temp = await _firestore
         .collection("email-username")
-        .document(user.email)
+        .document(_user.email)
         .get();
     String username = temp.data['username'];
 
     DocumentSnapshot userDetails =
         await _firestore.collection("users").document(username).get();
+    person = Person.fromMap(userDetails.data);
     return Person.fromMap(userDetails.data);
   }
 
@@ -166,5 +169,97 @@ class Firebase {
       print(e);
       throw NotFoundException();
     }
+  }
+
+  Future<void> saveDeviceToken(String token) async {
+    try {
+      _user = await _firebaseAuth.currentUser();
+      DocumentSnapshot temp = await _firestore
+          .collection("email-username")
+          .document(_user.email)
+          .get();
+      String username = temp.data['username'];
+      print(username);
+      await _firestore
+          .collection("users")
+          .document(username)
+          .updateData({'currentToken': token});
+      print("Token: $token saved.");
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> sendNotification(
+      Map<String, dynamic> payload, NotificationEnum type) async {
+    HttpsCallable httpsCallable;
+    if (type == NotificationEnum.userJoinsContest) {
+      httpsCallable =
+          _cloudFunctions.getHttpsCallable(functionName: 'userJoinsContest');
+      try {
+        await httpsCallable.call(payload);
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
+  Future<Map<String, dynamic>> joinContest(String joinCode) async {
+    final type = joinCode.substring(0, 3);
+    if (type == 'CMC') {
+      try {
+        final docSnap = await _firestore
+            .collection('contests/joinCodes/joinCodesCollection')
+            .document(joinCode)
+            .get();
+
+        String contestId = docSnap.data['contestId'];
+
+        print("ContestID: $contestId");
+
+        person = await getUserDetails();
+
+        bool alreadyJoined = false;
+
+        for (var contest in person.contestsJoined) {
+          if (contest['contestId'] == contestId) {
+            alreadyJoined = true;
+            break;
+          }
+        }
+
+        if (alreadyJoined) {
+          return {"message": "You've already entered the contest."};
+        } else {
+          final contestSnap = await _firestore
+              .collection(
+                  'contests/cricketMatchContest/cricketMatchContestCollection')
+              .document(contestId)
+              .get();
+          final contest = contestSnap.data;
+
+          SportData sportData = SportData();
+          final matchData = await sportData.getMatchData(contest['matchId']);
+
+          final squadData = await sportData.getSquads(contest['matchId']);
+
+          if (matchData == null) {
+            return {"message": "The contest has already ended."};
+          } else {
+            return {
+              "message": "",
+              "userData": person.toMap(),
+              "contest": contest,
+              "squadData": squadData,
+              "matchData": matchData,
+            };
+          }
+        }
+      } catch (e) {
+        print(e);
+      }
+    }
+    assert(type == "CMC");
+    return {};
   }
 }

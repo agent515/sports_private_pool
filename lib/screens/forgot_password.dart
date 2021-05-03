@@ -14,7 +14,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   TextEditingController emailTextController = TextEditingController();
   String email;
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  Firebase _firebase = Firebase();
+  FirebaseRepository _firebase = FirebaseRepository();
   String errorMessage;
 
   @override

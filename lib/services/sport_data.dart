@@ -70,8 +70,6 @@ class SportData {
     List<Widget> upcomingMatchesList = [];
 
     for (var match in data) {
-      var fixture = match['team-1'] + ' vs ' + match['team-2'];
-
       List<Widget> team1Text = [];
       for (var word in match['team-1'].split(" ")) {
         var wordWidget = Text(word,

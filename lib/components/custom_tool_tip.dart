@@ -9,7 +9,13 @@ class CustomToolTip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: Tooltip(preferBelow: false, message: "Copy", child: Text(text)),
+      child: Tooltip(
+          preferBelow: false,
+          message: "Copy",
+          child: Text(
+            text,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          )),
       onTap: () {
         Clipboard.setData(ClipboardData(text: text));
       },

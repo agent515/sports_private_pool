@@ -16,6 +16,8 @@ dependencies:
   firebase_auth: ^0.15.5+3
   firebase_core: ^0.4.4+3
   firebase_dynamic_links: ^0.5.3
+  firebase_messaging: ^6.0.13
+  flutter_local_notifications: ^4.0.1+2
   flutter_svg: ^0.22.0
   google_sign_in: ^4.4.0
   hive: ^1.4.1+1

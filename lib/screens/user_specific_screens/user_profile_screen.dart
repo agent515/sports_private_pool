@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sports_private_pool/components/match_card.dart';
 import 'package:sports_private_pool/models/authentication.dart';
 import 'package:sports_private_pool/models/person.dart';
-import 'package:sports_private_pool/screens/user_specific_screens/my_contest_details_screen.dart';
 import 'package:sports_private_pool/services/firebase.dart';
-import 'package:sports_private_pool/services/sport_data.dart';
 import 'package:sports_private_pool/wallet/wallet.dart';
 
-Firebase _firebase = Firebase();
+FirebaseRepository _firebase = FirebaseRepository();
 
 class UserProfileScreen extends StatefulWidget {
   UserProfileScreen();
@@ -31,8 +30,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   List<Widget> matchList = [];
 
-  SharedPreferences _preferences;
-
   List<bool> isSelected = [true, false];
 
   @override
@@ -42,11 +39,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     userBox = Hive.box<Person>('user');
     // loggedInUserData = userData.get('userData');
     user = userBox.get('user');
+    loggedInUserData = user.toMap();
     _getUserDetails();
     super.initState();
   }
 
-  Future<void> _getUserDetails() {
+  Future<void> _getUserDetails() async {
     _firebase.getUserDetails().then(
       (user) {
         // userData.put('userData', user.toMap());
@@ -108,7 +106,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             await _getUserDetails();
           },
           child: Stack(
-            overflow: Overflow.visible,
+            clipBehavior: Clip.none,
             children: [
               ListView(),
               SingleChildScrollView(
@@ -231,18 +229,19 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   height: 0.01 * screenSize.height,
                                 ),
                                 ElevatedButton(
-                                    child: Text(
-                                  'Wallet',
-                                  style: TextStyle(
-                                    color: Colors.white60,
-                                    fontSize: 0.02 * screenSize.height,
+                                  child: Text(
+                                    'Wallet',
+                                    style: TextStyle(
+                                      color: Colors.white60,
+                                      fontSize: 0.02 * screenSize.height,
+                                    ),
                                   ),
-                                ),
                                   onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => MyWallet()),
-                                      );
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => MyWallet()),
+                                    );
                                   },
                                 )
                               ],
@@ -352,144 +351,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 ),
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class MatchCard extends StatelessWidget {
-  const MatchCard(
-      {Key key,
-      @required this.screenSize,
-      @required this.contestMeta,
-      @required this.type})
-      : super(key: key);
-
-  final Size screenSize;
-  final dynamic contestMeta;
-  final String type;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: 8.0),
-      child: GestureDetector(
-        onTap: () async {
-          var contest =
-              await _firebase.getContestDetails(contestMeta['contestId']);
-          SportData sportData = SportData();
-          var matchScore = await sportData.getScore(contest['matchId']);
-          // print(squadData);
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                return MyCreatedContestDetailsScreen(
-                  contest: contest,
-                  type: type,
-                  matchScore: matchScore,
-                );
-              },
-            ),
-          );
-        },
-        child: Container(
-          height: 0.15 * screenSize.height,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(
-              color: Colors.black26,
-              width: 1.0,
-            ),
-            borderRadius: BorderRadius.all(Radius.circular(5.0)),
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              image: AssetImage('images/vs.png'),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 6.0,
-              ),
-            ],
-          ),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-            child: Stack(children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                        child: Flex(
-                          direction: Axis.vertical,
-                          children: [
-                            for (var word in contestMeta['team1'].split(" "))
-                              Text(
-                                word ?? "",
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.w500,
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.white,
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Flex(
-                          direction: Axis.vertical,
-                          children: [
-                            for (var word in contestMeta['team2'].split(" "))
-                              Text(
-                                word ?? "",
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.w500,
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.white,
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      contestMeta['contestId'] ?? "",
-                      style: TextStyle(
-                          decoration: TextDecoration.none,
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.w300,
-                          fontSize: 12.0,
-                          color: Colors.white),
-                    ),
-                    Text(
-                      contestMeta['admin'] ?? "",
-                      style: TextStyle(
-                          decoration: TextDecoration.none,
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.w300,
-                          fontSize: 12.0,
-                          color: Colors.white),
-                    )
-                  ],
-                ),
-              )
-            ]),
           ),
         ),
       ),

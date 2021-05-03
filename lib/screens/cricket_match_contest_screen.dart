@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:sports_private_pool/components/custom_loader.dart';
 import 'package:sports_private_pool/components/rounded_button.dart';
 import 'package:sports_private_pool/components/simple_app_bar.dart';
 import 'package:sports_private_pool/components/contest_input_field.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sports_private_pool/components/custom_tool_tip.dart';
 
 import 'package:random_string/random_string.dart';
 import 'package:sports_private_pool/services/firebase.dart';
 import 'package:sports_private_pool/models/person.dart';
 
-FirebaseAuth _auth = FirebaseAuth.instance;
 Firestore _firestore = Firestore.instance;
-Firebase _firebase = Firebase();
+FirebaseRepository _firebase = FirebaseRepository();
 
 class CricketMatchContestScreen extends StatefulWidget {
-  CricketMatchContestScreen({this.matchData, this.squadData});
+  CricketMatchContestScreen(
+      {@required this.matchData, @required this.squadData});
 
-  dynamic matchData;
-  dynamic squadData;
+  final dynamic matchData;
+  final dynamic squadData;
 
   @override
   _CricketMatchContestScreenState createState() =>
@@ -32,6 +32,7 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
   bool _success;
   bool _error;
   String _errorMessage = '';
+  bool _isLoading = false;
 
   TextEditingController prizeMoneyTextController = TextEditingController();
   TextEditingController entryFeeTextController = TextEditingController();
@@ -155,6 +156,7 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
           {'purse': loggedInUserData['purse'] - contest['prizeMoney']});
       var tempObj = {
         'contestId': contestId,
+        'matchId': matchId,
         'admin': loggedInUserData['username'],
         'team1': matchData['team-1'],
         'team2': matchData['team-2']
@@ -171,12 +173,14 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
           "Contest created successfully.. Here is the code to join the contest: ${contest['joinCode']}");
       setState(() {
         _success = true;
+        _isLoading = false;
         _error = null;
         _errorMessage = '';
       });
     }).catchError((e) {
       print(e);
       _success = false;
+      _isLoading = false;
       _error = true;
       _errorMessage = e.toString();
     });
@@ -189,114 +193,126 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
     super.initState();
   }
 
+  Widget _buildBody() {
+    return SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          SimpleAppBar(appBarTitle: 'C O N T E S T'),
+          Flex(
+            direction: Axis.vertical,
+            children: <Widget>[
+              Text(
+                '${matchData['team-1']}',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              Text(
+                'vs',
+                style: TextStyle(
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              Text(
+                '${matchData['team-2']}',
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 10.0),
+            child: Text(
+              'Create a contest by entering the prize money, entry fee and maximum participants',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+          ),
+          ContestInputField(
+            hintText: 'Rs. 10',
+            labelText: 'Prize money',
+            rightMargin: 200.0,
+            textEditingController: prizeMoneyTextController,
+          ),
+          ContestInputField(
+            hintText: 'Rs. 10',
+            labelText: 'Entry fee',
+            rightMargin: 200.0,
+            textEditingController: entryFeeTextController,
+          ),
+          ContestInputField(
+            hintText: 'max 100',
+            labelText: 'No. of participants',
+            rightMargin: 200.0,
+            textEditingController: noOfParticipantsTextController,
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 30.0),
+            child: RoundedButton(
+              color: Colors.black54,
+              text: 'Create',
+              onpressed: () async {
+                //Create contest and make the sharable invitation link
+                setState(() {
+                  _isLoading = true;
+                });
+                await createContestTransaction();
+              },
+            ),
+          ),
+          Container(
+            alignment: Alignment.center,
+            child: Column(
+              children: <Widget>[
+                _error == true
+                    ? Text(
+                        _errorMessage,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.purple,
+                        ),
+                      )
+                    : SizedBox(
+                        height: 0,
+                      ),
+                SizedBox(
+                  height: 5.0,
+                ),
+                Container(
+                  child: _success == null
+                      ? Text('')
+                      : (_success
+                          ? Column(children: <Widget>[
+                              Text(
+                                  'Contest created.. Here is the the code to join the contest: '),
+                              GestureDetector(
+                                child: CustomToolTip(text: joinCode),
+                                onTap: () {},
+                              )
+                            ])
+                          : Text('Registration failed')),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            SimpleAppBar(appBarTitle: 'C O N T E S T'),
-            Flex(
-              direction: Axis.vertical,
-              children: <Widget>[
-                Text(
-                  '${matchData['team-1']}',
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                Text(
-                  'vs',
-                  style: TextStyle(
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                Text(
-                  '${matchData['team-2']}',
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 10.0),
-              child: Text(
-                'Create a contest by entering the prize money, entry fee and maximum participants',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontStyle: FontStyle.italic),
-              ),
-            ),
-            ContestInputField(
-              hintText: 'Rs. 10',
-              labelText: 'Prize money',
-              rightMargin: 200.0,
-              textEditingController: prizeMoneyTextController,
-            ),
-            ContestInputField(
-              hintText: 'Rs. 10',
-              labelText: 'Entry fee',
-              rightMargin: 200.0,
-              textEditingController: entryFeeTextController,
-            ),
-            ContestInputField(
-              hintText: 'max 100',
-              labelText: 'No. of participants',
-              rightMargin: 200.0,
-              textEditingController: noOfParticipantsTextController,
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 30.0),
-              child: RoundedButton(
-                color: Colors.black54,
-                text: 'Create',
-                onpressed: () async {
-                  //Create contest and make the sharable invitation link
-                  await createContestTransaction();
-                },
-              ),
-            ),
-            Container(
-              alignment: Alignment.center,
-              child: Column(
-                children: <Widget>[
-                  _error == true
-                      ? Text(
-                          _errorMessage,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.purple,
-                          ),
-                        )
-                      : SizedBox(
-                          height: 0,
-                        ),
-                  SizedBox(
-                    height: 5.0,
-                  ),
-                  Container(
-                    child: _success == null
-                        ? Text('')
-                        : (_success
-                            ? Column(children: <Widget>[
-                                Text(
-                                    'Contest created.. Here is the the code to join the contest: '),
-                                GestureDetector(
-                                  child: CustomToolTip(text: joinCode),
-                                  onTap: () {},
-                                )
-                              ])
-                            : Text('Registration failed')),
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
+      body: Stack(
+        children: [
+          _buildBody(),
+          if (_isLoading) CustomLoader(message: 'Creating.. Please wait..'),
+        ],
       ),
     );
   }

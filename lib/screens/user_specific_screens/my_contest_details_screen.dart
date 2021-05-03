@@ -13,10 +13,11 @@ import 'package:share/share.dart';
 import 'package:sports_private_pool/services/firebase.dart';
 
 class MyCreatedContestDetailsScreen extends StatefulWidget {
-  MyCreatedContestDetailsScreen({this.contest, this.type, this.matchScore});
-  final contest;
+  MyCreatedContestDetailsScreen(
+      {@required this.contestId, @required this.type, this.matchId});
+  final contestId;
   final type;
-  final matchScore;
+  final matchId;
 
   @override
   _MyCreatedContestDetailsScreenState createState() =>
@@ -33,10 +34,11 @@ class _MyCreatedContestDetailsScreenState
   Person _user;
   Box<Person> userBox;
 
+  // ignore: non_constant_identifier_names
   dynamic MVP;
   dynamic mostRuns;
   dynamic mostWickets;
-  Firebase _firebase = Firebase();
+  FirebaseRepository _firebase = FirebaseRepository();
 
   Widget predictionWidget = Icon(Icons.arrow_drop_down);
 
@@ -47,17 +49,15 @@ class _MyCreatedContestDetailsScreenState
     print(userBox.isOpen);
     print(userBox.isEmpty);
     _user = userBox.get('user');
-    contest = widget.contest;
     type = widget.type;
-    matchScore = widget.matchScore;
-    contestResult = contest['result'];
+
     _getUserDetails();
     print(matchScore);
     print(contest);
     print(type);
   }
 
-  Future<void> _getUserDetails() {
+  Future<void> _getUserDetails() async {
     _firebase.getUserDetails().then(
       (user) {
         userBox.put('user', user);
@@ -71,6 +71,7 @@ class _MyCreatedContestDetailsScreenState
   Future<void> _createDynamicLink(String joinCode) async {
     final DynamicLinkParameters parameters = DynamicLinkParameters(
       uriPrefix: 'https://envision.page.link',
+      // ignore: todo
       // TODO: App download link here
       link: Uri.parse(
           'https://play.google.com/store/apps/details?id=com.whatsapp&join_code=$joinCode'),
@@ -309,111 +310,139 @@ class _MyCreatedContestDetailsScreenState
               appBarTitle: 'C O N T E S T   D E T A I L S',
             ),
             Expanded(
-              child: ListView(
-                scrollDirection: Axis.vertical,
-                children: <Widget>[
-                  Flex(
-                    direction: Axis.vertical,
-                    children: <Widget>[
-                      Text(
-                        '${matchScore['team-1']}',
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      Text(
-                        'vs',
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      Text(
-                        '${matchScore['team-2']}',
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Center(
-                      child: Column(
-                        children: <Widget>[
-                          Text(
-                            'Match start: ' +
-                                (matchScore['matchStarted']
-                                    ? 'Has started'
-                                    : matchScore['stat']),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  type == 'Joined'
-                      ? Container()
-                      : (contest['participants'].length > 0 &&
-                              (contestResult != null
-                                  ? contestResult.isEmpty
-                                  : true))
-                          ? Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 60.0),
-                              child: RoundedButton(
-                                text: 'Calculate Result',
-                                color: Colors.pink,
-                                onpressed: () async {
-                                  try {
-                                    final tempResult = await _firebase
-                                        .calculateResult(contest);
-                                    print(tempResult);
-                                    setState(() {
-                                      contestResult = tempResult;
-                                    });
-                                  } on ServerException {
-                                    _showMyDialog(
-                                        "Sever Error: Try again later");
-                                    print("Server Excpetion");
-                                  } on NotFoundException {
-                                    _showMyDialog(
-                                        "Result data not available yet.");
-                                    print("Result data not available");
-                                  }
-                                },
+              child: FutureBuilder(
+                future:
+                    SportData().getScore(widget.matchId ?? contest['matchId']),
+                builder:
+                    (BuildContext context, AsyncSnapshot matchScoreSnapshot) {
+                  if (matchScoreSnapshot.hasData) {
+                    return FutureBuilder(
+                      future: _firebase.getContestDetails(widget.contestId),
+                      builder: (BuildContext context,
+                          AsyncSnapshot contestSnapshot) {
+                        if (contestSnapshot.hasData) {
+                          matchScore = matchScoreSnapshot.data;
+                          contest = contestSnapshot.data;
+                          contestResult = contest['result'];
+
+                          return ListView(
+                            scrollDirection: Axis.vertical,
+                            children: <Widget>[
+                              Flex(
+                                direction: Axis.vertical,
+                                children: <Widget>[
+                                  Text(
+                                    '${matchScore['team-1']}',
+                                    style: TextStyle(
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  Text(
+                                    'vs',
+                                    style: TextStyle(
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${matchScore['team-2']}',
+                                    style: TextStyle(
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            )
-                          : contest['participants'].length == 0
-                              ? Center(
-                                  child: Text(
-                                  'Sorry, no one participated',
-                                  style: TextStyle(
-                                      fontStyle: FontStyle.italic,
-                                      color: Colors.grey),
-                                ))
-                              : Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 60.0),
-                                  child: RoundedButton(
-                                    text: 'View Result',
-                                    color: Colors.pink,
-                                    onpressed: () async {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ContestResultScreen(
-                                                    result: contestResult,
-                                                  )));
-                                    },
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Center(
+                                  child: Column(
+                                    children: <Widget>[
+                                      Text(
+                                        'Match start: ' +
+                                            (matchScore['matchStarted']
+                                                ? 'Has started'
+                                                : matchScore['stat']),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                  type == 'Joined'
-                      ? _buildJoinedContestDetails()
-                      : _buildCreatedContestDetails(),
-                ],
+                              ),
+                              type == 'Joined'
+                                  ? Container()
+                                  : (contest['participants'].length > 0 &&
+                                          (contestResult != null
+                                              ? contestResult.isEmpty
+                                              : true))
+                                      ? Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 60.0),
+                                          child: RoundedButton(
+                                            text: 'Calculate Result',
+                                            color: Colors.pink,
+                                            onpressed: () async {
+                                              try {
+                                                final tempResult =
+                                                    await _firebase
+                                                        .calculateResult(
+                                                            contest);
+                                                print(tempResult);
+                                                setState(() {
+                                                  contestResult = tempResult;
+                                                });
+                                              } on ServerException {
+                                                _showMyDialog(
+                                                    "Sever Error: Try again later");
+                                                print("Server Excpetion");
+                                              } on NotFoundException {
+                                                _showMyDialog(
+                                                    "Result data not available yet.");
+                                                print(
+                                                    "Result data not available");
+                                              }
+                                            },
+                                          ),
+                                        )
+                                      : contest['participants'].length == 0
+                                          ? Center(
+                                              child: Text(
+                                              'Sorry, no one participated',
+                                              style: TextStyle(
+                                                  fontStyle: FontStyle.italic,
+                                                  color: Colors.grey),
+                                            ))
+                                          : Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 60.0),
+                                              child: RoundedButton(
+                                                text: 'View Result',
+                                                color: Colors.pink,
+                                                onpressed: () async {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              ContestResultScreen(
+                                                                result:
+                                                                    contestResult,
+                                                              )));
+                                                },
+                                              ),
+                                            ),
+                              type == 'Joined'
+                                  ? _buildJoinedContestDetails()
+                                  : _buildCreatedContestDetails(),
+                            ],
+                          );
+                        }
+                        return Center(child: CircularProgressIndicator());
+                      },
+                    );
+                  }
+                  return Center(child: CircularProgressIndicator());
+                },
               ),
             ),
           ]),
