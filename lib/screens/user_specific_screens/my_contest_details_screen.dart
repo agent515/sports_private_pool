@@ -370,7 +370,29 @@ class _MyCreatedContestDetailsScreenState
                                 ),
                               ),
                               type == 'Joined'
-                                  ? Container()
+                                  ? (contestResult != null
+                                          ? contestResult.isNotEmpty
+                                          : false)
+                                      ? Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 60.0),
+                                          child: RoundedButton(
+                                            text: 'View Result',
+                                            color: Colors.pink,
+                                            onpressed: () async {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ContestResultScreen(
+                                                    result: contestResult,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        )
+                                      : Container()
                                   : (contest['participants'].length > 0 &&
                                           (contestResult != null
                                               ? contestResult.isEmpty
