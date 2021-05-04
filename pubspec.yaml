@@ -46,12 +46,39 @@ flutter:
     - images/icons/icons8-plus.png
     - images/icons/icons8-user.png
     - images/icons/paytm.svg
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+
+  fonts:
+    - family: Source Sans Pro
+      fonts:
+        - asset: fonts/SourceSansPro-Regular.ttf
+          weight: 400
+        - asset: fonts/SourceSansPro-Black.ttf
+          weight: 900
+        - asset: fonts/SourceSansPro-BlackItalic.ttf
+          weight: 900
+          style: italic
+        - asset: fonts/SourceSansPro-Bold.ttf
+          weight: 800
+        - asset: fonts/SourceSansPro-BoldItalic.ttf
+          weight: 800
+          style: italic
+        - asset: fonts/SourceSansPro-ExtraLight.ttf
+          weight: 200
+        - asset: fonts/SourceSansPro-ExtraLightItalic.ttf
+          weight: 200
+          style: italic
+        - asset: fonts/SourceSansPro-Italic.ttf
+          style: italic
+        - asset: fonts/SourceSansPro-Light.ttf
+          weight: 300
+        - asset: fonts/SourceSansPro-LightItalic.ttf
+          weight: 300
+          style: italic
+        - asset: fonts/SourceSansPro-SemiBold.ttf
+          weight: 600
+        - asset: fonts/SourceSansPro-SemiBoldItalic.ttf
+          weight: 600
+          style: italic
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

@@ -47,12 +47,12 @@ class _MatchDetailsState extends State<MatchDetails> {
           children: <Widget>[
             Text(
               matchData['team-$temp'],
-              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
             ),
             Text(
               'squad not available',
               style: TextStyle(
-                fontSize: 12.0,
+                fontSize: 14.0,
                 fontWeight: FontWeight.w400,
               ),
             ),
@@ -128,21 +128,21 @@ class _MatchDetailsState extends State<MatchDetails> {
             Text(
               '${matchData['team-1']}',
               style: TextStyle(
-                fontSize: 18.0,
+                fontSize: 20.0,
                 fontWeight: FontWeight.w700,
               ),
             ),
             Text(
               'vs',
               style: TextStyle(
-                fontSize: 12.0,
+                fontSize: 14.0,
                 fontWeight: FontWeight.w400,
               ),
             ),
             Text(
               '${matchData['team-2']}',
               style: TextStyle(
-                fontSize: 18.0,
+                fontSize: 20.0,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -171,7 +171,7 @@ class _MatchDetailsState extends State<MatchDetails> {
                         child: Text(
                           'Cannot create contest without squad details',
                           style: TextStyle(
-                            fontSize: 15.0,
+                            fontSize: 16.0,
                             fontStyle: FontStyle.italic,
                           ),
                         )),

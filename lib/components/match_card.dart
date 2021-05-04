@@ -72,7 +72,7 @@ class MatchCard extends StatelessWidget {
                                 word ?? "",
                                 style: TextStyle(
                                   fontSize: 16.0,
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w600,
                                   fontStyle: FontStyle.italic,
                                   color: Colors.white,
                                 ),
@@ -89,7 +89,7 @@ class MatchCard extends StatelessWidget {
                                 word ?? "",
                                 style: TextStyle(
                                   fontSize: 16.0,
-                                  fontWeight: FontWeight.w500,
+                                  fontWeight: FontWeight.w600,
                                   fontStyle: FontStyle.italic,
                                   color: Colors.white,
                                 ),

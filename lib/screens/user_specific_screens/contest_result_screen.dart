@@ -34,7 +34,7 @@ class ContestResultScreen extends StatelessWidget {
 
   Widget _leaderboard(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final kTextStyle = TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
+    final kTextStyle = TextStyle(fontSize: 16, fontWeight: FontWeight.w600);
     return ListView.builder(
       shrinkWrap: true,
       itemCount: result['leaderboard'].length,
@@ -120,7 +120,7 @@ class LeaderboardTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final kTextStyle = TextStyle(fontSize: 16, fontWeight: FontWeight.w300);
+    final kTextStyle = TextStyle(fontSize: 16, fontWeight: FontWeight.w400);
 
     return Container(
       height: 40.0,

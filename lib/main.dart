@@ -90,7 +90,10 @@ void main() async {
       child: MaterialApp(
         title: 'Envision',
         navigatorKey: navigatorKey,
-        theme: ThemeData(accentColor: Colors.black87),
+        theme: ThemeData(
+          accentColor: Colors.black87,
+          fontFamily: 'Source Sans Pro',
+        ),
         debugShowCheckedModeBanner: false,
         home: Envision(),
       ),

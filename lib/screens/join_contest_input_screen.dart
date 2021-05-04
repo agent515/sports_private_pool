@@ -221,9 +221,10 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
           ),
           padding: EdgeInsets.symmetric(horizontal: 7.5, vertical: 2.5),
           child: Row(
-            children: <Widget>[
+            children: [
               Text(
                 player['name'].toString(),
+                softWrap: true,
                 style: TextStyle(
                     color: choice == 'MVP'
                         ? (MVP == player['pid'].toString()
@@ -236,8 +237,8 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                             : (mostWickets == player['pid'].toString()
                                 ? Colors.white
                                 : Colors.black54)),
-                    fontSize: 13.0),
-              )
+                    fontSize: 14.0),
+              ),
             ],
           ),
         ),
@@ -286,23 +287,26 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
           ),
           padding: EdgeInsets.symmetric(horizontal: 7.5, vertical: 2.5),
           child: Row(
-            children: <Widget>[
-              Text(
-                player['name'].toString(),
-                style: TextStyle(
-                    color: choice == 'MVP'
-                        ? (MVP == player['pid'].toString()
-                            ? Colors.white
-                            : Colors.black54)
-                        : (choice == 'mostRuns'
-                            ? (mostRuns == player['pid'].toString()
-                                ? Colors.white
-                                : Colors.black54)
-                            : (mostWickets == player['pid'].toString()
-                                ? Colors.white
-                                : Colors.black54)),
-                    fontSize: 13.0),
-              )
+            children: [
+              Flexible(
+                child: Text(
+                  player['name'].toString(),
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      color: choice == 'MVP'
+                          ? (MVP == player['pid'].toString()
+                              ? Colors.white
+                              : Colors.black54)
+                          : (choice == 'mostRuns'
+                              ? (mostRuns == player['pid'].toString()
+                                  ? Colors.white
+                                  : Colors.black54)
+                              : (mostWickets == player['pid'].toString()
+                                  ? Colors.white
+                                  : Colors.black54)),
+                      fontSize: 14.0),
+                ),
+              ),
             ],
           ),
         ),
@@ -313,25 +317,28 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
 
     return Container(
       height: 200.0,
-      child: ListView(scrollDirection: Axis.vertical, children: <Widget>[
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: team1,
+      child: ListView(
+        scrollDirection: Axis.vertical,
+        children: <Widget>[
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: team1,
+                ),
               ),
-            ),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: team2,
-              ),
-            )
-          ],
-        ),
-      ]),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: team2,
+                ),
+              )
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -422,197 +429,208 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                 curve: Curves.fastOutSlowIn,
               ));
     }
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Column(
-        children: <Widget>[
-          SimpleAppBar(
-            appBarTitle: 'C O N T E S T',
-          ),
-          Expanded(
-            child: ListView(
-              controller: _controller,
-              scrollDirection: Axis.vertical,
-              physics: ScrollPhysics(),
-              children: [
-                Theme(
-                  data: ThemeData(
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Column(
+          children: <Widget>[
+            SimpleAppBar(
+              appBarTitle: 'C O N T E S T',
+            ),
+            Expanded(
+              child: ListView(
+                controller: _controller,
+                scrollDirection: Axis.vertical,
+                physics: ScrollPhysics(),
+                children: [
+                  Theme(
+                    data: ThemeData(
                       primaryColor: Colors.black87,
-                      accentColor: Colors.black54),
-                  child: Stepper(
-                    physics: ClampingScrollPhysics(),
-                    steps: _getSteps(),
-                    currentStep: this._currentStep,
-                    onStepTapped: (index) {
-                      if (index <= this._currentStep) {
-                        setState(() {
-                          this._currentStep = index;
-                        });
-                      }
-                    },
-                    onStepContinue: () {
-                      if (this._currentStep == 0 && MVP == null) {
-                        return;
-                      }
-                      if (this._currentStep == 1 && mostRuns == null) {
-                        return;
-                      }
-                      if (this._currentStep == 2 && mostWickets == null) {
-                        return;
-                      }
-                      if (this._currentStep < _getSteps().length - 1) {
-                        setState(() {
-                          this._currentStep += 1;
-                        });
-                      } else {
-                        //complete
-                        print('$MVP, $mostRuns, $mostWickets, $matchResult');
-                        setState(() {
-                          _show = true;
-                          print(_show);
-                          _message = (contest['entryFee'] <
-                                  loggedInUserData['purse'])
-                              ? ""
-                              : "You don't have enough money in the purse to enter the contest..";
-                        });
-                      }
-                    },
-                    onStepCancel: () {
-                      if (this._currentStep > 0) {
-                        setState(() {
-                          this._currentStep -= 1;
-                        });
-                      }
-                    },
+                      accentColor: Colors.black54,
+                      colorScheme: ColorScheme.light(primary: Colors.black),
+                    ),
+                    child: Stepper(
+                      physics: ClampingScrollPhysics(),
+                      steps: _getSteps(),
+                      currentStep: this._currentStep,
+                      onStepTapped: (index) {
+                        if (index <= this._currentStep) {
+                          setState(() {
+                            this._currentStep = index;
+                          });
+                        }
+                      },
+                      onStepContinue: () {
+                        if (this._currentStep == 0 && MVP == null) {
+                          return;
+                        }
+                        if (this._currentStep == 1 && mostRuns == null) {
+                          return;
+                        }
+                        if (this._currentStep == 2 && mostWickets == null) {
+                          return;
+                        }
+                        if (this._currentStep < _getSteps().length - 1) {
+                          setState(() {
+                            this._currentStep += 1;
+                          });
+                        } else {
+                          //complete
+                          print('$MVP, $mostRuns, $mostWickets, $matchResult');
+                          setState(() {
+                            _show = true;
+                            print(_show);
+                            _message = (contest['entryFee'] <
+                                    loggedInUserData['purse'])
+                                ? ""
+                                : "You don't have enough money in the purse to enter the contest..";
+                          });
+                          _controller.animateTo(
+                              _show
+                                  ? _controller.position.maxScrollExtent + 250
+                                  : _controller.position.maxScrollExtent,
+                              duration: Duration(milliseconds: 200),
+                              curve: Curves.bounceOut);
+                        }
+                      },
+                      onStepCancel: () {
+                        if (this._currentStep > 0) {
+                          setState(() {
+                            this._currentStep -= 1;
+                          });
+                        }
+                      },
+                    ),
                   ),
-                ),
-                _show
-                    ? Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 20.0, vertical: 0.0),
-                        child: Column(
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 15.0),
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                  _show
+                      ? Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20.0, vertical: 0.0),
+                          child: Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 15.0),
+                                child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      RichText(
+                                        textAlign: TextAlign.left,
+                                        softWrap: true,
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: 'Contest created by ',
+                                              style: TextStyle(
+                                                fontSize: 20.0,
+                                                color: Colors.black54,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: '${contest["admin"]}',
+                                              style: TextStyle(
+                                                fontSize: 20.0,
+                                                color: Colors.black87,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ]),
+                              ),
+                              Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    RichText(
-                                      textAlign: TextAlign.left,
-                                      softWrap: true,
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: 'Contest created by ',
-                                            style: TextStyle(
-                                              fontSize: 20.0,
-                                              color: Colors.black54,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text: '${contest["admin"]}',
-                                            style: TextStyle(
-                                              fontSize: 20.0,
-                                              color: Colors.black87,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                        ],
+                                    Text(
+                                      'Contest entry fee:',
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.w400,
                                       ),
                                     ),
+                                    Text(
+                                      'Rs. ${contest['entryFee']}',
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    )
                                   ]),
-                            ),
-                            Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    'Contest entry fee:',
-                                    style: TextStyle(
-                                      fontSize: 15.0,
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.w400,
+                              Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'Contest winning prize:',
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.w400,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    'Rs. ${contest['entryFee']}',
-                                    style: TextStyle(
-                                      fontSize: 15.0,
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.w700,
+                                    Text(
+                                      'Rs. ${contest['prizeMoney']}',
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    )
+                                  ]),
+                              Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'No. of participants:',
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.w400,
+                                      ),
                                     ),
-                                  )
-                                ]),
-                            Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    'Contest winning prize:',
-                                    style: TextStyle(
-                                      fontSize: 15.0,
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Rs. ${contest['prizeMoney']}',
-                                    style: TextStyle(
-                                      fontSize: 15.0,
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  )
-                                ]),
-                            Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    'No. of participants:',
-                                    style: TextStyle(
-                                      fontSize: 15.0,
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                  Text(
-                                    '${contest['noOfParticipants']}',
-                                    style: TextStyle(
-                                      fontSize: 15.0,
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  )
-                                ]),
-                            RoundedButton(
-                              color: Colors.black87,
-                              text: 'Join',
-                              onpressed: (contest['entryFee'] <
-                                      loggedInUserData['purse'])
-                                  ? () async {
-                                      await joinContest();
-                                      Navigator.pop(context);
-                                    }
-                                  : null,
-                            )
-                          ],
+                                    Text(
+                                      '${contest['noOfParticipants']}',
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    )
+                                  ]),
+                              RoundedButton(
+                                color: Colors.black87,
+                                text: 'Join',
+                                onpressed: (contest['entryFee'] <
+                                        loggedInUserData['purse'])
+                                    ? () async {
+                                        await joinContest();
+                                        Navigator.pop(context);
+                                      }
+                                    : null,
+                              )
+                            ],
+                          ),
+                        )
+                      : SizedBox(
+                          height: 20.0,
+                          child: Text(
+                            '$_message',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 18.0, fontWeight: FontWeight.w400),
+                          ),
                         ),
-                      )
-                    : SizedBox(
-                        height: 20.0,
-                        child: Text(
-                          '$_message',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 18.0, fontWeight: FontWeight.w400),
-                        ),
-                      ),
-              ],
-            ),
-          )
-        ],
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
