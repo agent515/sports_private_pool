@@ -204,28 +204,28 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
               Text(
                 '${matchData['team-1']}',
                 style: TextStyle(
-                  fontSize: 18.0,
+                  fontSize: 20.0,
                   fontWeight: FontWeight.w700,
                 ),
               ),
               Text(
                 'vs',
                 style: TextStyle(
-                  fontSize: 12.0,
+                  fontSize: 14.0,
                   fontWeight: FontWeight.w400,
                 ),
               ),
               Text(
                 '${matchData['team-2']}',
                 style: TextStyle(
-                  fontSize: 18.0,
+                  fontSize: 20.0,
                   fontWeight: FontWeight.w700,
                 ),
               ),
             ],
           ),
           Container(
-            margin: EdgeInsets.symmetric(vertical: 10.0),
+            margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
             child: Text(
               'Create a contest by entering the prize money, entry fee and maximum participants',
               textAlign: TextAlign.center,
@@ -308,11 +308,13 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          _buildBody(),
-          if (_isLoading) CustomLoader(message: 'Creating.. Please wait..'),
-        ],
+      body: SafeArea(
+        child: Stack(
+          children: [
+            _buildBody(),
+            if (_isLoading) CustomLoader(message: 'Creating.. Please wait..'),
+          ],
+        ),
       ),
     );
   }

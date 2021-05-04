@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
           word,
           style: TextStyle(
             fontSize: 16.0,
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w600,
             fontStyle: FontStyle.italic,
             color: Colors.white,
           ),
@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
           word,
           style: TextStyle(
             fontSize: 16.0,
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.w600,
             fontStyle: FontStyle.italic,
             color: Colors.white,
           ),
@@ -146,7 +146,7 @@ class _HomePageState extends State<HomePage> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13.0,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w600,
                   fontStyle: FontStyle.italic,
                   color: Colors.white,
                 ),

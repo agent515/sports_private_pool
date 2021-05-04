@@ -253,16 +253,38 @@ class _MyCreatedContestDetailsScreenState
       mostWickets = await sportData
           .getPlayerInfo(contest['predictions'][_user.username]['mostWickets']);
 
+      String placeholder =
+          "http://www.londondentalsmiles.co.uk/wp-content/uploads/2017/06/person-dummy.jpg";
+
       setState(() {
         predictionWidget = Column(
           children: <Widget>[
-            ListTile(leading: Text('MVP :'), title: Text('${MVP['name']}')),
             ListTile(
-                leading: Text('Most Runs :'),
-                title: Text('${mostRuns['name']}')),
+              leading: Text('MVP :'),
+              title: Text('${MVP['name']}'),
+              trailing: CircleAvatar(
+                radius: 20,
+                backgroundImage: NetworkImage(MVP['imageURL'] ?? placeholder),
+              ),
+            ),
             ListTile(
-                leading: Text('Most Wickets :'),
-                title: Text('${mostWickets['name']}')),
+              leading: Text('Most Runs :'),
+              title: Text('${mostRuns['name']}'),
+              trailing: CircleAvatar(
+                radius: 20,
+                backgroundImage:
+                    NetworkImage(mostRuns['imageURL'] ?? placeholder),
+              ),
+            ),
+            ListTile(
+              leading: Text('Most Wickets :'),
+              title: Text('${mostWickets['name']}'),
+              trailing: CircleAvatar(
+                radius: 20,
+                backgroundImage:
+                    NetworkImage(mostWickets['imageURL'] ?? placeholder),
+              ),
+            ),
             ListTile(
                 leading: Text('Match Result :'),
                 title: Text(
