@@ -47,14 +47,14 @@ class _MatchDetailsState extends State<MatchDetails> {
           children: <Widget>[
             Text(
               matchData['team-$temp'],
-              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            SizedBox(
+              height: 8.0,
             ),
             Text(
               'squad not available',
-              style: TextStyle(
-                fontSize: 14.0,
-                fontWeight: FontWeight.w400,
-              ),
+              style: Theme.of(context).textTheme.bodyText2,
             ),
           ],
         ),
@@ -83,14 +83,14 @@ class _MatchDetailsState extends State<MatchDetails> {
         children: <Widget>[
           Text(
             teamName,
-            style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          SizedBox(
+            height: 8.0,
           ),
           Text(
             playerList,
-            style: TextStyle(
-              fontSize: 12.0,
-              fontWeight: FontWeight.w400,
-            ),
+            style: Theme.of(context).textTheme.bodyText2,
           )
         ],
       ),
@@ -99,7 +99,7 @@ class _MatchDetailsState extends State<MatchDetails> {
 
   Widget createContest() {
     return RoundedButton(
-      color: Colors.black87,
+      color: Theme.of(context).accentColor,
       text: 'Create Contest',
       onpressed: () {
         Navigator.push(
@@ -116,74 +116,73 @@ class _MatchDetailsState extends State<MatchDetails> {
   @override
   Widget build(BuildContext context) {
     print(dateObject);
-    return ListView(
-      scrollDirection: Axis.vertical,
-      children: <Widget>[
-        SimpleAppBar(
-          appBarTitle: 'M A T C H   D E T A I L S',
-        ),
-        Flex(
-          direction: Axis.vertical,
-          children: <Widget>[
-            Text(
-              '${matchData['team-1']}',
-              style: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.w700,
+    return Scaffold(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              SimpleAppBar(
+                appBarTitle: 'M A T C H   D E T A I L S',
               ),
-            ),
-            Text(
-              'vs',
-              style: TextStyle(
-                fontSize: 14.0,
-                fontWeight: FontWeight.w400,
+              Flex(
+                direction: Axis.vertical,
+                children: <Widget>[
+                  Text(
+                    '${matchData['team-1']}',
+                    style: Theme.of(context).textTheme.headline5,
+                  ),
+                  Text('vs', style: Theme.of(context).textTheme.headline6),
+                  Text(
+                    '${matchData['team-2']}',
+                    style: Theme.of(context).textTheme.headline5,
+                  ),
+                ],
               ),
-            ),
-            Text(
-              '${matchData['team-2']}',
-              style: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
-        ),
-        Container(
-            margin: EdgeInsets.only(top: 10.0),
-            child: Column(
-              children: <Widget>[
-                Center(
+              Container(
+                  margin: EdgeInsets.only(top: 10.0),
                   child: Column(
                     children: <Widget>[
-                      Text(
-                        'Date  ${date.substring(0, 10)}',
+                      Center(
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              'Date  ${date.substring(0, 10)}',
+                              style: Theme.of(context).textTheme.bodyText1,
+                            ),
+                            Text(
+                              'Time  ${date.substring(11, 16)}',
+                              style: Theme.of(context).textTheme.bodyText1,
+                            )
+                          ],
+                        ),
                       ),
-                      Text(
-                        'Time  ${date.substring(11, 16)}',
+                      matchData['squad']
+                          ? createContest()
+                          : Container(
+                              margin: EdgeInsets.symmetric(
+                                  vertical: 20.0, horizontal: 40),
+                              child: Text(
+                                'Cannot create contest without squad details',
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline6
+                                    .copyWith(
+                                        color: Theme.of(context).accentColor),
+                              )),
+                      Container(
+                        margin:
+                            EdgeInsets.only(top: 10.0, right: 20.0, left: 20.0),
+                        child: Column(
+                          children: <Widget>[getSquad(0), getSquad(1)],
+                        ),
                       )
                     ],
-                  ),
-                ),
-                matchData['squad']
-                    ? createContest()
-                    : Container(
-                        margin: EdgeInsets.symmetric(vertical: 10.0),
-                        child: Text(
-                          'Cannot create contest without squad details',
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        )),
-                Container(
-                  margin: EdgeInsets.only(top: 10.0, right: 20.0, left: 20.0),
-                  child: Column(
-                    children: <Widget>[getSquad(0), getSquad(1)],
-                  ),
-                )
-              ],
-            ))
-      ],
+                  ))
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

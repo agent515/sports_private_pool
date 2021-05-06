@@ -241,7 +241,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             InputBox(
               hintText: 'Username',
-              prefixIcon: Icon(Icons.perm_identity),
+              prefixIcon: Icon(
+                Icons.perm_identity,
+                color: Theme.of(context).primaryColor,
+              ),
               paddingTop: 10.0,
               textController: usernameTextController,
               fNode: userNameNode,
@@ -250,7 +253,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
             InputBox(
               hintText: 'Email',
               keyboardType: TextInputType.emailAddress,
-              prefixIcon: Icon(Icons.email),
+              prefixIcon: Icon(
+                Icons.email,
+                color: Theme.of(context).primaryColor,
+              ),
               paddingTop: 10.0,
               textController: emailTextController,
               fNode: emailNode,
@@ -258,7 +264,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             InputBox(
               hintText: 'Password',
-              prefixIcon: Icon(Icons.security),
+              prefixIcon: Icon(
+                Icons.security,
+                color: Theme.of(context).primaryColor,
+              ),
               paddingTop: 10.0,
               textController: passwordTextController,
               obscureText: true,
@@ -267,7 +276,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             InputBox(
               hintText: 'Re-enter Password',
-              prefixIcon: Icon(Icons.security),
+              prefixIcon: Icon(
+                Icons.security,
+                color: Theme.of(context).primaryColor,
+              ),
               paddingTop: 10.0,
               textController: cpasswordTextController,
               obscureText: true,
@@ -276,7 +288,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 10.0),
               child: RoundedButton(
-                color: Colors.lightBlue,
+                color: Theme.of(context).primaryColor,
                 text: 'Register',
                 onpressed: () async {
                   //register button is pressed
@@ -330,7 +342,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             SizedBox(height: 10),
             RoundedButton(
-                color: Colors.deepOrangeAccent,
+                color: Theme.of(context).accentColor,
                 text: 'Sign Up With Google',
                 onpressed: () async {
                   try {

@@ -40,6 +40,8 @@ class _MyCreatedContestDetailsScreenState
   dynamic mostWickets;
   FirebaseRepository _firebase = FirebaseRepository();
 
+  TextStyle kUserProfileInfoDetailsTextStyle;
+
   Widget predictionWidget = Icon(Icons.arrow_drop_down);
 
   @override
@@ -99,6 +101,10 @@ class _MyCreatedContestDetailsScreenState
   }
 
   Widget _buildJoinedContestDetails() {
+    kUserProfileInfoDetailsTextStyle = Theme.of(context)
+        .textTheme
+        .headline6
+        .copyWith(color: Colors.black54, fontWeight: FontWeight.w600);
     return Container(
       margin: EdgeInsets.only(top: 20.0),
       child: Column(
@@ -108,35 +114,42 @@ class _MyCreatedContestDetailsScreenState
               'Join Code :',
               style: kUserProfileInfoTextStyle,
             ),
-            title: Text(contest['joinCode']),
+            title: Text(contest['joinCode'],
+                style: kUserProfileInfoDetailsTextStyle),
           ),
           ListTile(
             leading: Text(
               'Prize :',
               style: kUserProfileInfoTextStyle,
             ),
-            title: Text(contest['prizeMoney'].toString()),
+            title: Text(
+              contest['prizeMoney'].toString(),
+              style: kUserProfileInfoDetailsTextStyle,
+            ),
           ),
           ListTile(
             leading: Text(
               'Entry Fee :',
               style: kUserProfileInfoTextStyle,
             ),
-            title: Text(contest['entryFee'].toString()),
+            title: Text(contest['entryFee'].toString(),
+                style: kUserProfileInfoDetailsTextStyle),
           ),
           ListTile(
             leading: Text(
               'No. of participants (currently) :',
               style: kUserProfileInfoTextStyle,
             ),
-            title: Text(contest['participants'].length.toString()),
+            title: Text(contest['participants'].length.toString(),
+                style: kUserProfileInfoDetailsTextStyle),
           ),
           ListTile(
             leading: Text(
               'No. of participants (max) :',
               style: kUserProfileInfoTextStyle,
             ),
-            title: Text(contest['noOfParticipants'].toInt().toString()),
+            title: Text(contest['noOfParticipants'].toInt().toString(),
+                style: kUserProfileInfoDetailsTextStyle),
           ),
           Container(
             color: Color(0xFFEEEEEE),
@@ -160,6 +173,10 @@ class _MyCreatedContestDetailsScreenState
   }
 
   Widget _buildCreatedContestDetails() {
+    kUserProfileInfoDetailsTextStyle = Theme.of(context)
+        .textTheme
+        .headline6
+        .copyWith(color: Colors.black54, fontWeight: FontWeight.w600);
     return Container(
       margin: EdgeInsets.only(top: 20.0),
       child: Column(
@@ -176,7 +193,10 @@ class _MyCreatedContestDetailsScreenState
               onTap: () {},
             ),
             trailing: IconButton(
-              icon: Icon(Icons.share),
+              icon: Icon(
+                Icons.share,
+                color: Colors.grey[500],
+              ),
               onPressed: () async {
                 await _createDynamicLink(contest['joinCode']);
               },
@@ -187,28 +207,32 @@ class _MyCreatedContestDetailsScreenState
               'Prize :',
               style: kUserProfileInfoTextStyle,
             ),
-            title: Text(contest['prizeMoney'].toString()),
+            title: Text(contest['prizeMoney'].toString(),
+                style: kUserProfileInfoDetailsTextStyle),
           ),
           ListTile(
             leading: Text(
               'Entry Fee :',
               style: kUserProfileInfoTextStyle,
             ),
-            title: Text(contest['entryFee'].toString()),
+            title: Text(contest['entryFee'].toString(),
+                style: kUserProfileInfoDetailsTextStyle),
           ),
           ListTile(
             leading: Text(
               'No. of participants (currently) :',
               style: kUserProfileInfoTextStyle,
             ),
-            title: Text(contest['participants'].length.toString()),
+            title: Text(contest['participants'].length.toString(),
+                style: kUserProfileInfoDetailsTextStyle),
           ),
           ListTile(
             leading: Text(
               'No. of participants (max) :',
               style: kUserProfileInfoTextStyle,
             ),
-            title: Text(contest['noOfParticipants'].toInt().toString()),
+            title: Text(contest['noOfParticipants'].toInt().toString(),
+                style: kUserProfileInfoDetailsTextStyle),
           ),
           ListTile(
             leading: Text(
@@ -301,7 +325,10 @@ class _MyCreatedContestDetailsScreenState
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Envision'),
+          title: Text(
+            'Envision',
+            style: Theme.of(context).textTheme.headline5,
+          ),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
@@ -355,24 +382,18 @@ class _MyCreatedContestDetailsScreenState
                                 children: <Widget>[
                                   Text(
                                     '${matchScore['team-1']}',
-                                    style: TextStyle(
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.w700,
-                                    ),
+                                    style:
+                                        Theme.of(context).textTheme.headline5,
                                   ),
                                   Text(
                                     'vs',
-                                    style: TextStyle(
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                                    style:
+                                        Theme.of(context).textTheme.headline6,
                                   ),
                                   Text(
                                     '${matchScore['team-2']}',
-                                    style: TextStyle(
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.w700,
-                                    ),
+                                    style:
+                                        Theme.of(context).textTheme.headline5,
                                   ),
                                 ],
                               ),
@@ -386,6 +407,9 @@ class _MyCreatedContestDetailsScreenState
                                             (matchScore['matchStarted']
                                                 ? 'Has started'
                                                 : matchScore['stat']),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText2,
                                       ),
                                     ],
                                   ),
@@ -400,7 +424,8 @@ class _MyCreatedContestDetailsScreenState
                                               horizontal: 60.0),
                                           child: RoundedButton(
                                             text: 'View Result',
-                                            color: Colors.pink,
+                                            color:
+                                                Theme.of(context).accentColor,
                                             onpressed: () async {
                                               Navigator.push(
                                                 context,
@@ -424,7 +449,8 @@ class _MyCreatedContestDetailsScreenState
                                               horizontal: 60.0),
                                           child: RoundedButton(
                                             text: 'Calculate Result',
-                                            color: Colors.pink,
+                                            color:
+                                                Theme.of(context).accentColor,
                                             onpressed: () async {
                                               try {
                                                 final tempResult =
@@ -451,18 +477,20 @@ class _MyCreatedContestDetailsScreenState
                                       : contest['participants'].length == 0
                                           ? Center(
                                               child: Text(
-                                              'Sorry, no one participated',
-                                              style: TextStyle(
-                                                  fontStyle: FontStyle.italic,
-                                                  color: Colors.grey),
-                                            ))
+                                                'Sorry, no one participated',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText1,
+                                              ),
+                                            )
                                           : Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
                                                       horizontal: 60.0),
                                               child: RoundedButton(
                                                 text: 'View Result',
-                                                color: Colors.pink,
+                                                color: Theme.of(context)
+                                                    .accentColor,
                                                 onpressed: () async {
                                                   Navigator.push(
                                                       context,
