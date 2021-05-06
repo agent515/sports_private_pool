@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:sports_private_pool/models/push_notification.dart';
 import 'package:sports_private_pool/screens/user_specific_screens/my_contest_details_screen.dart';
 import 'package:sports_private_pool/services/constants.dart';
@@ -91,44 +93,6 @@ class _MainFrameAppState extends State<MainFrameApp> {
     );
   }
 
-  Widget _buildBottomAppBarButton(
-      // ignore: non_constant_identifier_names
-      {int index_,
-      String label,
-      String imagePath}) {
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: 60, minHeight: 60),
-      child: ElevatedButton(
-          style: ButtonStyle(
-              backgroundColor:
-                  MaterialStateProperty.all<Color>(Colors.transparent),
-              elevation: MaterialStateProperty.all<double>(0.0)),
-          onPressed: () {
-            setState(() {
-              index = index_;
-              currentTab = TabItem.values[index];
-            });
-          },
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              ImageIcon(
-                AssetImage(imagePath),
-                color: index == index_ ? SELECTED_COLOR : UNSELECTED_COLOR,
-              ),
-              Text(
-                label,
-                style: TextStyle(
-                    color: index == index_ ? SELECTED_COLOR : UNSELECTED_COLOR),
-              ),
-              SizedBox(
-                height: 8.0,
-              )
-            ],
-          )),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -148,58 +112,52 @@ class _MainFrameAppState extends State<MainFrameApp> {
             _buildOffstageNavigator(TabItem.profile),
           ],
         ),
-        bottomNavigationBar: BottomAppBar(
-          color: Colors.transparent,
-          child: Container(
-            height: 70,
-            child: Stack(
-              alignment: AlignmentDirectional.bottomCenter,
-              children: [
-                Container(
-                  height: 60,
-                  color: Colors.black87,
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    _buildBottomAppBarButton(
-                        index_: 0,
-                        label: 'Home',
-                        imagePath: 'images/icons/icons8-home.png'),
-                    ConstrainedBox(
-                      constraints: BoxConstraints(maxHeight: 70, minHeight: 70),
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                            elevation: MaterialStateProperty.all<double>(5.0),
-                            shape: MaterialStateProperty.all<CircleBorder>(
-                              CircleBorder(
-                                side: BorderSide(color: Colors.grey),
-                              ),
-                            ),
-                            backgroundColor:
-                                MaterialStateProperty.all<Color>(Colors.grey)),
-                        child: ImageIcon(
-                          AssetImage('images/icons/icons8-plus.png'),
-                          size: ICON_SIZE + 10,
-                          color: SELECTED_COLOR,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            index = 1;
-                            currentTab = TabItem.values[index];
-                          });
-                        },
-                      ),
-                    ),
-                    _buildBottomAppBarButton(
-                        index_: 2,
-                        label: 'Profile',
-                        imagePath: 'images/icons/icons8-user.png'),
-                  ],
-                ),
-              ],
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                blurRadius: 20,
+                color: Colors.black.withOpacity(.1),
+              )
+            ],
+          ),
+          child: SafeArea(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
+              child: GNav(
+                rippleColor: Colors.grey[300],
+                hoverColor: Colors.grey[100],
+                gap: 8,
+                activeColor: Colors.white,
+                iconSize: 24,
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                duration: Duration(milliseconds: 400),
+                tabBackgroundColor: kNeonBlue.withOpacity(0.7),
+                color: Colors.black,
+                tabs: [
+                  GButton(
+                    icon: LineIcons.home,
+                    text: 'Home',
+                  ),
+                  GButton(
+                    icon: LineIcons.plusCircle,
+                    text: 'Join',
+                  ),
+                  GButton(
+                    icon: LineIcons.user,
+                    text: 'Profile',
+                  ),
+                ],
+                selectedIndex: index,
+                onTabChange: (i) {
+                  setState(() {
+                    index = i;
+                    currentTab = TabItem.values[index];
+                  });
+                },
+              ),
             ),
           ),
         ),
