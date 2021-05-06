@@ -21,8 +21,8 @@ const kTextInputFieldDecoration = InputDecoration(
       borderRadius: BorderRadius.all(Radius.circular(40.0)),
     ));
 
-const kUserProfileInfoTextStyle =
-    TextStyle(fontSize: 18.0, color: Colors.black54);
+const kUserProfileInfoTextStyle = TextStyle(
+    fontSize: 18.0, color: Colors.black87, fontWeight: FontWeight.w600);
 
 enum NotificationEnum {
   userJoinsContest,

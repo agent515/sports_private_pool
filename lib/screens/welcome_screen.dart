@@ -34,7 +34,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               height: 40.0,
             ),
             RoundedButton(
-              color: Colors.black87,
+              color: Theme.of(context).primaryColor,
               text: 'Login',
               onpressed: () {
                 Navigator.push(context,
@@ -42,7 +42,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               },
             ),
             RoundedButton(
-              color: Colors.black54,
+              color: Theme.of(context).accentColor,
               text: 'Register',
               onpressed: () {
                 Navigator.push(context,

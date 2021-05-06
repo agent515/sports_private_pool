@@ -182,8 +182,14 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
     List<Widget> team2 = [];
 
     for (var player in squadData['squad'][0]['players']) {
-      Widget playerWidget = GestureDetector(
-        onTap: () {
+      Widget playerWidget = PlayerCard(
+        player: player,
+        MVP: MVP,
+        mostRuns: mostRuns,
+        mostWickets: mostWickets,
+        choice: choice,
+        color: Theme.of(context).accentColor,
+        callback: () {
           setState(() {
             if (choice == 'MVP') {
               MVP = player['pid'].toString();
@@ -194,62 +200,20 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
             }
           });
         },
-        child: Container(
-          height: 25.0,
-          margin: EdgeInsets.symmetric(vertical: 2.5),
-          decoration: BoxDecoration(
-            color: choice == 'MVP'
-                ? (MVP == player['pid'].toString()
-                    ? Colors.black54
-                    : Colors.white)
-                : (choice == 'mostRuns'
-                    ? (mostRuns == player['pid'].toString()
-                        ? Colors.black54
-                        : Colors.white)
-                    : (mostWickets == player['pid'].toString()
-                        ? Colors.black54
-                        : Colors.white)),
-            border: Border.all(
-              color: Colors.black26,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 3.0,
-              )
-            ],
-          ),
-          padding: EdgeInsets.symmetric(horizontal: 7.5, vertical: 2.5),
-          child: Row(
-            children: [
-              Text(
-                player['name'].toString(),
-                softWrap: true,
-                style: TextStyle(
-                    color: choice == 'MVP'
-                        ? (MVP == player['pid'].toString()
-                            ? Colors.white
-                            : Colors.black54)
-                        : (choice == 'mostRuns'
-                            ? (mostRuns == player['pid'].toString()
-                                ? Colors.white
-                                : Colors.black54)
-                            : (mostWickets == player['pid'].toString()
-                                ? Colors.white
-                                : Colors.black54)),
-                    fontSize: 14.0),
-              ),
-            ],
-          ),
-        ),
       );
 
       team1.add(playerWidget);
     }
 
     for (var player in squadData['squad'][1]['players']) {
-      Widget playerWidget = GestureDetector(
-        onTap: () {
+      Widget playerWidget = PlayerCard(
+        player: player,
+        MVP: MVP,
+        mostRuns: mostRuns,
+        mostWickets: mostWickets,
+        choice: choice,
+        color: Theme.of(context).accentColor,
+        callback: () {
           setState(() {
             if (choice == 'MVP') {
               MVP = player['pid'].toString();
@@ -260,56 +224,6 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
             }
           });
         },
-        child: Container(
-          height: 25.0,
-          margin: EdgeInsets.symmetric(vertical: 2.5),
-          decoration: BoxDecoration(
-            color: choice == 'MVP'
-                ? (MVP == player['pid'].toString()
-                    ? Colors.black54
-                    : Colors.white)
-                : (choice == 'mostRuns'
-                    ? (mostRuns == player['pid'].toString()
-                        ? Colors.black54
-                        : Colors.white)
-                    : (mostWickets == player['pid'].toString()
-                        ? Colors.black54
-                        : Colors.white)),
-            border: Border.all(
-              color: Colors.black26,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 3.0,
-              )
-            ],
-          ),
-          padding: EdgeInsets.symmetric(horizontal: 7.5, vertical: 2.5),
-          child: Row(
-            children: [
-              Flexible(
-                child: Text(
-                  player['name'].toString(),
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      color: choice == 'MVP'
-                          ? (MVP == player['pid'].toString()
-                              ? Colors.white
-                              : Colors.black54)
-                          : (choice == 'mostRuns'
-                              ? (mostRuns == player['pid'].toString()
-                                  ? Colors.white
-                                  : Colors.black54)
-                              : (mostWickets == player['pid'].toString()
-                                  ? Colors.white
-                                  : Colors.black54)),
-                      fontSize: 14.0),
-                ),
-              ),
-            ],
-          ),
-        ),
       );
 
       team2.add(playerWidget);
@@ -345,29 +259,48 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
   List<Step> _getSteps() {
     List<Step> _step = [
       Step(
-        title: Text('Choose MVP'),
+        title: Text(
+          'Choose MVP',
+          style: Theme.of(context).textTheme.headline6,
+        ),
         content: _getTable('MVP'),
         isActive: this._currentStep >= 0,
       ),
       Step(
-        title: Text('Choose Most Runs'),
+        title: Text(
+          'Choose Most Runs',
+          style: Theme.of(context).textTheme.headline6,
+        ),
         content: _getTable('mostRuns'),
         isActive: this._currentStep >= 1,
       ),
       Step(
-        title: Text('Choose Most Wickets'),
+        title: Text(
+          'Choose Most Wickets',
+          style: Theme.of(context).textTheme.headline6,
+        ),
         content: _getTable('mostWickets'),
         isActive: this._currentStep >= 2,
       ),
       Step(
-        title: Text('Choose Match Result'),
+        title: Text(
+          'Choose Match Result',
+          style: Theme.of(context).textTheme.headline6,
+        ),
         content: Column(
           children: <Widget>[
             ListTile(
-              title: Text(matchData['team-1'].toString()),
+              title: Text(
+                matchData['team-1'].toString(),
+                style: Theme.of(context).textTheme.headline6.copyWith(
+                    color: Colors.black87, fontWeight: FontWeight.w400),
+              ),
               leading: Radio(
                 value: matchResultEnum.team_1,
                 groupValue: _matchResult,
+                fillColor: MaterialStateProperty.all<Color>(
+                  Theme.of(context).primaryColor,
+                ),
                 onChanged: (value) {
                   String actualResult = getTeamNames(value);
                   setState(() {
@@ -379,10 +312,17 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
               ),
             ),
             ListTile(
-              title: Text(matchData['team-2'].toString()),
+              title: Text(
+                matchData['team-2'].toString(),
+                style: Theme.of(context).textTheme.headline6.copyWith(
+                    color: Colors.black87, fontWeight: FontWeight.w400),
+              ),
               leading: Radio(
                 value: matchResultEnum.team_2,
                 groupValue: _matchResult,
+                fillColor: MaterialStateProperty.all<Color>(
+                  Theme.of(context).primaryColor,
+                ),
                 onChanged: (value) {
                   String actualResult = getTeamNames(value);
                   setState(() {
@@ -394,10 +334,17 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
               ),
             ),
             ListTile(
-              title: Text('Draw'),
+              title: Text(
+                'Draw',
+                style: Theme.of(context).textTheme.headline6.copyWith(
+                    color: Colors.black87, fontWeight: FontWeight.w400),
+              ),
               leading: Radio(
                 value: matchResultEnum.draw,
                 groupValue: _matchResult,
+                fillColor: MaterialStateProperty.all<Color>(
+                  Theme.of(context).primaryColor,
+                ),
                 onChanged: (value) {
                   String actualResult = getTeamNames(value);
                   setState(() {
@@ -445,10 +392,10 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                 children: [
                   Theme(
                     data: ThemeData(
-                      primaryColor: Colors.black87,
-                      accentColor: Colors.black54,
-                      colorScheme: ColorScheme.light(primary: Colors.black),
-                    ),
+                        primaryColor: Theme.of(context).primaryColor,
+                        accentColor: Theme.of(context).accentColor,
+                        colorScheme: ColorScheme.light(
+                            primary: Theme.of(context).primaryColor)),
                     child: Stepper(
                       physics: ClampingScrollPhysics(),
                       steps: _getSteps(),
@@ -521,19 +468,19 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                                           children: [
                                             TextSpan(
                                               text: 'Contest created by ',
-                                              style: TextStyle(
-                                                fontSize: 20.0,
-                                                color: Colors.black54,
-                                                fontWeight: FontWeight.w400,
-                                              ),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline5
+                                                  .copyWith(
+                                                      color: Colors.black54,
+                                                      fontWeight:
+                                                          FontWeight.w400),
                                             ),
                                             TextSpan(
                                               text: '${contest["admin"]}',
-                                              style: TextStyle(
-                                                fontSize: 20.0,
-                                                color: Colors.black87,
-                                                fontWeight: FontWeight.w700,
-                                              ),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline5,
                                             ),
                                           ],
                                         ),
@@ -544,21 +491,18 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    Text(
-                                      'Contest entry fee:',
-                                      style: TextStyle(
-                                        fontSize: 16.0,
-                                        color: Colors.black87,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
+                                    Text('Contest entry fee:',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline6
+                                            .copyWith(
+                                              color: Colors.black87,
+                                              fontWeight: FontWeight.w400,
+                                            )),
                                     Text(
                                       'Rs. ${contest['entryFee']}',
-                                      style: TextStyle(
-                                        fontSize: 16.0,
-                                        color: Colors.black87,
-                                        fontWeight: FontWeight.w700,
-                                      ),
+                                      style:
+                                          Theme.of(context).textTheme.headline6,
                                     )
                                   ]),
                               Row(
@@ -567,19 +511,18 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                                   children: <Widget>[
                                     Text(
                                       'Contest winning prize:',
-                                      style: TextStyle(
-                                        fontSize: 16.0,
-                                        color: Colors.black87,
-                                        fontWeight: FontWeight.w400,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline6
+                                          .copyWith(
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.w400,
+                                          ),
                                     ),
                                     Text(
                                       'Rs. ${contest['prizeMoney']}',
-                                      style: TextStyle(
-                                        fontSize: 16.0,
-                                        color: Colors.black87,
-                                        fontWeight: FontWeight.w700,
-                                      ),
+                                      style:
+                                          Theme.of(context).textTheme.headline6,
                                     )
                                   ]),
                               Row(
@@ -588,23 +531,22 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                                   children: <Widget>[
                                     Text(
                                       'No. of participants:',
-                                      style: TextStyle(
-                                        fontSize: 16.0,
-                                        color: Colors.black87,
-                                        fontWeight: FontWeight.w400,
-                                      ),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline6
+                                          .copyWith(
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.w400,
+                                          ),
                                     ),
                                     Text(
                                       '${contest['noOfParticipants']}',
-                                      style: TextStyle(
-                                        fontSize: 16.0,
-                                        color: Colors.black87,
-                                        fontWeight: FontWeight.w700,
-                                      ),
+                                      style:
+                                          Theme.of(context).textTheme.headline6,
                                     )
                                   ]),
                               RoundedButton(
-                                color: Colors.black87,
+                                color: Theme.of(context).accentColor,
                                 text: 'Join',
                                 onpressed: (contest['entryFee'] <
                                         loggedInUserData['purse'])
@@ -622,13 +564,89 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                           child: Text(
                             '$_message',
                             textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 18.0, fontWeight: FontWeight.w400),
+                            style: Theme.of(context).textTheme.headline6,
                           ),
                         ),
                 ],
               ),
             )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class PlayerCard extends StatelessWidget {
+  const PlayerCard({
+    Key key,
+    @required this.player,
+    // ignore: non_constant_identifier_names
+    @required this.MVP,
+    @required this.mostRuns,
+    @required this.mostWickets,
+    @required this.callback,
+    @required this.choice,
+    @required this.color,
+  }) : super(key: key);
+
+  final player;
+  // ignore: non_constant_identifier_names
+  final String MVP;
+  final String mostRuns;
+  final String mostWickets;
+  final VoidCallback callback;
+  final choice;
+  final color;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: callback,
+      child: Container(
+        height: 25.0,
+        margin: EdgeInsets.symmetric(vertical: 2.5),
+        decoration: BoxDecoration(
+          color: choice == 'MVP'
+              ? (MVP == player['pid'].toString() ? color : Colors.white)
+              : (choice == 'mostRuns'
+                  ? (mostRuns == player['pid'].toString()
+                      ? color
+                      : Colors.white)
+                  : (mostWickets == player['pid'].toString()
+                      ? color
+                      : Colors.white)),
+          border: Border.all(
+            color: Colors.black26,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 3.0,
+              offset: Offset(-2, 2),
+            )
+          ],
+        ),
+        padding: EdgeInsets.symmetric(horizontal: 7.5, vertical: 2.5),
+        child: Row(
+          children: [
+            Text(
+              player['name'].toString(),
+              softWrap: true,
+              style: TextStyle(
+                  color: choice == 'MVP'
+                      ? (MVP == player['pid'].toString()
+                          ? Colors.white
+                          : Colors.black54)
+                      : (choice == 'mostRuns'
+                          ? (mostRuns == player['pid'].toString()
+                              ? Colors.white
+                              : Colors.black54)
+                          : (mostWickets == player['pid'].toString()
+                              ? Colors.white
+                              : Colors.black54)),
+                  fontSize: 14.0),
+            ),
           ],
         ),
       ),

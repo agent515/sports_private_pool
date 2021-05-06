@@ -31,8 +31,9 @@ class CustomLoader extends StatelessWidget {
                   SizedBox(height: 20),
                   Text(
                     message,
+                    textAlign: TextAlign.center,
                     style: TextStyle(
-                        color: Colors.black,
+                        color: Theme.of(context).primaryColor,
                         fontWeight: FontWeight.w600,
                         fontSize: 16.0),
                   ),

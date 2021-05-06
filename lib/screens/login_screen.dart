@@ -136,7 +136,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: emailTextController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: kTextInputFieldDecoration.copyWith(
-                  prefixIcon: Icon(Icons.perm_identity),
+                  prefixIcon: Icon(
+                    Icons.perm_identity,
+                    color: Theme.of(context).primaryColor,
+                  ),
                   prefixIconConstraints: BoxConstraints(
                     minWidth: 60.0,
                   ),
@@ -154,7 +157,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 keyboardType: TextInputType.emailAddress,
                 decoration: kTextInputFieldDecoration.copyWith(
                   hintText: "Password",
-                  prefixIcon: Icon(Icons.lock),
+                  prefixIcon: Icon(
+                    Icons.lock,
+                    color: Theme.of(context).primaryColor,
+                  ),
                   prefixIconConstraints: BoxConstraints(
                     minWidth: 60.0,
                   ),
@@ -184,7 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               RoundedButton(
-                color: Colors.lightBlue,
+                color: Theme.of(context).primaryColor,
                 text: 'SIGN IN',
                 onpressed: () async {
                   setState(() {
@@ -246,7 +252,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               SizedBox(height: 10),
               RoundedButton(
-                color: Colors.deepOrangeAccent,
+                color: Theme.of(context).accentColor,
                 text: 'SIGN IN WITH GOOGLE',
                 onpressed: () async {
                   try {

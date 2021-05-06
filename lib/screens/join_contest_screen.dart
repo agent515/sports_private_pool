@@ -45,7 +45,8 @@ class _JoinContestScreenState extends State<JoinContestScreen> {
             children: <Widget>[
               Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black87, width: 2.0),
+                  border: Border.all(
+                      color: Theme.of(context).primaryColor, width: 2.0),
                   borderRadius: BorderRadius.circular(15.0),
                 ),
                 child: TextField(
@@ -58,21 +59,25 @@ class _JoinContestScreenState extends State<JoinContestScreen> {
                     border: InputBorder.none,
                   ),
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.black54,
-                  ),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText1
+                      .copyWith(color: Colors.black87),
                 ),
               ),
+              SizedBox(height: 30.0),
               Container(
+                height: 40,
+                width: 80,
                 child: ElevatedButton(
                   style: ButtonStyle(
                     shape: MaterialStateProperty.all<OutlinedBorder>(
                       RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+                        borderRadius: BorderRadius.circular(20.0),
                       ),
                     ),
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.grey),
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        Theme.of(context).accentColor),
                   ),
                   onPressed: () async {
                     setState(() {
@@ -114,10 +119,10 @@ class _JoinContestScreenState extends State<JoinContestScreen> {
                   child: Text(
                     'Join',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: Colors.white,
-                        letterSpacing: 1.0,
-                        fontWeight: FontWeight.w300),
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline6
+                        .copyWith(color: Colors.white),
                   ),
                 ),
               ),

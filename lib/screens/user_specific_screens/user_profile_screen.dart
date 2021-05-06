@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sports_private_pool/components/match_card.dart';
 import 'package:sports_private_pool/models/authentication.dart';
 import 'package:sports_private_pool/models/person.dart';
+import 'package:sports_private_pool/services/constants.dart';
 import 'package:sports_private_pool/services/firebase.dart';
 import 'package:sports_private_pool/wallet/wallet.dart';
 
@@ -112,7 +113,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               SingleChildScrollView(
                 child: Container(
                   height: 0.4 * screenSize.height,
-                  color: Colors.blue[600],
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Color(0xff000046),
+                        Color(0xff1CB5E0),
+                      ],
+                    ),
+                  ),
                   child: Padding(
                     padding: EdgeInsets.only(
                         left: 30.0, right: 30.0, top: 0.02 * screenSize.height),
@@ -205,7 +215,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 0.022 * screenSize.height,
+                                        fontSize: 0.02 * screenSize.height,
                                       ),
                                     ),
                                     SizedBox(
@@ -299,6 +309,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         ToggleButtons(
+                          selectedColor: Colors.white,
+                          fillColor: kDeepBlue,
                           children: <Widget>[
                             Text(
                               'My Contests',

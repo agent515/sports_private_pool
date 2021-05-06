@@ -203,40 +203,38 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
             children: <Widget>[
               Text(
                 '${matchData['team-1']}',
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(context).textTheme.headline5,
               ),
               Text(
                 'vs',
-                style: TextStyle(
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.w400,
-                ),
+                style: Theme.of(context).textTheme.headline6,
               ),
               Text(
                 '${matchData['team-2']}',
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(context).textTheme.headline5,
               ),
             ],
           ),
           Container(
-            margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
+            margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20),
             child: Text(
               'Create a contest by entering the prize money, entry fee and maximum participants',
               textAlign: TextAlign.center,
-              style: TextStyle(fontStyle: FontStyle.italic),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2
+                  .copyWith(fontStyle: FontStyle.italic),
             ),
           ),
+          SizedBox(height: 20.0),
           ContestInputField(
             hintText: 'Rs. 10',
             labelText: 'Prize money',
             rightMargin: 200.0,
             textEditingController: prizeMoneyTextController,
+          ),
+          SizedBox(
+            height: 20.0,
           ),
           ContestInputField(
             hintText: 'Rs. 10',
@@ -244,16 +242,22 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
             rightMargin: 200.0,
             textEditingController: entryFeeTextController,
           ),
+          SizedBox(
+            height: 20.0,
+          ),
           ContestInputField(
             hintText: 'max 100',
             labelText: 'No. of participants',
             rightMargin: 200.0,
             textEditingController: noOfParticipantsTextController,
           ),
+          SizedBox(
+            height: 10.0,
+          ),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 30.0, vertical: 30.0),
             child: RoundedButton(
-              color: Colors.black54,
+              color: Theme.of(context).accentColor,
               text: 'Create',
               onpressed: () async {
                 //Create contest and make the sharable invitation link
@@ -288,14 +292,20 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
                       : (_success
                           ? Column(children: <Widget>[
                               Text(
-                                  'Contest created.. Here is the the code to join the contest: '),
+                                'Contest created.. Here is the the code to join the contest: ',
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
                               GestureDetector(
                                 child: CustomToolTip(text: joinCode),
                                 onTap: () {},
                               )
                             ])
-                          : Text('Registration failed')),
+                          : Text(
+                              'Registration failed',
+                              style: Theme.of(context).textTheme.bodyText1,
+                            )),
                 ),
+                SizedBox(height: 20.0),
               ],
             ),
           )

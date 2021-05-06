@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sports_private_pool/models/authentication.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'
     as local_notification;
+import 'package:sports_private_pool/services/constants.dart';
 
 import 'models/person.dart';
 import 'screens/main_frame_app.dart';
@@ -91,8 +92,26 @@ void main() async {
         title: 'Envision',
         navigatorKey: navigatorKey,
         theme: ThemeData(
-          accentColor: Colors.black87,
-          fontFamily: 'Source Sans Pro',
+          primaryColor: kDeepBlue,
+          brightness: Brightness.light,
+          scaffoldBackgroundColor: Colors.white,
+          colorScheme: ColorScheme.light(primary: Colors.black),
+          accentColor: kNeonBlue,
+          fontFamily: 'Open Sans',
+          textTheme: TextTheme(
+            headline5: TextStyle(
+              color: kDeepBlue,
+              fontSize: 20.0,
+              fontWeight: FontWeight.w700,
+            ),
+            headline6: TextStyle(
+              color: kDeepBlue,
+              fontSize: 16.0,
+              fontWeight: FontWeight.w700,
+            ),
+            bodyText1: TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400),
+            bodyText2: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w400),
+          ),
         ),
         debugShowCheckedModeBanner: false,
         home: Envision(),
