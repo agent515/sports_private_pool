@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sports_private_pool/components/simple_app_bar.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class ContestResultScreen extends StatelessWidget {
   final dynamic result;
@@ -8,98 +8,143 @@ class ContestResultScreen extends StatelessWidget {
 
   Widget _winners() {
     final winners = result['winners'];
+    print(winners);
     List<Widget> winnerTiles = [];
 
     for (int i = 0; i < winners.length; i++) {
-      Widget tile = Text(
-        winners[0],
-        style: TextStyle(fontSize: 16),
+      Widget tile = WinnerCard(
+        username: result['leaderboard'][i]['username'],
+        points: result['leaderboard'][i]['points'].toStringAsFixed(2),
       );
       winnerTiles.add(tile);
     }
 
-    return Column(
-      children: [
-        Text('Winner(s)',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
-        SizedBox(height: 15),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: winnerTiles,
-        )
-      ],
-    );
-  }
-
-  Widget _leaderboard(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final kTextStyle = TextStyle(fontSize: 16, fontWeight: FontWeight.w600);
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: result['leaderboard'].length,
-      itemBuilder: (context, index) => Column(children: [
-        index == 0
-            ? Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(
-                      width: size.width * 0.15,
-                      child: Text(
-                        'Rank',
-                        style: kTextStyle,
-                      )),
-                  Container(
-                      width: size.width * 0.6,
-                      child: Text(
-                        'Username',
-                        style: kTextStyle,
-                      )),
-                  Container(
-                      width: size.width * 0.2,
-                      child: Text(
-                        'Points',
-                        style: kTextStyle,
-                      )),
-                ],
-              )
-            : Container(),
-        LeaderboardTile(
-            rank: (index + 1).toString(),
-            username: result['leaderboard'][index]['username'],
-            points: result['leaderboard'][index]['points'].toStringAsFixed(2)),
-        Divider(
-          height: 5,
-          color: Colors.grey,
-        ),
-      ]),
+    return CarouselSlider(
+      options: CarouselOptions(
+        autoPlay: true,
+        aspectRatio: 2.0,
+        enlargeCenterPage: true,
+      ),
+      items: winnerTiles,
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
+        child: Stack(children: [
+          Column(
             children: [
-              SimpleAppBar(
-                appBarTitle: 'L E A D E R B O A R D',
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 10.0, vertical: 10.0),
-                child: Column(
-                  children: [
-                    _winners(),
-                    SizedBox(height: 20.0),
-                    _leaderboard(context),
-                  ],
+              Container(
+                height: size.height * 0.4,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0xff000046),
+                      Color(0xff1CB5E0),
+                    ],
+                  ),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Container(
+                        height: 0.1 * size.height,
+                        child: Text(
+                          'Winner(s)',
+                          style: Theme.of(context).textTheme.headline4.copyWith(
+                                color: Colors.white,
+                                fontSize: 24.0,
+                                fontWeight: FontWeight.w600,
+                              ),
+                        ),
+                      ),
+                      Container(
+                        height: 0.2 * size.height,
+                        width: double.infinity,
+                        child: _winners(),
+                      )
+                    ],
+                  ),
                 ),
               ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: result['leaderboard'].length,
+                  itemBuilder: (context, index) => LeaderboardTile(
+                    rank: (index + 1).toString(),
+                    username: result['leaderboard'][index]['username'],
+                    points: result['leaderboard'][index]['points']
+                        .toStringAsFixed(2),
+                  ),
+                ),
+              )
             ],
           ),
-        ),
+          Align(
+            alignment: Alignment.topLeft,
+            child: IconButton(
+              icon: Icon(Icons.arrow_back_ios_sharp,
+                  color: Colors.white.withOpacity(0.7)),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          )
+        ]),
+      ),
+    );
+  }
+}
+
+class WinnerCard extends StatelessWidget {
+  final String username;
+  final String points;
+  const WinnerCard({Key key, @required this.username, @required this.points})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
+    return Container(
+      width: 0.22 * size.width,
+      child: Column(
+        children: [
+          Container(
+            height: 0.11 * size.height,
+            width: 0.22 * size.width,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                fit: BoxFit.contain,
+                image: AssetImage('images/profile.png'),
+              ),
+            ),
+          ),
+          Text(
+            username,
+            style: Theme.of(context).textTheme.headline6.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w400,
+                ),
+          ),
+          Text(
+            points,
+            style: Theme.of(context)
+                .textTheme
+                .headline5
+                .copyWith(color: Colors.white),
+          ),
+        ],
       ),
     );
   }
@@ -120,31 +165,63 @@ class LeaderboardTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final kTextStyle = TextStyle(fontSize: 16, fontWeight: FontWeight.w400);
 
-    return Container(
-      height: 40.0,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+    return Padding(
+      padding: const EdgeInsets.only(top: 15.0),
+      child: Column(
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Container(
+                width: 0.05 * size.width,
+                child: Text(
+                  '$rank',
+                  style: Theme.of(context).textTheme.headline6,
+                ),
+              ),
+              Container(
+                height: 0.05 * size.height,
+                width: 0.1 * size.width,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    fit: BoxFit.contain,
+                    image: AssetImage('images/profile.png'),
+                  ),
+                ),
+              ),
+              Container(
+                width: 0.5 * size.width,
+                child: Text(
+                  username,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6
+                      .copyWith(color: Colors.black87),
+                ),
+              ),
+              Container(
+                width: 0.15 * size.width,
+                child: Text(
+                  points,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6
+                      .copyWith(color: Theme.of(context).accentColor),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 15.0,
+          ),
           Container(
-              width: size.width * 0.15,
-              child: Text(
-                rank,
-                style: kTextStyle,
-              )),
-          Container(
-              width: size.width * 0.6,
-              child: Text(
-                username,
-                style: kTextStyle,
-              )),
-          Container(
-              width: size.width * 0.2,
-              child: Text(
-                points,
-                style: kTextStyle,
-              )),
+            height: 1.0,
+            width: double.infinity,
+            color: Colors.grey.withOpacity(0.2),
+          )
         ],
       ),
     );

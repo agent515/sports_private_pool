@@ -106,9 +106,6 @@ class _HomePageState extends State<HomePage> {
             borderRadius: BorderRadius.all(Radius.circular(5.0)),
             gradient: LinearGradient(
               colors: [
-                // Color(0xff03001e),
-                // Color(0xff7303c0),
-                // Color(0xff1CB5E0),
                 Color(0xff000046),
                 Color(0xff1CB5E0),
               ],
