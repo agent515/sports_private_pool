@@ -17,17 +17,17 @@ class MainFrameApp extends StatefulWidget {
       {this.defaultPage = 0, this.joinCode, this.contestId, this.matchId});
 
   final int defaultPage;
-  final String joinCode;
-  final String contestId;
-  final String matchId;
+  final String? joinCode;
+  final String? contestId;
+  final String? matchId;
 
   @override
   _MainFrameAppState createState() => _MainFrameAppState();
 }
 
 class _MainFrameAppState extends State<MainFrameApp> {
-  int index;
-  bool close;
+  int? index;
+  bool? close;
   TabItem currentTab = TabItem.home;
   Map<TabItem, GlobalKey<NavigatorState>> navigatorKeys = {
     TabItem.home: GlobalKey<NavigatorState>(),
@@ -42,7 +42,7 @@ class _MainFrameAppState extends State<MainFrameApp> {
     PushNotification _pushNotification = PushNotification();
     _pushNotification.initializeFCM();
     if (index == 2) {
-      navigatorKeys[TabItem.profile].currentState.push(
+      navigatorKeys[TabItem.profile]!.currentState!.push(
             MaterialPageRoute(
               builder: (context) => MyCreatedContestDetailsScreen(
                 type: 'Created',
@@ -97,13 +97,13 @@ class _MainFrameAppState extends State<MainFrameApp> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        if (!await navigatorKeys[currentTab].currentState.maybePop()) {
+        if (!await navigatorKeys[currentTab]!.currentState!.maybePop()) {
           await _showMyDialog();
           print(close);
-          return close;
+          return close!;
         }
         return false;
-      },
+      } as Future<bool> Function()?,
       child: Scaffold(
         body: Stack(
           children: <Widget>[
@@ -127,8 +127,8 @@ class _MainFrameAppState extends State<MainFrameApp> {
               padding:
                   const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
               child: GNav(
-                rippleColor: Colors.grey[300],
-                hoverColor: Colors.grey[100],
+                rippleColor: Colors.grey[300]!,
+                hoverColor: Colors.grey[100]!,
                 gap: 8,
                 activeColor: Colors.white,
                 iconSize: 24,
@@ -150,11 +150,11 @@ class _MainFrameAppState extends State<MainFrameApp> {
                     text: 'Profile',
                   ),
                 ],
-                selectedIndex: index,
+                selectedIndex: index!,
                 onTabChange: (i) {
                   setState(() {
                     index = i;
-                    currentTab = TabItem.values[index];
+                    currentTab = TabItem.values[index!];
                   });
                 },
               ),

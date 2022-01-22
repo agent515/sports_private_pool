@@ -15,9 +15,9 @@ class FirebaseRepository {
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
   FirebaseFunctions _cloudFunctions = FirebaseFunctions.instance;
   GoogleSignIn _googleSignIn = GoogleSignIn();
-  User _user;
+  User? _user;
   SportData _sportData = SportData();
-  Person person;
+  late Person person;
 
   FirebaseRepository() {
     _cloudFunctions.useFunctionsEmulator("http://10.0.2.2", 5001);
@@ -38,7 +38,7 @@ class FirebaseRepository {
           .get();
       if (result.exists) {
         print("upcomingMatches data exist.");
-        return result.data()['data'];
+        return result.data()!['data'];
       }
       print("upcomingMatches data updated");
 
@@ -61,9 +61,12 @@ class FirebaseRepository {
   }
 
   /// Wrappper function to do Google Sign In
-  Future<User> signInWithGoogle() async {
+  Future<User?> signInWithGoogle() async {
     try {
-      GoogleSignInAccount gAccount = await _googleSignIn.signIn();
+      GoogleSignInAccount? gAccount = await _googleSignIn.signIn();
+      if (gAccount == null) {
+        return null;
+      }
       GoogleSignInAuthentication gAuth = await gAccount.authentication;
       AuthCredential credential = GoogleAuthProvider.credential(
         idToken: gAuth.idToken,
@@ -75,18 +78,18 @@ class FirebaseRepository {
       print("signed in");
       if (_user != null) {
         DocumentSnapshot documentRef =
-            await _firestore.collection("users").doc(_user.email).get();
+            await _firestore.collection("users").doc(_user!.email).get();
 
         if (!documentRef.exists) {
-          await _firestore.collection("email-username").doc(_user.email).set({
-            'username': _user.email,
+          await _firestore.collection("email-username").doc(_user!.email).set({
+            'username': _user!.email,
           });
-          await _firestore.collection("users").doc(_user.email).set({
-            'firstName': _user.displayName.split(' ')[0],
-            'lastName': _user.displayName.split(' ')[1],
+          await _firestore.collection("users").doc(_user!.email).set({
+            'firstName': _user!.displayName!.split(' ')[0],
+            'lastName': _user!.displayName!.split(' ')[1],
             'purse': 100.0,
-            'username': _user.email,
-            'email': _user.email,
+            'username': _user!.email,
+            'email': _user!.email,
             'contestsCreated': [],
             'contestsJoined': [],
           });
@@ -104,13 +107,13 @@ class FirebaseRepository {
     _user = _firebaseAuth.currentUser;
 
     DocumentSnapshot temp =
-        await _firestore.collection("email-username").doc(_user.email).get();
-    String username = (temp.data() as Map<dynamic, dynamic>)['username'];
+        await _firestore.collection("email-username").doc(_user!.email).get();
+    String? username = (temp.data() as Map<dynamic, dynamic>)['username'];
 
     DocumentSnapshot userDetails =
         await _firestore.collection("users").doc(username).get();
-    person = Person.fromMap(userDetails.data());
-    return Person.fromMap(userDetails.data());
+    person = Person.fromMap(userDetails.data() as Map<String, dynamic>);
+    return Person.fromMap(userDetails.data() as Map<String, dynamic>);
   }
 
   /// Wrapper function to do GoogleSignOut and FireAuth SignOut
@@ -125,7 +128,7 @@ class FirebaseRepository {
   }
 
   /// Fetch ContestData from the firestore for given contestId
-  Future<Map<dynamic, dynamic>> getContestDetails(String contestId) async {
+  Future<Map<dynamic, dynamic>?> getContestDetails(String? contestId) async {
     var temp = await _firestore
         .collection(
             'contests/cricketMatchContest/cricketMatchContestCollection')
@@ -145,7 +148,7 @@ class FirebaseRepository {
   /// ServerException: Funtion took more amount of time than usual possibly due to POOR_INTERNET_CONNECTION.
   /// NotFoundException: Match Result data from the API is absent or Inefficient to calculate result of the
   /// contest.
-  Future<Map<dynamic, dynamic>> calculateResult(
+  Future<Map<dynamic, dynamic>?> calculateResult(
       Map<dynamic, dynamic> contest) async {
     HttpsCallable httpsCallable =
         _cloudFunctions.httpsCallable('calculate_result');
@@ -166,12 +169,12 @@ class FirebaseRepository {
     }
   }
 
-  Future<void> saveDeviceToken(String token) async {
+  Future<void> saveDeviceToken(String? token) async {
     try {
       _user = _firebaseAuth.currentUser;
       DocumentSnapshot temp =
-          await _firestore.collection("email-username").doc(_user.email).get();
-      String username = (temp.data as Map<dynamic, dynamic>)['username'];
+          await _firestore.collection("email-username").doc(_user!.email).get();
+      String? username = (temp.data as Map<dynamic, dynamic>)['username'];
       print(username);
       await _firestore
           .collection("users")
@@ -205,7 +208,7 @@ class FirebaseRepository {
             .doc(joinCode)
             .get();
 
-        String contestId = docSnap.data()['contestId'];
+        String? contestId = docSnap.data()!['contestId'];
 
         print("ContestID: $contestId");
 
@@ -213,7 +216,7 @@ class FirebaseRepository {
 
         bool alreadyJoined = false;
 
-        for (var contest in person.contestsJoined) {
+        for (var contest in person.contestsJoined!) {
           if (contest['contestId'] == contestId) {
             alreadyJoined = true;
             break;
@@ -228,7 +231,7 @@ class FirebaseRepository {
                   'contests/cricketMatchContest/cricketMatchContestCollection')
               .doc(contestId)
               .get();
-          final contest = contestSnap.data();
+          final contest = contestSnap.data()!;
 
           SportData sportData = SportData();
           final matchData = await sportData.getMatchData(contest['matchId']);

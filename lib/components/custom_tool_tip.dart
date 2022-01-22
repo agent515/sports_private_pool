@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CustomToolTip extends StatelessWidget {
-  final String text;
+  final String? text;
 
   CustomToolTip({this.text});
 
@@ -13,7 +13,7 @@ class CustomToolTip extends StatelessWidget {
           preferBelow: false,
           message: "Copy",
           child: Text(
-            text,
+            text!,
             style: TextStyle(fontWeight: FontWeight.bold),
           )),
       onTap: () {

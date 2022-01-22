@@ -4,13 +4,13 @@ import 'package:sports_private_pool/models/person.dart';
 
 class Authentication extends ChangeNotifier {
   bool _loggedIn = false;
-  Person _user;
+  Person? _user;
 
   bool get loggedIn => _loggedIn;
 
-  Person get user => _loggedIn ? _user : throw NotFoundException();
+  Person? get user => _loggedIn ? _user : throw NotFoundException();
 
-  void login(Person user) {
+  void login(Person? user) {
     _loggedIn = true;
     _user = user;
     print("user logged in....");

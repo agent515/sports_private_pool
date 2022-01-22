@@ -20,16 +20,16 @@ class UserProfileScreen extends StatefulWidget {
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
-  dynamic loggedInUserData;
+  late dynamic loggedInUserData;
   int index = 2;
-  Box<dynamic> userData;
-  Box<Person> userBox;
-  Person user;
+  Box<dynamic>? userData;
+  late Box<Person> userBox;
+  Person? user;
 
-  List<Widget> createdContests;
-  List<Widget> joinedContests;
+  List<Widget>? createdContests;
+  List<Widget>? joinedContests;
 
-  List<Widget> matchList = [];
+  List<Widget>? matchList = [];
 
   List<bool> isSelected = [true, false];
 
@@ -40,7 +40,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     userBox = Hive.box<Person>('user');
     // loggedInUserData = userData.get('userData');
     user = userBox.get('user');
-    loggedInUserData = user.toMap();
+    loggedInUserData = user!.toMap();
     _getUserDetails();
     super.initState();
   }
@@ -52,8 +52,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         userBox.put('user', user);
         // print("CONTEST CREATED" + user.contestsCreated.toString());
         setState(() {
-          createdContests = getCreatedMatchTiles(user.contestsCreated);
-          joinedContests = getJoinedMatchTiles(user.contestsJoined);
+          createdContests = getCreatedMatchTiles(user.contestsCreated!);
+          joinedContests = getJoinedMatchTiles(user.contestsJoined!);
           matchList = isSelected[0] ? createdContests : joinedContests;
           loggedInUserData = user.toMap();
           user = user;

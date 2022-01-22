@@ -25,24 +25,24 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  String email;
-  String password;
-  List<Widget> upcomingMatchesList;
-  Person currentUser;
+  String? email;
+  String? password;
+  List<Widget>? upcomingMatchesList;
+  Person? currentUser;
   bool _isLoading = false;
 
-  SharedPreferences _preferences;
+  late SharedPreferences _preferences;
 
   final TextEditingController emailTextController = TextEditingController();
   final TextEditingController passwordTextController = TextEditingController();
 
   FirebaseRepository _firebase = FirebaseRepository();
 
-  Box<dynamic> userData;
-  Box<Person> userBox;
+  late Box<dynamic> userData;
+  late Box<Person?> userBox;
 
-  FocusNode emailNode;
-  FocusNode passwordNode;
+  late FocusNode emailNode;
+  late FocusNode passwordNode;
 
   @override
   void initState() {
@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
       var loggedInUserData;
       var snapshot =
           await _firestore.collection('email-username').doc(user.email).get();
-      var temp = snapshot.data()['username'];
+      var temp = snapshot.data()!['username'];
       var _user = await _firestore.collection('users').doc(temp).get();
 
       loggedInUserData = _user.data;
@@ -201,7 +201,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     if (user != null) {
                       print("success");
-                      await _signinHelper(context, user.user);
+                      await _signinHelper(context, user.user!);
                       passwordTextController.clear();
                       setState(() {
                         _isLoading = false;

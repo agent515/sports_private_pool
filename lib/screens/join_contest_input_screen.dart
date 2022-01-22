@@ -31,17 +31,17 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
   dynamic contest;
   dynamic matchData;
   dynamic squadData;
-  matchResultEnum _matchResult;
+  matchResultEnum? _matchResult;
   bool _show = false;
 
   String _message = 'Fill the contest entries..';
 
   int _currentStep = 0;
   // ignore: non_constant_identifier_names
-  String MVP;
-  String mostRuns;
-  String mostWickets;
-  String matchResult;
+  String? MVP;
+  String? mostRuns;
+  String? mostWickets;
+  String? matchResult;
 
   int index = 1;
 
@@ -59,7 +59,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
     _matchResult = matchResultEnum.team_1;
   }
 
-  String getTeamNames(matchResultEnum value) {
+  String getTeamNames(matchResultEnum? value) {
     switch (value) {
       case matchResultEnum.team_1:
         return matchData['team-1'].toString();
@@ -73,19 +73,19 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
   }
 
   Future<void> joinContest() async {
-    User loggedInUser = _auth.currentUser;
+    User? loggedInUser = _auth.currentUser;
     var loggedInUserData;
     var snapshots = await _firestore.collection('users').get();
 
     for (var user in snapshots.docs) {
-      if (user.data().containsValue(loggedInUser.email)) {
+      if (user.data().containsValue(loggedInUser!.email)) {
         loggedInUserData = user.data;
         print(user.data);
         break;
       }
     }
     print("in");
-    print(loggedInUser.email);
+    print(loggedInUser!.email);
     print(loggedInUserData);
 
     var predictions = {
@@ -103,11 +103,11 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
           .collection(
               'contests/cricketMatchContest/cricketMatchContestCollection')
           .doc(contest['contestId']));
-      List participants = contestSnapshot.data()['participants'];
-      Map<String, dynamic> contestPredictions =
-          contestSnapshot.data()['predictions'];
+      List participants = contestSnapshot.data()!['participants'];
+      Map<String, dynamic>? contestPredictions =
+          contestSnapshot.data()!['predictions'];
 
-      if (participants.length == contestSnapshot.data()['noOfParticipants']) {
+      if (participants.length == contestSnapshot.data()!['noOfParticipants']) {
         print("Contest is full");
         return {"status": "Contest is full"};
       }
@@ -116,7 +116,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
         return {"status": "Already entered the contest"};
       }
       participants.add(loggedInUserData['username']);
-      contestPredictions['${loggedInUserData["username"]}'] = predictions;
+      contestPredictions!['${loggedInUserData["username"]}'] = predictions;
       // Add this contest to the current user's joined contest list
       List userContestsJoined = loggedInUserData['contestsJoined'];
       var tempObj = {
@@ -131,7 +131,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
       // Contest Admin user data fetch
       var adminDataSnapshot =
           await tx.get(_firestore.collection('users').doc(contest['admin']));
-      var adminData = adminDataSnapshot.data();
+      var adminData = adminDataSnapshot.data()!;
 
       // Subtract entry fee from the current user's purse
       await tx.update(
@@ -291,7 +291,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
             ListTile(
               title: Text(
                 matchData['team-1'].toString(),
-                style: Theme.of(context).textTheme.headline6.copyWith(
+                style: Theme.of(context).textTheme.headline6!.copyWith(
                     color: Colors.black87, fontWeight: FontWeight.w400),
               ),
               leading: Radio(
@@ -300,7 +300,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                 fillColor: MaterialStateProperty.all<Color>(
                   Theme.of(context).primaryColor,
                 ),
-                onChanged: (value) {
+                onChanged: (dynamic value) {
                   String actualResult = getTeamNames(value);
                   setState(() {
                     _matchResult = value;
@@ -313,7 +313,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
             ListTile(
               title: Text(
                 matchData['team-2'].toString(),
-                style: Theme.of(context).textTheme.headline6.copyWith(
+                style: Theme.of(context).textTheme.headline6!.copyWith(
                     color: Colors.black87, fontWeight: FontWeight.w400),
               ),
               leading: Radio(
@@ -322,7 +322,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                 fillColor: MaterialStateProperty.all<Color>(
                   Theme.of(context).primaryColor,
                 ),
-                onChanged: (value) {
+                onChanged: (dynamic value) {
                   String actualResult = getTeamNames(value);
                   setState(() {
                     _matchResult = value;
@@ -335,7 +335,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
             ListTile(
               title: Text(
                 'Draw',
-                style: Theme.of(context).textTheme.headline6.copyWith(
+                style: Theme.of(context).textTheme.headline6!.copyWith(
                     color: Colors.black87, fontWeight: FontWeight.w400),
               ),
               leading: Radio(
@@ -344,7 +344,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                 fillColor: MaterialStateProperty.all<Color>(
                   Theme.of(context).primaryColor,
                 ),
-                onChanged: (value) {
+                onChanged: (dynamic value) {
                   String actualResult = getTeamNames(value);
                   setState(() {
                     _matchResult = value;
@@ -469,7 +469,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                                               text: 'Contest created by ',
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .headline5
+                                                  .headline5!
                                                   .copyWith(
                                                       color: Colors.black54,
                                                       fontWeight:
@@ -493,7 +493,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                                     Text('Contest entry fee:',
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headline6
+                                            .headline6!
                                             .copyWith(
                                               color: Colors.black87,
                                               fontWeight: FontWeight.w400,
@@ -512,7 +512,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                                       'Contest winning prize:',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline6
+                                          .headline6!
                                           .copyWith(
                                             color: Colors.black87,
                                             fontWeight: FontWeight.w400,
@@ -532,7 +532,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
                                       'No. of participants:',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline6
+                                          .headline6!
                                           .copyWith(
                                             color: Colors.black87,
                                             fontWeight: FontWeight.w400,
@@ -578,22 +578,22 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
 
 class PlayerCard extends StatelessWidget {
   const PlayerCard({
-    Key key,
-    @required this.player,
+    Key? key,
+    required this.player,
     // ignore: non_constant_identifier_names
-    @required this.MVP,
-    @required this.mostRuns,
-    @required this.mostWickets,
-    @required this.callback,
-    @required this.choice,
-    @required this.color,
+    required this.MVP,
+    required this.mostRuns,
+    required this.mostWickets,
+    required this.callback,
+    required this.choice,
+    required this.color,
   }) : super(key: key);
 
   final player;
   // ignore: non_constant_identifier_names
-  final String MVP;
-  final String mostRuns;
-  final String mostWickets;
+  final String? MVP;
+  final String? mostRuns;
+  final String? mostWickets;
   final VoidCallback callback;
   final choice;
   final color;

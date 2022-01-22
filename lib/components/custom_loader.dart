@@ -4,8 +4,8 @@ class CustomLoader extends StatelessWidget {
   final String message;
 
   const CustomLoader({
-    Key key,
-    @required this.message,
+    Key? key,
+    required this.message,
   }) : super(key: key);
 
   @override

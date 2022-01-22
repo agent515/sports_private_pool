@@ -17,13 +17,13 @@ class PersonAdapter extends TypeAdapter<Person> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Person(
-      email: fields[0] as String,
-      firstName: fields[1] as String,
-      lastName: fields[2] as String,
-      username: fields[4] as String,
-      purse: fields[3] as double,
-      contestsCreated: (fields[5] as List)?.cast<dynamic>(),
-      contestsJoined: (fields[6] as List)?.cast<dynamic>(),
+      email: fields[0] as String?,
+      firstName: fields[1] as String?,
+      lastName: fields[2] as String?,
+      username: fields[4] as String?,
+      purse: fields[3] as double?,
+      contestsCreated: (fields[5] as List?)?.cast<dynamic>(),
+      contestsJoined: (fields[6] as List?)?.cast<dynamic>(),
     );
   }
 

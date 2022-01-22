@@ -4,7 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 class ContestResultScreen extends StatelessWidget {
   final dynamic result;
 
-  const ContestResultScreen({Key key, @required this.result}) : super(key: key);
+  const ContestResultScreen({Key? key, required this.result}) : super(key: key);
 
   Widget _winners() {
     final winners = result['winners'];
@@ -60,7 +60,7 @@ class ContestResultScreen extends StatelessWidget {
                         height: 0.1 * size.height,
                         child: Text(
                           'Winner(s)',
-                          style: Theme.of(context).textTheme.headline4.copyWith(
+                          style: Theme.of(context).textTheme.headline4!.copyWith(
                                 color: Colors.white,
                                 fontSize: 24.0,
                                 fontWeight: FontWeight.w600,
@@ -106,9 +106,9 @@ class ContestResultScreen extends StatelessWidget {
 }
 
 class WinnerCard extends StatelessWidget {
-  final String username;
-  final String points;
-  const WinnerCard({Key key, @required this.username, @required this.points})
+  final String? username;
+  final String? points;
+  const WinnerCard({Key? key, required this.username, required this.points})
       : super(key: key);
 
   @override
@@ -131,17 +131,17 @@ class WinnerCard extends StatelessWidget {
             ),
           ),
           Text(
-            username,
-            style: Theme.of(context).textTheme.headline6.copyWith(
+            username!,
+            style: Theme.of(context).textTheme.headline6!.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w400,
                 ),
           ),
           Text(
-            points,
+            points!,
             style: Theme.of(context)
                 .textTheme
-                .headline5
+                .headline5!
                 .copyWith(color: Colors.white),
           ),
         ],
@@ -152,14 +152,14 @@ class WinnerCard extends StatelessWidget {
 
 class LeaderboardTile extends StatelessWidget {
   final String rank;
-  final String username;
-  final String points;
+  final String? username;
+  final String? points;
 
   const LeaderboardTile({
-    Key key,
-    @required this.rank,
-    @required this.username,
-    @required this.points,
+    Key? key,
+    required this.rank,
+    required this.username,
+    required this.points,
   }) : super(key: key);
 
   @override
@@ -194,21 +194,21 @@ class LeaderboardTile extends StatelessWidget {
               Container(
                 width: 0.5 * size.width,
                 child: Text(
-                  username,
+                  username!,
                   overflow: TextOverflow.ellipsis,
                   style: Theme.of(context)
                       .textTheme
-                      .headline6
+                      .headline6!
                       .copyWith(color: Colors.black87),
                 ),
               ),
               Container(
                 width: 0.15 * size.width,
                 child: Text(
-                  points,
+                  points!,
                   style: Theme.of(context)
                       .textTheme
-                      .headline6
+                      .headline6!
                       .copyWith(color: Theme.of(context).accentColor),
                 ),
               ),

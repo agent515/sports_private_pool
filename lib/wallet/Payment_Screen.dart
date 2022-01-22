@@ -5,7 +5,7 @@ import 'package:sports_private_pool/wallet/constants.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class PaymentScreen extends StatefulWidget {
-  final String amount;
+  final String? amount;
 
   PaymentScreen({this.amount});
 
@@ -14,7 +14,7 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  WebViewController _webController;
+  WebViewController? _webController;
   bool _loadingPayment = true;
   String _responseStatus = STATUS_LOADING;
 
@@ -28,7 +28,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   void getData() {
-    _webController.evaluateJavascript("document.body.innerText").then((data) {
+    _webController!.evaluateJavascript("document.body.innerText").then((data) {
       var decodedJSON = jsonDecode(data);
       Map<String, dynamic> responseJSON = jsonDecode(decodedJSON);
       final checksumResult = responseJSON["status"];
@@ -78,7 +78,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 javascriptMode: JavascriptMode.unrestricted,
                 onWebViewCreated: (controller) {
                   _webController = controller;
-                  _webController.loadUrl(
+                  _webController!.loadUrl(
                       new Uri.dataFromString(_loadHTML(), mimeType: 'text/html')
                           .toString());
                 },

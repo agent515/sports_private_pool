@@ -7,10 +7,10 @@ class ContestInputField extends StatelessWidget {
       this.rightMargin,
       this.textEditingController});
 
-  final double rightMargin;
-  final String labelText;
-  final String hintText;
-  final TextEditingController textEditingController;
+  final double? rightMargin;
+  final String? labelText;
+  final String? hintText;
+  final TextEditingController? textEditingController;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class ContestInputField extends StatelessWidget {
         textAlign: TextAlign.center,
         style: Theme.of(context)
             .textTheme
-            .bodyText1
+            .bodyText1!
             .copyWith(color: Colors.black87),
         decoration: InputDecoration(
           enabledBorder: OutlineInputBorder(
@@ -35,14 +35,14 @@ class ContestInputField extends StatelessWidget {
                 BorderSide(color: Theme.of(context).primaryColor, width: 2.0),
           ),
           labelText: this.labelText,
-          labelStyle: Theme.of(context).textTheme.bodyText2.copyWith(
+          labelStyle: Theme.of(context).textTheme.bodyText2!.copyWith(
               color: Theme.of(context).primaryColor,
               fontWeight: FontWeight.w600),
           contentPadding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
           hintText: this.hintText,
           hintStyle: Theme.of(context)
               .textTheme
-              .bodyText1
+              .bodyText1!
               .copyWith(color: Colors.grey[500]),
         ),
       ),

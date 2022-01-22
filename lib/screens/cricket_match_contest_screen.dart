@@ -15,7 +15,7 @@ FirebaseRepository _firebase = FirebaseRepository();
 
 class CricketMatchContestScreen extends StatefulWidget {
   CricketMatchContestScreen(
-      {@required this.matchData, @required this.squadData});
+      {required this.matchData, required this.squadData});
 
   final dynamic matchData;
   final dynamic squadData;
@@ -28,9 +28,9 @@ class CricketMatchContestScreen extends StatefulWidget {
 class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
   dynamic matchData;
   dynamic squadData;
-  String joinCode;
-  bool _success;
-  bool _error;
+  String? joinCode;
+  bool? _success;
+  bool? _error;
   String _errorMessage = '';
   bool _isLoading = false;
 
@@ -40,7 +40,7 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
       TextEditingController();
 
   Future<void> createContestTransaction() async {
-    var loggedInUserData;
+    late var loggedInUserData;
     try {
       Person loggedInUser = await _firebase.getUserDetails();
       loggedInUserData = loggedInUser.toMap();
@@ -87,13 +87,13 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
       if (!joinCodeSnapshot.exists) duplicate = false;
     }
 
-    final int matchId = matchData['unique_id'];
+    final int? matchId = matchData['unique_id'];
 
     final TransactionHandler createContestTransaction = (Transaction tx) async {
       final countSnapshot = await tx.get(_firestore
           .collection('contests/cricketMatchContest/noOfContests')
           .doc('noOfContests'));
-      int count = countSnapshot.data()['count'];
+      int count = countSnapshot.data()!['count'];
 
       count++;
       String countStr;
@@ -222,7 +222,7 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
               textAlign: TextAlign.center,
               style: Theme.of(context)
                   .textTheme
-                  .bodyText2
+                  .bodyText2!
                   .copyWith(fontStyle: FontStyle.italic),
             ),
           ),
@@ -289,7 +289,7 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
                 Container(
                   child: _success == null
                       ? Text('')
-                      : (_success
+                      : (_success!
                           ? Column(children: <Widget>[
                               Text(
                                 'Contest created.. Here is the the code to join the contest: ',

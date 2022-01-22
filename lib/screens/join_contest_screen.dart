@@ -19,7 +19,7 @@ class JoinContestScreen extends StatefulWidget {
 class _JoinContestScreenState extends State<JoinContestScreen> {
   final TextEditingController codeTextController = TextEditingController();
   dynamic loggedInUserData;
-  String message = '';
+  String? message = '';
   int index = 1;
   bool isLoading = false;
 
@@ -28,7 +28,7 @@ class _JoinContestScreenState extends State<JoinContestScreen> {
     super.initState();
   }
 
-  void _utilSetState(String responseMessage) {
+  void _utilSetState(String? responseMessage) {
     setState(() {
       message = responseMessage;
       isLoading = false;
@@ -61,7 +61,7 @@ class _JoinContestScreenState extends State<JoinContestScreen> {
                   textAlign: TextAlign.center,
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText1
+                      .bodyText1!
                       .copyWith(color: Colors.black87),
                 ),
               ),
@@ -121,14 +121,14 @@ class _JoinContestScreenState extends State<JoinContestScreen> {
                     textAlign: TextAlign.center,
                     style: Theme.of(context)
                         .textTheme
-                        .headline6
+                        .headline6!
                         .copyWith(color: Colors.white),
                   ),
                 ),
               ),
               Container(
                 child: Text(
-                  message,
+                  message!,
                 ),
               )
             ],

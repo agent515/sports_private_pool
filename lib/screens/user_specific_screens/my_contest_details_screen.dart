@@ -14,7 +14,7 @@ import 'package:sports_private_pool/services/firebase.dart';
 
 class MyCreatedContestDetailsScreen extends StatefulWidget {
   MyCreatedContestDetailsScreen(
-      {@required this.contestId, @required this.type, this.matchId});
+      {required this.contestId, required this.type, this.matchId});
   final contestId;
   final type;
   final matchId;
@@ -28,11 +28,11 @@ class _MyCreatedContestDetailsScreenState
     extends State<MyCreatedContestDetailsScreen> {
   dynamic contest;
   dynamic matchScore;
-  String type;
+  String? type;
   bool _tapped = false;
-  Map<dynamic, dynamic> contestResult;
-  Person _user;
-  Box<Person> userBox;
+  Map<dynamic, dynamic>? contestResult;
+  Person? _user;
+  late Box<Person> userBox;
 
   // ignore: non_constant_identifier_names
   dynamic MVP;
@@ -40,7 +40,7 @@ class _MyCreatedContestDetailsScreenState
   dynamic mostWickets;
   FirebaseRepository _firebase = FirebaseRepository();
 
-  TextStyle kUserProfileInfoDetailsTextStyle;
+  TextStyle? kUserProfileInfoDetailsTextStyle;
 
   Widget predictionWidget = Icon(Icons.arrow_drop_down);
 
@@ -70,7 +70,7 @@ class _MyCreatedContestDetailsScreenState
     );
   }
 
-  Future<void> _createDynamicLink(String joinCode) async {
+  Future<void> _createDynamicLink(String? joinCode) async {
     final DynamicLinkParameters parameters = DynamicLinkParameters(
       uriPrefix: 'https://envision.page.link',
       // ignore: todo
@@ -100,7 +100,7 @@ class _MyCreatedContestDetailsScreenState
   Widget _buildJoinedContestDetails() {
     kUserProfileInfoDetailsTextStyle = Theme.of(context)
         .textTheme
-        .headline6
+        .headline6!
         .copyWith(color: Colors.black54, fontWeight: FontWeight.w600);
     return Container(
       margin: EdgeInsets.only(top: 20.0),
@@ -172,7 +172,7 @@ class _MyCreatedContestDetailsScreenState
   Widget _buildCreatedContestDetails() {
     kUserProfileInfoDetailsTextStyle = Theme.of(context)
         .textTheme
-        .headline6
+        .headline6!
         .copyWith(color: Colors.black54, fontWeight: FontWeight.w600);
     return Container(
       margin: EdgeInsets.only(top: 20.0),
@@ -268,11 +268,11 @@ class _MyCreatedContestDetailsScreenState
       var sportData = SportData();
 
       MVP = await sportData
-          .getPlayerInfo(contest['predictions'][_user.username]['MVP']);
+          .getPlayerInfo(contest['predictions'][_user!.username]['MVP']);
       mostRuns = await sportData
-          .getPlayerInfo(contest['predictions'][_user.username]['mostRuns']);
+          .getPlayerInfo(contest['predictions'][_user!.username]['mostRuns']);
       mostWickets = await sportData
-          .getPlayerInfo(contest['predictions'][_user.username]['mostWickets']);
+          .getPlayerInfo(contest['predictions'][_user!.username]['mostWickets']);
 
       String placeholder =
           "http://www.londondentalsmiles.co.uk/wp-content/uploads/2017/06/person-dummy.jpg";
@@ -309,7 +309,7 @@ class _MyCreatedContestDetailsScreenState
             ListTile(
                 leading: Text('Match Result :'),
                 title: Text(
-                    '${contest['predictions'][_user.username]['matchResult']}')),
+                    '${contest['predictions'][_user!.username]['matchResult']}')),
           ],
         );
       });
@@ -414,7 +414,7 @@ class _MyCreatedContestDetailsScreenState
                               ),
                               type == 'Joined'
                                   ? (contestResult != null
-                                          ? contestResult.isNotEmpty
+                                          ? contestResult!.isNotEmpty
                                           : false)
                                       ? Padding(
                                           padding: const EdgeInsets.symmetric(
@@ -439,7 +439,7 @@ class _MyCreatedContestDetailsScreenState
                                       : Container()
                                   : (contest['participants'].length > 0 &&
                                           (contestResult != null
-                                              ? contestResult.isEmpty
+                                              ? contestResult!.isEmpty
                                               : true))
                                       ? Padding(
                                           padding: const EdgeInsets.symmetric(

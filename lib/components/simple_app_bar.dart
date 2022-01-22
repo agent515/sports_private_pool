@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
   SimpleAppBar({this.appBarTitle});
-  final String appBarTitle;
+  final String? appBarTitle;
 
   @override
   Size get preferredSize {
@@ -25,7 +25,7 @@ class SimpleAppBar extends StatelessWidget implements PreferredSizeWidget {
           children: [
             Center(
               child: Text(
-                appBarTitle,
+                appBarTitle!,
                 style: TextStyle(
                   color: Colors.black,
                   letterSpacing: 1.5,

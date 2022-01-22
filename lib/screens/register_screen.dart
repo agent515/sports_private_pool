@@ -31,20 +31,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController passwordTextController = TextEditingController();
   final TextEditingController cpasswordTextController = TextEditingController();
 
-  bool _success;
+  bool? _success;
   String message = '';
   bool _isLoading = false;
 
-  FocusNode fNameNode;
-  FocusNode lNameNode;
-  FocusNode userNameNode;
-  FocusNode emailNode;
-  FocusNode passwordNode;
-  FocusNode cpasswordNode;
+  FocusNode? fNameNode;
+  FocusNode? lNameNode;
+  FocusNode? userNameNode;
+  FocusNode? emailNode;
+  FocusNode? passwordNode;
+  FocusNode? cpasswordNode;
 
-  Person currentUser;
-  Box<dynamic> userData;
-  SharedPreferences _preferences;
+  Person? currentUser;
+  late Box<dynamic> userData;
+  late SharedPreferences _preferences;
 
   @override
   void initState() {
@@ -64,12 +64,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   void dispose() {
     //Dispose after done as they are expensive
-    fNameNode.dispose();
-    lNameNode.dispose();
-    userNameNode.dispose();
-    emailNode.dispose();
-    passwordNode.dispose();
-    cpasswordNode.dispose();
+    fNameNode!.dispose();
+    lNameNode!.dispose();
+    userNameNode!.dispose();
+    emailNode!.dispose();
+    passwordNode!.dispose();
+    cpasswordNode!.dispose();
 
     firstNameTextController.dispose();
     lastNameTextController.dispose();
@@ -104,7 +104,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           if (user != null) {
             await _firestore
                 .collection("email-username")
-                .doc(user.user.email)
+                .doc(user.user!.email)
                 .set({
               'username': username,
             });
@@ -152,12 +152,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
     print(_success);
   }
 
-  Future<void> _signUpHelper(BuildContext context, String email) async {
+  Future<void> _signUpHelper(BuildContext context, String? email) async {
     try {
       var loggedInUserData;
       var snapshot =
           await _firestore.collection('email-username').doc(email).get();
-      var temp = snapshot.data()['username'];
+      var temp = snapshot.data()!['username'];
       var _user = await _firestore.collection('users').doc(temp).get();
 
       loggedInUserData = _user.data;
@@ -226,7 +226,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     hintText: 'First Name',
                     textController: firstNameTextController,
                     fNode: fNameNode,
-                    onComplete: () => lNameNode.requestFocus(),
+                    onComplete: () => lNameNode!.requestFocus(),
                   ),
                 ),
                 Expanded(
@@ -234,7 +234,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     hintText: 'Last Name',
                     textController: lastNameTextController,
                     fNode: lNameNode,
-                    onComplete: () => userNameNode.requestFocus(),
+                    onComplete: () => userNameNode!.requestFocus(),
                   ),
                 ),
               ],
@@ -248,7 +248,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               paddingTop: 10.0,
               textController: usernameTextController,
               fNode: userNameNode,
-              onComplete: () => emailNode.requestFocus(),
+              onComplete: () => emailNode!.requestFocus(),
             ),
             InputBox(
               hintText: 'Email',
@@ -260,7 +260,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               paddingTop: 10.0,
               textController: emailTextController,
               fNode: emailNode,
-              onComplete: () => passwordNode.requestFocus(),
+              onComplete: () => passwordNode!.requestFocus(),
             ),
             InputBox(
               hintText: 'Password',
@@ -272,7 +272,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               textController: passwordTextController,
               obscureText: true,
               fNode: passwordNode,
-              onComplete: () => cpasswordNode.requestFocus(),
+              onComplete: () => cpasswordNode!.requestFocus(),
             ),
             InputBox(
               hintText: 'Re-enter Password',
@@ -296,7 +296,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     _isLoading = true;
                   });
                   await _register();
-                  if (_success) {
+                  if (_success!) {
                     try {
                       await _signUpHelper(context, emailTextController.text);
                       setState(() {

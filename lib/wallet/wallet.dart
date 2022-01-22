@@ -49,8 +49,8 @@ class _MyWalletState extends State<MyWallet> {
                               borderRadius: BorderRadius.circular(5),
                               borderSide: BorderSide(width: 2.0)),
                         ),
-                        validator: (String amount) {
-                          if (double.parse(amount) < 10)
+                        validator: (String? amount) {
+                          if (double.parse(amount!) < 10)
                             return "Amount cannot be less than ₹10.";
                           return null;
                         },
@@ -61,7 +61,7 @@ class _MyWalletState extends State<MyWallet> {
                       ElevatedButton(
                         child: Text('Add Now'),
                         onPressed: () {
-                          if (_formKey.currentState.validate()) {
+                          if (_formKey.currentState!.validate()) {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => PaymentScreen(

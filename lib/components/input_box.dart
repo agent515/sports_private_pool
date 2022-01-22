@@ -13,14 +13,14 @@ class InputBox extends StatelessWidget {
     this.onComplete,
   });
 
-  final String hintText;
-  final TextEditingController textController;
+  final String? hintText;
+  final TextEditingController? textController;
   final TextInputType keyboardType;
-  final Icon prefixIcon;
+  final Icon? prefixIcon;
   final double paddingTop;
   final bool obscureText;
-  final FocusNode fNode;
-  final Function onComplete;
+  final FocusNode? fNode;
+  final Function? onComplete;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class InputBox extends StatelessWidget {
         child: TextField(
           //Used to send the focus to next text field using focus node.
           focusNode: fNode,
-          onEditingComplete: onComplete,
+          onEditingComplete: onComplete as void Function()?,
 
           controller: textController,
           obscureText: obscureText,

@@ -16,9 +16,9 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 class PushNotification {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   FirebaseRepository _firebase = FirebaseRepository();
-  String title;
-  String body;
-  String joinCode;
+  String? title;
+  String? body;
+  String? joinCode;
 
   PushNotification({this.title, this.body});
 
@@ -38,10 +38,10 @@ class PushNotification {
 
   void initializeFCM() async {
     /// Create a [AndroidNotificationChannel] for heads up notifications
-    AndroidNotificationChannel channel;
+    late AndroidNotificationChannel channel;
 
     /// Initialize the [FlutterLocalNotificationsPlugin] package.
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+    late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
@@ -55,6 +55,8 @@ class PushNotification {
       );
 
       if (Platform.isIOS) await requestNotificationPermission();
+
+      flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
       const AndroidInitializationSettings initializationSettingsAndroid =
           AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -70,8 +72,6 @@ class PushNotification {
               macOS: initializationSettingsMacOS);
       await flutterLocalNotificationsPlugin.initialize(initializationSettings,
           onSelectNotification: selectNotification);
-
-      flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
       /// Create an Android Notification Channel.
       ///
@@ -96,7 +96,7 @@ class PushNotification {
 
     FirebaseMessaging.instance
         .getInitialMessage()
-        .then((RemoteMessage message) {
+        .then((RemoteMessage? message) {
       if (message != null) {
         // Navigator.pushNamed(
         //   context,
@@ -107,8 +107,8 @@ class PushNotification {
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      RemoteNotification notification = message.notification;
-      AndroidNotification android = message.notification?.android;
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
       if (notification != null && android != null && !kIsWeb) {
         flutterLocalNotificationsPlugin.show(
           notification.hashCode,
@@ -139,9 +139,9 @@ class PushNotification {
 
   Future onDidReceiveLocalNotification(
     int id,
-    String title,
-    String body,
-    String payload,
+    String? title,
+    String? body,
+    String? payload,
   ) async {}
 
   Future<void> requestNotificationPermission() async {
@@ -156,9 +156,9 @@ class PushNotification {
     );
   }
 
-  Future selectNotification(String payload) async {
+  Future selectNotification(String? payload) async {
     if (payload != null) {
-      Map<String, dynamic> jsonData = json.decode(payload);
+      Map<String, dynamic>? jsonData = json.decode(payload);
       // if (jsonData['data']['type'] == 'question') {
       //   return navigateToQuestion(jsonData['data']['questionId']);
       // }

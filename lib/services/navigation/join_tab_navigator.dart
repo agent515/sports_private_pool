@@ -7,8 +7,8 @@ class JoinTabNavigatorRoutes {
 }
 
 class JoinTabNavigator extends StatelessWidget {
-  final TabItem tabItem;
-  final GlobalKey<NavigatorState> navigatorKey;
+  final TabItem? tabItem;
+  final GlobalKey<NavigatorState>? navigatorKey;
   JoinTabNavigator({this.tabItem, this.navigatorKey});
 
   Map<String, WidgetBuilder> _routeBuilders(context) {
@@ -24,7 +24,7 @@ class JoinTabNavigator extends StatelessWidget {
       key: navigatorKey,
       initialRoute: JoinTabNavigatorRoutes.join,
       onGenerateRoute: (routeSetting){
-        return MaterialPageRoute(builder: (context)=> routeBuilder[routeSetting.name](context),);
+        return MaterialPageRoute(builder: (context)=> routeBuilder[routeSetting.name!]!(context),);
       },
     );
   }

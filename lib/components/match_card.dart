@@ -3,10 +3,10 @@ import 'package:sports_private_pool/screens/user_specific_screens/my_contest_det
 
 class MatchCard extends StatelessWidget {
   const MatchCard(
-      {Key key,
-      @required this.screenSize,
-      @required this.contestMeta,
-      @required this.type})
+      {Key? key,
+      required this.screenSize,
+      required this.contestMeta,
+      required this.type})
       : super(key: key);
 
   final Size screenSize;

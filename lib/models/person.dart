@@ -4,19 +4,19 @@ part 'person.g.dart';
 @HiveType(typeId: 0)
 class Person {
   @HiveField(0)
-  String email;
+  String? email;
   @HiveField(1)
-  String firstName;
+  String? firstName;
   @HiveField(2)
-  String lastName;
+  String? lastName;
   @HiveField(3)
-  double purse;
+  double? purse;
   @HiveField(4)
-  String username;
+  String? username;
   @HiveField(5)
-  List<dynamic> contestsCreated;
+  List<dynamic>? contestsCreated;
   @HiveField(6)
-  List<dynamic> contestsJoined;
+  List<dynamic>? contestsJoined;
 
   Person(
       {this.email,

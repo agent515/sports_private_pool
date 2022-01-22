@@ -18,7 +18,7 @@ import 'screens/main_frame_app.dart';
 import 'screens/welcome_screen.dart';
 
 bool userLoggedIn = false;
-SharedPreferences preferences;
+late SharedPreferences preferences;
 
 local_notification.FlutterLocalNotificationsPlugin
     flutterLocalNotificationsPlugin =
@@ -48,7 +48,7 @@ void main() async {
     requestBadgePermission: true,
     requestSoundPermission: true,
     onDidReceiveLocalNotification:
-        (int id, String title, String body, String payload) async {},
+        (int id, String? title, String? body, String? payload) async {},
   );
   var initializationSettings = local_notification.InitializationSettings(
     android: initializationSettingsAndroid,
@@ -57,11 +57,11 @@ void main() async {
 
   flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
-    onSelectNotification: (String payload) async {
+    onSelectNotification: (String? payload) async {
       if (payload != null) {
         try {
           print("notification payload: $payload");
-          Map<String, dynamic> payloadJson = json.decode(payload);
+          Map<String, dynamic>? payloadJson = json.decode(payload);
           print(payloadJson);
           // if (payloadJson['data']['type'] == 'joinContest') {
           //   print(payloadJson['data']);
@@ -128,7 +128,7 @@ class Envision extends StatefulWidget {
 }
 
 class _EnvisionState extends State<Envision> {
-  Box<Person> userBox;
+  late Box<Person> userBox;
 
   @override
   initState() {
@@ -150,29 +150,27 @@ class _EnvisionState extends State<Envision> {
     FirebaseDynamicLinks.instance.onLink.listen((event) {
       final Uri deepLink = event.link;
 
-      if (deepLink != null) {
-        final joinCode = deepLink.queryParameters["joinCode"];
-        print(deepLink.queryParameters);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MainFrameApp(
-              defaultPage: 1,
-              joinCode: joinCode,
-            ),
+      final joinCode = deepLink.queryParameters["joinCode"];
+      print(deepLink.queryParameters);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MainFrameApp(
+            defaultPage: 1,
+            joinCode: joinCode,
           ),
-        );
-      }
+        ),
+      );
     }).onError((e) async {
       print('onLinkError');
       print(e.message);
     });
 
-    final PendingDynamicLinkData data =
+    final PendingDynamicLinkData? data =
         await FirebaseDynamicLinks.instance.getInitialLink();
-    final Uri deepLink = data.link;
+    if (data != null) {
+      final Uri deepLink = data.link;
 
-    if (deepLink != null) {
       Navigator.pushNamed(context, deepLink.path);
     }
   }

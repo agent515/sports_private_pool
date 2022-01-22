@@ -4,7 +4,7 @@ import 'package:sports_private_pool/components/simple_app_bar.dart';
 import 'package:sports_private_pool/screens/cricket_match_contest_screen.dart';
 
 class MatchDetails extends StatefulWidget {
-  MatchDetails({@required this.matchData, @required this.squadData});
+  MatchDetails({required this.matchData, required this.squadData});
 
   final dynamic matchData;
   final dynamic squadData;
@@ -14,10 +14,10 @@ class MatchDetails extends StatefulWidget {
 }
 
 class _MatchDetailsState extends State<MatchDetails> {
-  int matchId;
+  int? matchId;
   dynamic matchData;
   dynamic dateObject;
-  String date;
+  late String date;
   dynamic squads;
   dynamic loggedInUserData;
   int index = 1;
@@ -163,7 +163,7 @@ class _MatchDetailsState extends State<MatchDetails> {
                                 textAlign: TextAlign.center,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headline6
+                                    .headline6!
                                     .copyWith(
                                         color: Theme.of(context).accentColor),
                               )),

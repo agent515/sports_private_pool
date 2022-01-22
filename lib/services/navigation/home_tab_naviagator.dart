@@ -10,8 +10,8 @@ class HomeTabNavigatorRoutes {
 }
 
 class HomeTabNavigator extends StatelessWidget {
-  final TabItem tabItem;
-  final GlobalKey<NavigatorState> navigatorKey;
+  final TabItem? tabItem;
+  final GlobalKey<NavigatorState>? navigatorKey;
   final FirebaseRepository _firebase = FirebaseRepository();
 
   HomeTabNavigator({this.tabItem, this.navigatorKey});
@@ -39,7 +39,7 @@ class HomeTabNavigator extends StatelessWidget {
               onGenerateRoute: (routeSettings) {
                 return MaterialPageRoute(
                     builder: (context) =>
-                        routeBuilder[routeSettings.name](context));
+                        routeBuilder[routeSettings.name!]!(context));
               },
             );
           } else {

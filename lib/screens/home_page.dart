@@ -21,10 +21,10 @@ class _HomePageState extends State<HomePage> {
   dynamic upcomingMatchesData;
   dynamic loggedInUserData;
   int index = 0;
-  Person currentUser;
+  Person? currentUser;
 
-  Box<dynamic> userData;
-  Box<Person> userBox;
+  late Box<dynamic> userData;
+  late Box<Person> userBox;
 
   @override
   void initState() {
@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
       loggedInUserData = userData.get('userData');
       currentUser = userBox.get('user');
     });
-    print("CurrentUser: ${currentUser.firstName} ${currentUser.lastName}");
+    print("CurrentUser: ${currentUser!.firstName} ${currentUser!.lastName}");
   }
 
   List<Widget> getUpcomingMatchesList() {

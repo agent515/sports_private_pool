@@ -7,8 +7,8 @@ class ProfileTabNavigatorRoutes {
 }
 
 class ProfileTabNavigator extends StatelessWidget {
-  final TabItem tabItem;
-  final GlobalKey<NavigatorState> navigatorKey;
+  final TabItem? tabItem;
+  final GlobalKey<NavigatorState>? navigatorKey;
   ProfileTabNavigator({this.tabItem, this.navigatorKey});
 
   Map<String, WidgetBuilder> _routeBuilders(context) {
@@ -24,7 +24,7 @@ class ProfileTabNavigator extends StatelessWidget {
       key: navigatorKey,
       initialRoute: ProfileTabNavigatorRoutes.profile,
       onGenerateRoute: (routeSetting){
-        return MaterialPageRoute(builder: (context)=> routeBuilder[routeSetting.name](context),);
+        return MaterialPageRoute(builder: (context)=> routeBuilder[routeSetting.name!]!(context),);
       },
     );
   }
