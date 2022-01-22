@@ -38,10 +38,10 @@ class PushNotification {
 
   void initializeFCM() async {
     /// Create a [AndroidNotificationChannel] for heads up notifications
-    late AndroidNotificationChannel channel;
+    AndroidNotificationChannel channel;
 
     /// Initialize the [FlutterLocalNotificationsPlugin] package.
-    late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
@@ -54,24 +54,22 @@ class PushNotification {
         importance: Importance.high,
       );
 
+      if (Platform.isIOS) await requestNotificationPermission();
 
-          if (Platform.isIOS) await requestNotificationPermission();
-
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings(
-            '@mipmap/ic_launcher');
-    final IOSInitializationSettings initializationSettingsIOS =
-        IOSInitializationSettings(
-            onDidReceiveLocalNotification: onDidReceiveLocalNotification);
-    const MacOSInitializationSettings initializationSettingsMacOS =
-        MacOSInitializationSettings();
-    final InitializationSettings initializationSettings =
-        InitializationSettings(
-            android: initializationSettingsAndroid,
-            iOS: initializationSettingsIOS,
-            macOS: initializationSettingsMacOS);
-    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: selectNotification);
+      const AndroidInitializationSettings initializationSettingsAndroid =
+          AndroidInitializationSettings('@mipmap/ic_launcher');
+      final IOSInitializationSettings initializationSettingsIOS =
+          IOSInitializationSettings(
+              onDidReceiveLocalNotification: onDidReceiveLocalNotification);
+      const MacOSInitializationSettings initializationSettingsMacOS =
+          MacOSInitializationSettings();
+      final InitializationSettings initializationSettings =
+          InitializationSettings(
+              android: initializationSettingsAndroid,
+              iOS: initializationSettingsIOS,
+              macOS: initializationSettingsMacOS);
+      await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+          onSelectNotification: selectNotification);
 
       flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -109,8 +107,8 @@ class PushNotification {
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification?.android;
+      RemoteNotification notification = message.notification;
+      AndroidNotification android = message.notification?.android;
       if (notification != null && android != null && !kIsWeb) {
         flutterLocalNotificationsPlugin.show(
           notification.hashCode,
@@ -139,11 +137,11 @@ class PushNotification {
     });
   }
 
-    Future onDidReceiveLocalNotification(
+  Future onDidReceiveLocalNotification(
     int id,
-    String? title,
-    String? body,
-    String? payload,
+    String title,
+    String body,
+    String payload,
   ) async {}
 
   Future<void> requestNotificationPermission() async {
@@ -158,7 +156,7 @@ class PushNotification {
     );
   }
 
-   Future selectNotification(String? payload) async {
+  Future selectNotification(String payload) async {
     if (payload != null) {
       Map<String, dynamic> jsonData = json.decode(payload);
       // if (jsonData['data']['type'] == 'question') {
@@ -170,7 +168,6 @@ class PushNotification {
     }
     // return navigationService.navigateTo(Routes.homeRoute);
   }
-
 
   Future<void> saveDeviceToken() async {
     final currentToken = await _messaging.getToken();

@@ -10,7 +10,7 @@ import 'package:sports_private_pool/services/firebase.dart';
 
 enum matchResultEnum { team_1, draw, team_2 }
 
-Firestore _firestore = Firestore.instance;
+FirebaseFirestore _firestore = FirebaseFirestore.instance;
 FirebaseAuth _auth = FirebaseAuth.instance;
 FirebaseRepository _firebase = FirebaseRepository();
 
@@ -73,12 +73,12 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
   }
 
   Future<void> joinContest() async {
-    FirebaseUser loggedInUser = await _auth.currentUser();
+    User loggedInUser = _auth.currentUser;
     var loggedInUserData;
-    var snapshots = await _firestore.collection('users').getDocuments();
+    var snapshots = await _firestore.collection('users').get();
 
-    for (var user in snapshots.documents) {
-      if (user.data.containsValue(loggedInUser.email)) {
+    for (var user in snapshots.docs) {
+      if (user.data().containsValue(loggedInUser.email)) {
         loggedInUserData = user.data;
         print(user.data);
         break;
@@ -102,12 +102,12 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
       final contestSnapshot = await tx.get(_firestore
           .collection(
               'contests/cricketMatchContest/cricketMatchContestCollection')
-          .document(contest['contestId']));
-      List participants = contestSnapshot.data['participants'];
+          .doc(contest['contestId']));
+      List participants = contestSnapshot.data()['participants'];
       Map<String, dynamic> contestPredictions =
-          contestSnapshot.data['predictions'];
+          contestSnapshot.data()['predictions'];
 
-      if (participants.length == contestSnapshot.data['noOfParticipants']) {
+      if (participants.length == contestSnapshot.data()['noOfParticipants']) {
         print("Contest is full");
         return {"status": "Contest is full"};
       }
@@ -129,20 +129,19 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
       userContestsJoined.add(tempObj);
 
       // Contest Admin user data fetch
-      var adminDataSnapshot = await tx
-          .get(_firestore.collection('users').document(contest['admin']));
-      var adminData = adminDataSnapshot.data;
+      var adminDataSnapshot =
+          await tx.get(_firestore.collection('users').doc(contest['admin']));
+      var adminData = adminDataSnapshot.data();
 
       // Subtract entry fee from the current user's purse
       await tx.update(
-          _firestore.collection('users').document(loggedInUserData['username']),
-          {
-            'purse': loggedInUserData['purse'] - contest['entryFee'],
-            'contestsJoined': userContestsJoined,
-          });
+          _firestore.collection('users').doc(loggedInUserData['username']), {
+        'purse': loggedInUserData['purse'] - contest['entryFee'],
+        'contestsJoined': userContestsJoined,
+      });
 
       // Add entry fee to the contest admin's purse
-      await tx.update(_firestore.collection('users').document(contest['admin']),
+      await tx.update(_firestore.collection('users').doc(contest['admin']),
           {'purse': adminData['purse'] + contest['entryFee']});
 
       // Update contest document with updated participants and predictions list
@@ -150,7 +149,7 @@ class _JoinCMCInputScreenState extends State<JoinCMCInputScreen> {
           _firestore
               .collection(
                   'contests/cricketMatchContest/cricketMatchContestCollection')
-              .document(contest['contestId']),
+              .doc(contest['contestId']),
           {'participants': participants, 'predictions': contestPredictions});
       // await tx.update(
       //     _firestore.collection('users').document(loggedInUserData['username']),

@@ -10,7 +10,7 @@ import 'package:random_string/random_string.dart';
 import 'package:sports_private_pool/services/firebase.dart';
 import 'package:sports_private_pool/models/person.dart';
 
-Firestore _firestore = Firestore.instance;
+FirebaseFirestore _firestore = FirebaseFirestore.instance;
 FirebaseRepository _firebase = FirebaseRepository();
 
 class CricketMatchContestScreen extends StatefulWidget {
@@ -82,7 +82,7 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
       joinCode = type + randomAlphaNumeric(8);
       DocumentSnapshot joinCodeSnapshot = await _firestore
           .collection('contest/joinCodes/joinCodesCollection')
-          .document(joinCode)
+          .doc(joinCode)
           .get();
       if (!joinCodeSnapshot.exists) duplicate = false;
     }
@@ -92,8 +92,8 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
     final TransactionHandler createContestTransaction = (Transaction tx) async {
       final countSnapshot = await tx.get(_firestore
           .collection('contests/cricketMatchContest/noOfContests')
-          .document('noOfContests'));
-      int count = countSnapshot.data['count'];
+          .doc('noOfContests'));
+      int count = countSnapshot.data()['count'];
 
       count++;
       String countStr;
@@ -139,20 +139,20 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
           _firestore
               .collection(
                   'contests/cricketMatchContest/cricketMatchContestCollection')
-              .document(contestId),
+              .doc(contestId),
           contest);
       await tx.update(
           _firestore
               .collection('contests/cricketMatchContest/noOfContests')
-              .document('noOfContests'),
+              .doc('noOfContests'),
           {'count': FieldValue.increment(1)});
       await tx.set(
           _firestore
               .collection('contests/joinCodes/joinCodesCollection')
-              .document(joinCode),
+              .doc(joinCode),
           {'contestId': contestId, 'createdAt': FieldValue.serverTimestamp()});
       await tx.update(
-          _firestore.collection('users').document(loggedInUserData['username']),
+          _firestore.collection('users').doc(loggedInUserData['username']),
           {'purse': loggedInUserData['purse'] - contest['prizeMoney']});
       var tempObj = {
         'contestId': contestId,
@@ -163,7 +163,7 @@ class _CricketMatchContestScreenState extends State<CricketMatchContestScreen> {
       };
       contestsCreated.add(tempObj);
       await tx.update(
-          _firestore.collection('users').document(loggedInUserData['username']),
+          _firestore.collection('users').doc(loggedInUserData['username']),
           {'contestsCreated': contestsCreated});
       return contest;
     };

@@ -13,7 +13,7 @@ import 'package:sports_private_pool/components/input_box.dart';
 import 'package:sports_private_pool/components/rounded_button.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
-final Firestore _firestore = Firestore.instance;
+final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 FirebaseRepository _firebase = FirebaseRepository();
 
 class RegisterScreen extends StatefulWidget {
@@ -104,12 +104,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
           if (user != null) {
             await _firestore
                 .collection("email-username")
-                .document(user.user.email)
-                .setData({
+                .doc(user.user.email)
+                .set({
               'username': username,
             });
 
-            await _firestore.collection('users').document(username).setData({
+            await _firestore.collection('users').doc(username).set({
               'username': username,
               'email': email,
               'firstName': firstName,
@@ -156,9 +156,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     try {
       var loggedInUserData;
       var snapshot =
-          await _firestore.collection('email-username').document(email).get();
-      var temp = snapshot.data['username'];
-      var _user = await _firestore.collection('users').document(temp).get();
+          await _firestore.collection('email-username').doc(email).get();
+      var temp = snapshot.data()['username'];
+      var _user = await _firestore.collection('users').doc(temp).get();
 
       loggedInUserData = _user.data;
       print("data: $loggedInUserData");

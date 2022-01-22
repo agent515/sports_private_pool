@@ -15,7 +15,7 @@ import 'package:sports_private_pool/screens/register_screen.dart';
 import 'package:sports_private_pool/services/firebase.dart';
 
 final _auth = FirebaseAuth.instance;
-final _firestore = Firestore.instance;
+final _firestore = FirebaseFirestore.instance;
 
 class LoginScreen extends StatefulWidget {
   static const id = "login_screen";
@@ -56,15 +56,13 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
   }
 
-  Future<void> _signinHelper(context, FirebaseUser user) async {
+  Future<void> _signinHelper(context, User user) async {
     try {
       var loggedInUserData;
-      var snapshot = await _firestore
-          .collection('email-username')
-          .document(user.email)
-          .get();
-      var temp = snapshot.data['username'];
-      var _user = await _firestore.collection('users').document(temp).get();
+      var snapshot =
+          await _firestore.collection('email-username').doc(user.email).get();
+      var temp = snapshot.data()['username'];
+      var _user = await _firestore.collection('users').doc(temp).get();
 
       loggedInUserData = _user.data;
       currentUser = Person.fromMap(loggedInUserData);
@@ -106,28 +104,26 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(
                 width: 250.0,
                 child: ColorizeAnimatedTextKit(
-                    speed: Duration(milliseconds: 300),
-                    onTap: () {
-                      print("Tap Event");
-                    },
-                    text: [
-                      'E N V I S I O N',
-                    ],
-                    textStyle: TextStyle(
-                      fontSize: 18.0,
-                      fontFamily: "Horizon",
-                      letterSpacing: 3.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    colors: [
-                      Colors.black87,
-                      Colors.grey,
-                      Colors.white,
-                    ],
-                    textAlign: TextAlign.center,
-                    alignment:
-                        AlignmentDirectional.topStart // or Alignment.topLeft
-                    ),
+                  speed: Duration(milliseconds: 300),
+                  onTap: () {
+                    print("Tap Event");
+                  },
+                  text: [
+                    'E N V I S I O N',
+                  ],
+                  textStyle: TextStyle(
+                    fontSize: 18.0,
+                    fontFamily: "Horizon",
+                    letterSpacing: 3.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  colors: [
+                    Colors.black87,
+                    Colors.grey,
+                    Colors.white,
+                  ],
+                  textAlign: TextAlign.center,
+                ),
               ),
               SizedBox(
                 height: 60.0,

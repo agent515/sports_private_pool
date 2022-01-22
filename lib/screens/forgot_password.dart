@@ -36,28 +36,26 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             SizedBox(
               width: 250.0,
               child: ColorizeAnimatedTextKit(
-                  speed: Duration(milliseconds: 300),
-                  onTap: () {
-                    print("Tap Event");
-                  },
-                  text: [
-                    'E N V I S I O N',
-                  ],
-                  textStyle: TextStyle(
-                    fontSize: 18.0,
-                    fontFamily: "Horizon",
-                    letterSpacing: 3.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  colors: [
-                    Colors.black87,
-                    Colors.grey,
-                    Colors.white,
-                  ],
-                  textAlign: TextAlign.center,
-                  alignment:
-                      AlignmentDirectional.topStart // or Alignment.topLeft
-                  ),
+                speed: Duration(milliseconds: 300),
+                onTap: () {
+                  print("Tap Event");
+                },
+                text: [
+                  'E N V I S I O N',
+                ],
+                textStyle: TextStyle(
+                  fontSize: 18.0,
+                  fontFamily: "Horizon",
+                  letterSpacing: 3.0,
+                  fontWeight: FontWeight.bold,
+                ),
+                colors: [
+                  Colors.black87,
+                  Colors.grey,
+                  Colors.white,
+                ],
+                textAlign: TextAlign.center,
+              ),
             ),
             SizedBox(
               height: 30.0,

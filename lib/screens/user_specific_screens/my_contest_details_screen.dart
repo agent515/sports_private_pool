@@ -88,13 +88,10 @@ class _MyCreatedContestDetailsScreenState
 //        appStoreId: '1405860595',
 //      )
     );
-    final Uri uri = await parameters.buildUrl();
+    // final Uri uri = await FirebaseDynamicLinks.instance.buildLink(parameters);
     final ShortDynamicLink shortDynamicLink =
-        await DynamicLinkParameters.shortenUrl(
-            uri,
-            DynamicLinkParametersOptions(
-              shortDynamicLinkPathLength: ShortDynamicLinkPathLength.short,
-            ));
+        await FirebaseDynamicLinks.instance.buildShortLink(parameters);
+
     final Uri shortUrl = shortDynamicLink.shortUrl;
     Share.share("${shortUrl.toString()}\nJoin Code: $joinCode",
         subject: "Envision Join code: $joinCode");
