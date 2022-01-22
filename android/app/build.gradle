@@ -40,7 +40,7 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.envision.Envision"
-        minSdkVersion 20
+        minSdkVersion 25
         multiDexEnabled true
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()
