@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sports_private_pool/components/rounded_button.dart';
 import 'package:sports_private_pool/components/simple_app_bar.dart';
 import 'package:sports_private_pool/screens/cricket_match_contest_screen.dart';
-import 'package:sports_private_pool/services/networking.dart';
-
-NetworkHelper networkHelper;
 
 class MatchDetails extends StatefulWidget {
   MatchDetails({@required this.matchData, @required this.squadData});

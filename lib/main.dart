@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -27,6 +28,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 
   preferences = await SharedPreferences.getInstance();
 
@@ -145,9 +147,8 @@ class _EnvisionState extends State<Envision> {
   }
 
   Future<void> initDynamicLinks() async {
-    FirebaseDynamicLinks.instance.onLink(
-        onSuccess: (PendingDynamicLinkData dynamicLink) async {
-      final Uri deepLink = dynamicLink?.link;
+    FirebaseDynamicLinks.instance.onLink.listen((event) {
+      final Uri deepLink = event.link;
 
       if (deepLink != null) {
         final joinCode = deepLink.queryParameters["joinCode"];
@@ -162,14 +163,14 @@ class _EnvisionState extends State<Envision> {
           ),
         );
       }
-    }, onError: (OnLinkErrorException e) async {
+    }).onError((e) async {
       print('onLinkError');
       print(e.message);
     });
 
     final PendingDynamicLinkData data =
         await FirebaseDynamicLinks.instance.getInitialLink();
-    final Uri deepLink = data?.link;
+    final Uri deepLink = data.link;
 
     if (deepLink != null) {
       Navigator.pushNamed(context, deepLink.path);
