@@ -1,0 +1,198 @@
+{
+    "1254107": {
+        "squad": [
+            {
+                "name": "Sunrisers Hyderabad",
+                "players": [
+                    {
+                        "name": "David Warner"
+                    },
+                    {
+                        "name": "Kane Williamson"
+                    },
+                    {
+                        "name": "Manish Pandey"
+                    },
+                    {
+                        "name": "Kedar Jadhav"
+                    },
+                    {
+                        "name": "Abdul Samad"
+                    },
+                    {
+                        "name": "Mohammad Nabi"
+                    },
+                    {
+                        "name": "Jonny Bairstow"
+                    },
+                    {
+                        "name": "Rashid Khan"
+                    },
+                    {
+                        "name": "T Natarajan"
+                    },
+                    {
+                        "name": "Bhvneshwar Kumar"
+                    },
+                    {
+                        "name": "Priyam Garg"
+                    }
+                ]
+            },
+            {
+                "name": "Punjab Kings",
+                "players": [
+                    {
+                        "name": "KL Rahul"
+                    },
+                    {
+                        "name": "Mayank Agarwal"
+                    },
+                    {
+                        "name": "Mandeep Singh"
+                    },
+                    {
+                        "name": "Nicholas Pooran"
+                    },
+                    {
+                        "name": "Deepak Hooda"
+                    },
+                    {
+                        "name": "Sarfaraz Khan"
+                    },
+                    {
+                        "name": "Shahrukh Khan"
+                    },
+                    {
+                        "name": "Chris Jordan"
+                    },
+                    {
+                        "name": "Arshdeep Singh"
+                    },
+                    {
+                        "name": "Ravi Bishnoi"
+                    },
+                    {
+                        "name": "Mohammed Shami"
+                    }
+                ]
+            }
+        ]
+    },
+    "1244270": {
+        "squad": [
+            {
+                "name": "Hampshire",
+                "players": []
+            },
+            {
+                "name": "Leicestershire",
+                "players": []
+            }
+        ]
+    },
+    "1260084": {
+        "squad": [
+            {
+                "name": "Netherlands",
+                "players": []
+            },
+            {
+                "name": "Scotland",
+                "players": []
+            }
+        ]
+    },
+    "1263106": {
+        "squad": [
+            {
+                "name": "Bauhinia Stars Women",
+                "players": []
+            },
+            {
+                "name": "Jade Jets Women",
+                "players": []
+            }
+        ]
+    },
+    "1254108": {
+        "squad": [
+            {
+                "name": "Royal Challengers Bangalore",
+                "players": [
+                    {
+                        "name": "Virat Kohli"
+                    },
+                    {
+                        "name": "Devdutt Padikkal"
+                    },
+                    {
+                        "name": "Glenn Maxwell"
+                    },
+                    {
+                        "name": "AB de Villiers"
+                    },
+                    {
+                        "name": "Sachin Baby"
+                    },
+                    {
+                        "name": "Washington Sundar"
+                    },
+                    {
+                        "name": "Mohammed Azharudden"
+                    },
+                    {
+                        "name": "Mohammed Siraj"
+                    },
+                    {
+                        "name": "Yuzvendra Chahal"
+                    },
+                    {
+                        "name": "Navdeep Saini"
+                    },
+                    {
+                        "name": "Daniel Christian"
+                    }
+                ]
+            },
+            {
+                "name": "Mumbai Indians",
+                "players": [
+                    {
+                        "name": "Rohit Sharma"
+                    },
+                    {
+                        "name": "Quinton de Kock"
+                    },
+                    {
+                        "name": "Suryakumar Yadav"
+                    },
+                    {
+                        "name": "Ishan Kishan"
+                    },
+                    {
+                        "name": "Kieron Pollard"
+                    },
+                    {
+                        "name": "Hardik Pandya"
+                    },
+                    {
+                        "name": "Krunal Pandya"
+                    },
+                    {
+                        "name": "Nathan Coulter-Nile"
+                    },
+                    {
+                        "name": "Rahul Chahar"
+                    },
+                    {
+                        "name": "Jasprit Bumrah"
+                    },
+                    {
+                        "name": "Trent Boult"
+                    }
+                ]
+            }
+        ]
+    }
+}

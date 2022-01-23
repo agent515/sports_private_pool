@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:sports_private_pool/services/networking.dart';
 import 'package:sports_private_pool/api.dart';
 
@@ -12,9 +15,13 @@ class SportData {
 
   // Get Squad Information of two teams in a Match with ID: matchId
   Future<dynamic> getSquads(matchId) async {
-    final squadData =
-        await _networkHelper.getData(_networkEndpoints.getSquads(matchId));
-    return squadData;
+    // final squadData =
+    //     await _networkHelper.getData(_networkEndpoints.getSquads(matchId));
+    // return squadData;
+    String stringData = await rootBundle.loadString('assets/json/squads.json');
+    Map<String, dynamic> data = json.decode(stringData);
+
+    return data["$matchId"];
   }
 
   // Get all the necessary data related to a Match.
@@ -36,9 +43,13 @@ class SportData {
 
   // Get Final Score of a match.
   Future<dynamic> getScore(matchId) async {
-    dynamic data =
-        await _networkHelper.getData(_networkEndpoints.getScore(matchId));
-    return data;
+    // dynamic data =
+    //     await _networkHelper.getData(_networkEndpoints.getScore(matchId));
+    // return data;
+    String stringData = await rootBundle.loadString('assets/json/scores.json');
+    Map<String, dynamic> data = json.decode(stringData);
+
+    return data["$matchId"];
   }
 
   // Get Player Information and his/her stats.
@@ -49,127 +60,13 @@ class SportData {
   }
 
   Future<dynamic> getUpcomingMatchesData(route) async {
-    dynamic data = await _networkHelper
-        .getData(_networkEndpoints.getUpcomingMatchesData(route));
-    data = data['matches'];
+    // dynamic data = await _networkHelper
+    //     .getData(_networkEndpoints.getUpcomingMatchesData(route));
+    // data = data['matches'];
+    String stringData =
+        await rootBundle.loadString('assets/json/upcoming_matches.json');
+    List<Map<String, dynamic>> data =
+        json.decode(stringData).toList().cast<Map<String, dynamic>>();
     return data;
   }
-
-  //
-//   Future<List<Widget>> getNextMatches(route, context) async {
-//     NetworkHelper networkHelper =
-//         NetworkHelper(baseUrl + route + '?apikey=' + apiKey);
-//     dynamic data = await networkHelper.getData();
-//     data = data['matches'];
-
-//     List<Widget> upcomingMatchesList = [];
-
-//     for (var match in data) {
-//       List<Widget> team1Text = [];
-//       for (var word in match['team-1'].split(" ")) {
-//         var wordWidget = Text(word,
-//             style: TextStyle(
-//               fontSize: 15.0,
-//               fontWeight: FontWeight.w500,
-//             ));
-//         team1Text.add(wordWidget);
-//       }
-
-//       List<Widget> team2Text = [];
-//       for (var word in match['team-2'].split(" ")) {
-//         var wordWidget = Text(word,
-//             style: TextStyle(
-//               fontSize: 15.0,
-//               fontWeight: FontWeight.w500,
-//             ));
-//         team2Text.add(wordWidget);
-//       }
-
-//       Widget singleMatch = GestureDetector(
-//         onTap: () async {
-//           SportData sportData = SportData();
-//           var squadData = await sportData.getSquads(match['unique_id']);
-//           print(squadData);
-//           Navigator.push(context, MaterialPageRoute(builder: (context) {
-//             return MatchDetails(
-//               matchData: match,
-//               squadData: squadData,
-//             );
-//           }));
-//         },
-//         child: Container(
-//           height: 130.0,
-//           margin: EdgeInsets.symmetric(vertical: 5.0),
-//           decoration: BoxDecoration(
-//             color: Colors.white,
-//             border: Border.all(
-//               color: Colors.black26,
-//               width: 1.0,
-//             ),
-//             borderRadius: BorderRadius.all(Radius.circular(5.0)),
-//             boxShadow: [
-//               BoxShadow(
-//                 color: Colors.black12,
-//                 blurRadius: 6.0,
-//               ),
-//             ],
-//           ),
-//           padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
-//           child: Column(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: <Widget>[
-// //              Flex(
-// //                direction: Axis.vertical,
-// //                children: RowComponents,
-// //              ),
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: <Widget>[
-//                   Expanded(
-//                     flex: 5,
-//                     child: Flex(
-//                       direction: Axis.vertical,
-//                       children: team1Text,
-//                     ),
-//                   ),
-//                   Expanded(
-//                     flex: 1,
-//                     child: Center(
-//                       child: Text(
-//                         'Vs',
-//                         style: TextStyle(
-//                           fontSize: 12.0,
-//                           fontWeight: FontWeight.w300,
-//                         ),
-//                       ),
-//                     ),
-//                   ),
-//                   Expanded(
-//                     flex: 5,
-//                     child: Flex(
-//                       direction: Axis.vertical,
-//                       children: team2Text,
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//               Text(
-//                 match['type'],
-//                 textAlign: TextAlign.center,
-//                 style: TextStyle(
-//                   fontSize: 13.0,
-//                   fontWeight: FontWeight.w300,
-//                   color: Colors.black54,
-//                 ),
-//               )
-//             ],
-//           ),
-//         ),
-//       );
-
-//       upcomingMatchesList.add(singleMatch);
-//     }
-// //    print(upcomingMatchesList);
-//     return upcomingMatchesList;
-//   }
 }

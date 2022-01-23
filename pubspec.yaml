@@ -49,6 +49,7 @@ flutter:
     - images/icons/icons8-plus.png
     - images/icons/icons8-user.png
     - images/icons/paytm.svg
+    - assets/json/
 
   fonts:
     - family: Source Sans Pro
