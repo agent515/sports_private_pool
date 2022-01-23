@@ -103,7 +103,7 @@ class _MainFrameAppState extends State<MainFrameApp> {
           return close!;
         }
         return false;
-      } as Future<bool> Function()?,
+      },
       child: Scaffold(
         body: Stack(
           children: <Widget>[

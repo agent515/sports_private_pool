@@ -28,7 +28,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   void getData() {
-    _webController!.evaluateJavascript("document.body.innerText").then((data) {
+    _webController!
+        .runJavascriptReturningResult("document.body.innerText")
+        .then((data) {
       var decodedJSON = jsonDecode(data);
       Map<String, dynamic> responseJSON = jsonDecode(decodedJSON);
       final checksumResult = responseJSON["status"];

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sports_private_pool/components/custom_loader.dart';
 import 'package:sports_private_pool/components/simple_app_bar.dart';
