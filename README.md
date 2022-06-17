@@ -1,5 +1,7 @@
 # Envision: Sports Private Pool
 
+> The CricApi used in the app is down. The code was written way before, poorly architected and no longer maintained.
+
 ## Demo
 
 <img src="./images/docs/envision.gif" width="300">
