@@ -2,6 +2,10 @@
 
 > The CricApi used in the app is down. The code was written way before, poorly architected and no longer maintained.
 
+## Research Paper
+
+[A Platform for Creating Private Pools or Contests for Fantasy Sports](https://www.irjet.net/archives/V8/i5/IRJET-V8I5239.pdf)
+
 ## Demo
 
 <img src="./images/docs/envision.gif" width="300">
