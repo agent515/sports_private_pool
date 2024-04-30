@@ -1,4 +1,4 @@
-# Envision: Sports Private Pool
+# Envision: Fantasy Cricket App
 
 > The CricApi used in the app is down. The code was written way before, poorly architected and no longer maintained.
 
